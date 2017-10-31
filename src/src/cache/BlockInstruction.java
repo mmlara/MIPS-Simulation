@@ -25,6 +25,11 @@ public class BlockInstruction {
         this.dataBlock = dataBlock;
     }
 
+    public void setInstruction(int numInstruction, Instruction instruction){
+        dataBlock[numInstruction]=instruction;
+    }
+
+
 }
 
 

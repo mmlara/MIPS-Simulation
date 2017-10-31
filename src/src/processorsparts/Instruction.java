@@ -7,6 +7,13 @@ public class Instruction {
     private int thirdParameter;
 
 
+    public Instruction(){
+        this.operationCode=0;
+        this.firsParameter=0;
+        this.secondParameter=0;
+        this.thirdParameter=0;
+    }
+
     public int getOperationCode() {
         return operationCode;
     }

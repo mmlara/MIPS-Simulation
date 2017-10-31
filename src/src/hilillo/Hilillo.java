@@ -16,7 +16,8 @@ public class Hilillo {
     private int numCyclesInExecution;//total de ciclos que tardo en ejecutarse (tiempo de CPU)
     private int initialClock=-1;//default -1 para saber cuando se ejecuta por primera vez.
     private int lastClock;
-
+    private int initIndexInMemory;
+    private int lastIndexInMemory;
     private int currentCyclesInProcessor;//para saber cuantos ciclos lleva del quantum
     private boolean inMemory;//por si está en memoria y se acaba el quantum para no sacarlo hasta que termine.
 
@@ -77,4 +78,23 @@ public class Hilillo {
     public boolean isInMemory() {
         return inMemory;
     }
+
+    public int getInitIndexInMemory() {
+        return initIndexInMemory;
+    }
+
+    public void setInitIndexInMemory(int initIndexInMemory) {
+        this.initIndexInMemory = initIndexInMemory;
+    }
+
+    public int getLastIndexInMemory() {
+        return lastIndexInMemory;
+    }
+
+    public void setLastIndexInMemory(int lastIndexInMemory) {
+        this.lastIndexInMemory = lastIndexInMemory;
+    }
+
+
 }
+
