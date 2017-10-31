@@ -14,6 +14,8 @@ public class InstructionCache  {
         cacheInstruction = new BlockInstruction[numBlocks];
         tags= new int[numBlocks];
         for (int i = 0; i <numBlocks ; i++) {
+            BlockInstruction blockInstruction = new BlockInstruction();
+            cacheInstruction[i]=blockInstruction;
             tags[i]=-1;
         }
     }
@@ -30,5 +32,18 @@ public class InstructionCache  {
 
     public void storeBlock(int blockIndex, BlockInstruction blockInstruction) {
         instructionMemory.getInstructionMemory()[blockIndex]=blockInstruction;
+    }
+
+    /**
+     *
+     * @param index indica el índice del bloque del cual se desea saber su tag
+     * @return el tag del índice indicado.
+     */
+    public int getTagOfBlock(int index){
+        return tags[index];
+    }
+
+    public void setInstructionMemory(InstructionMemory instructionMemory) {
+        this.instructionMemory = instructionMemory;
     }
 }

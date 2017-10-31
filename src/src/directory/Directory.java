@@ -8,7 +8,7 @@ public class Directory {
         directoryData= new char[numBlocks][numCaches];
         for (int i = 0; i <numBlocks ; i++) {
             for (int j = 0; j <numCaches ; j++) {
-                directoryData[numBlocks][numCaches]='U';
+                directoryData[i][j]='U';
             }
         }
     }

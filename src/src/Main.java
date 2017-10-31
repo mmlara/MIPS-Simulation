@@ -1,5 +1,9 @@
+import directory.Directory;
 import hilillo.Hilillo;
+import memory.Memory;
+import processor.Processor;
 
+import java.io.File;
 import java.io.IOException;
 
 
@@ -24,6 +28,21 @@ public class Main {
         int x=2;
         System.out.print("hopa"+(x<<2));
 */
-        Hilillo hilillo = new Hilillo("DatosHilillos/hililloPrueba.txt");
+      //  Hilillo hilillo = new Hilillo("DatosHilillos/hililloPrueba.txt");
+        /*
+        File folder = new File("DatosHilillos/P0/");
+        File[] listOfFiles = folder.listFiles();
+
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                System.out.println(file.getName());
+            }
+        }
+*/
+        Directory directory = new Directory(Memory.shareMemorySize, 1);
+        Memory memory = new Memory();
+        Processor processor = new Processor(1,1,1,200, "DatosHilillos/P0", memory);
+        processor.setDirectory(directory);
+        processor.loadHilillos();
     }
 }
