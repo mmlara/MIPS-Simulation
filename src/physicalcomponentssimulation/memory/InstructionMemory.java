@@ -5,6 +5,7 @@ import physicalcomponentssimulation.cache.BlockInstruction;
 import physicalcomponentssimulation.processorsparts.Instruction;
 import physicalcomponentssimulation.systemthread.SystemThread;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
@@ -43,20 +44,33 @@ public class InstructionMemory {
     }
 
     public void loadInstructionsInMemory(Queue<SystemThread> systemThreads){
-        int index=0;//lleva el indíce de la instrucción que se va llenando en memoria;
+
+        List<Instruction> totalInstructions = new ArrayList<>();
         for (SystemThread systemThread : systemThreads) {
-            systemThread.setInitIndexInMemory(index);
+            systemThread.setInitIndexInMemory(totalInstructions.size());
             List<Instruction> instructions= systemThread.getMyInstructions();
-            for (int i = 0; i < instructions.size(); i=i+4) {//suponiendo que siempre son modulo de 4 el número de instrucciones
-                BlockInstruction blockInstruction= new BlockInstruction();
-                blockInstruction.setInstruction(0,instructions.get(i));
-                blockInstruction.setInstruction(1,instructions.get(i+1));
-                blockInstruction.setInstruction(2,instructions.get(i+2));
-                blockInstruction.setInstruction(3,instructions.get(i+3));
-                this.instructionMemory[index]=blockInstruction ;
-                index++;
+            totalInstructions.addAll(instructions);
+            systemThread.setLastIndexInMemory(totalInstructions.size());//este demarca donde empieza el siguiente
+        }
+        int index =0;
+        for (int i = 0; i < totalInstructions.size()-totalInstructions.size()%4; i=i+4) {//suponiendo que siempre son modulo de 4 el número de instrucciones
+            BlockInstruction blockInstruction= new BlockInstruction();
+            blockInstruction.setInstruction(0,totalInstructions.get(i));
+            blockInstruction.setInstruction(1,totalInstructions.get(i+1));
+            blockInstruction.setInstruction(2,totalInstructions.get(i+2));
+            blockInstruction.setInstruction(3,totalInstructions.get(i+3));
+            this.instructionMemory[index]=blockInstruction ;
+            index++;
+        }
+
+        int residuo=totalInstructions.size()%4;
+        int lastIndexload=totalInstructions.size()-residuo;
+        if(residuo!=0){
+            BlockInstruction blockInstruction = new BlockInstruction();
+            for (int i = 0; i <residuo ; i++) {
+                blockInstruction.setInstruction(i,totalInstructions.get(lastIndexload+i));
             }
-            systemThread.setLastIndexInMemory(index);//este demarca donde empieza el siguiente
+            this.instructionMemory[index]=blockInstruction ;
         }
     }
 }
