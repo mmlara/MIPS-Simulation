@@ -15,8 +15,15 @@ public class Core {
 
 
     public Core(){
-        context= new int[contextSize];
-        context[0]=0;//por default R0 siempre tendrá 0 y no será usado como registro destino.
+
+    }
+
+    public void setContext(int[] context) {
+        this.context = context;
+    }
+
+    public int[] getContext() {
+        return context;
     }
 
     public void saveContext(){
