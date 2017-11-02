@@ -10,7 +10,8 @@ import java.util.List;
 public class SystemThread {
     
     private int[] context;
-    private final int contextSize=33;//32 registros + pc;
+    private int pc;
+    private final int contextSize=32;//32 registros ;
     private List<Instruction> myInstructions;
     private int idHilillo; //necesario para identificar al hilillo para presentar luego la información.
     private int numCyclesInExecution;//total de ciclos que tardo en ejecutarse (tiempo de CPU)

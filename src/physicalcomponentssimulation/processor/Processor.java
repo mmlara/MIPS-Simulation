@@ -20,6 +20,8 @@ public class Processor {
 
 
     // Local variables which represents physical parts inside a our physicalcomponentssimulation.processor
+    private int[] context;
+    private final int contextSize=32;//32 registros;
     private int processorId;
     private int quantumSize;//cambiar este valor y chequear si se escribe así
     private int numCores;
@@ -42,6 +44,8 @@ public class Processor {
      */
     public Processor(int processorId, int numCores, int numOfCaches, int quantumSize, String threadDirectoryPath, Memory memory) {
 
+        context= new int[contextSize];
+        context[0]=0; //R0 allways contains 0
         this.processorId = processorId;
         this.numCores = numCores;
         this.cores = new Core[numCores];
@@ -84,6 +88,7 @@ public class Processor {
 
         for (int i = 0; i < numCores; i++) {
             Core core = new Core();
+            core.setContext(this.context);
             DataCache dataCache = new DataCache();
             core.setDataCache(dataCache);
             InstructionCache instructionCache = new InstructionCache();
