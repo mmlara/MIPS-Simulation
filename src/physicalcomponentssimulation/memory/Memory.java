@@ -6,10 +6,11 @@ import physicalcomponentssimulation.cache.Block;
 //los primeros 16 bloques estan en P0 y los otros 8 en P1
 public class Memory {
 
-    public static final int shareMemorySize= 24;
+    public int shareMemorySize;
     private Block[] shareMemory;
 
-    public Memory() {
+    public Memory(int memorySize) {
+        this.shareMemorySize=memorySize;
         this.shareMemory = new Block[shareMemorySize];
         for (int i = 0; i <shareMemorySize ; i++) {
             Block block = new Block();
