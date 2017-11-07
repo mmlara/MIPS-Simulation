@@ -12,8 +12,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         viewer = new MainGUI("/simulationviewer/guifiles/initialgui.fxml",primaryStage);
-        Directory directory = new Directory(Memory.shareMemorySize, 1);
-        Memory memory = new Memory();
+        Directory directory = new Directory(16, 1);
+        Memory memory = new Memory(16);
         Processor processor = new Processor(1,1,1,200, "DatosHilillos/P0", memory);
         processor.setDirectory(directory);
         processor.loadThreads();

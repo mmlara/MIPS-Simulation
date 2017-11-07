@@ -5,6 +5,11 @@ package physicalcomponentssimulation.processorsparts;
 public class ALU {
 
     Instruction instruction;
+    private int[] registers;
+
+    //Register that contains the PC
+    private int PC = 32;
+
     //tabla de instrucciones.
     private final int JR    = 2;
     private final int JAL   = 3;
@@ -19,6 +24,10 @@ public class ALU {
     private final int SW    = 43;
     private final int FIN   = 63;
 
+    public ALU(int[] context){
+        this.registers = context;
+    }
+
     public Instruction getInstruction() {
         return instruction;
     }
@@ -31,32 +40,63 @@ public class ALU {
         boolean successOperation=false;
 
         switch (instruction.getOperationCode()){
-         //llenar los cases con las respectivas instrucciones
             case JR:
+                //Set PC to the value of the first parameter
+                registers[PC] = registers[instruction.getFirsParameter()];
+                successOperation = true;
                 break;
 
             case JAL:
+                //Set register 31 to PC and then set PC = PC + n, where n is the third parameter of instruction.
+                registers[31] = registers[PC];
+                registers[PC] += instruction.getThirdParameter();
+                successOperation = true;
                 break;
 
             case BEQZ:
+                //If source register is 0 then PC is equal PC + immediate value * 4
+                if(registers[instruction.getFirsParameter()] == 0) {
+                    registers[PC] += (4 * registers[instruction.getThirdParameter()]);
+                }
+                successOperation = true;
                 break;
 
             case BNEZ:
+                //If source register is not 0 then PC is equal PC + immediate value * 4
+                if(registers[instruction.getFirsParameter()] != 0) {
+                    registers[PC] += (4 * registers[instruction.getThirdParameter()]);
+                }
+                successOperation = true;
                 break;
 
             case DADDI :
+                //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
+                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] + instruction.getThirdParameter();
+                successOperation = true;
                 break;
 
             case DMUL:
+                //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
+                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] * registers[instruction.getThirdParameter()];
+                successOperation = true;
                 break;
 
             case DDIV:
+                //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
+                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] / registers[instruction.getThirdParameter()];
+                successOperation = true;
                 break;
 
             case DADD:
+                //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
+                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] + registers[instruction.getThirdParameter()];
+                successOperation = true;
                 break;
 
             case DSUB:
+                //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
+                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] - registers[instruction.getThirdParameter()];
+                successOperation = true;
                 break;
 
             case LW:
@@ -66,6 +106,7 @@ public class ALU {
                 break;
 
             case FIN:
+                //This should change the value of a boolean that tells the processor to not add this "hilillo" to the queue.
             break;
 
 
