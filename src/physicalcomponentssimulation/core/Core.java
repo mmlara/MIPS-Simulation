@@ -2,9 +2,10 @@ package physicalcomponentssimulation.core;
 
 import physicalcomponentssimulation.cache.DataCache;
 import physicalcomponentssimulation.cache.InstructionCache;
+import physicalcomponentssimulation.processorsparts.Instruction;
 import physicalcomponentssimulation.systemthread.SystemThread;
 
-public class Core {
+public class Core implements Runnable{
 
     private int[] context;
     private final int contextSize=33;//32 registros + pc;
@@ -57,6 +58,22 @@ public class Core {
     //TODO cuando se tenga acceso al reloj, preguntar que si es -1 el valor de hilillo.initialClock, en caso de ser así, asignarle el reloj actual.
 
     public void setAsignedSystemThread(SystemThread systemThread){
-        asignedSystemThread = asignedSystemThread;
+        this.asignedSystemThread = systemThread;
+    }
+
+    public Instruction getNextInstruction(){
+        int actualPC=this.asignedSystemThread.getPc();
+        actualPC=4;
+
+        int initialInexThread= asignedSystemThread.getInitIndexInMemory();
+        int instructionlocationInMemory= initialInexThread +actualPC;
+        Instruction nextInstruction= this.instructionCache.getInstruction(instructionlocationInMemory);
+        return nextInstruction;
+    }
+
+    @Override
+    public void run() {
+        Instruction instruction= getNextInstruction();
+        System.out.println(instruction.toString());
     }
 }

@@ -24,6 +24,10 @@ public class InstructionMemory {
         this.instructionMemory = instructionMemory;
     }
 
+    public int getInstructionMemorySize() {
+        return instructionMemorySize;
+    }
+
     public InstructionMemory(int instructionMemorySize) {
         this.instructionMemorySize = instructionMemorySize;
         instructionMemory= new BlockInstruction[instructionMemorySize];

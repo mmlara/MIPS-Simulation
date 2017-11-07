@@ -136,4 +136,12 @@ public class Processor {
     public void setDirectory(Directory directory) {
         this.directory = directory;
     }
+
+    public Queue<SystemThread> getAssignedSystemThreads() {
+        return assignedSystemThreads;
+    }
+
+    public void setAssignedSystemThreads(Queue<SystemThread> assignedSystemThreads) {
+        this.assignedSystemThreads = assignedSystemThreads;
+    }
 }
