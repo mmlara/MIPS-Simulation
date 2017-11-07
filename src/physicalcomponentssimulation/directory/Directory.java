@@ -2,23 +2,28 @@ package physicalcomponentssimulation.directory;
 
 public class Directory {
 
-    private char[][] directoryData;
-
+    private char[] blockStates;
+    private Boolean[][] blockInformation;
     public Directory(int numBlocks,int numCaches){
-        directoryData= new char[numBlocks][numCaches];
+
+        blockStates= new char[numBlocks];
+        blockInformation= new Boolean[numBlocks][numCaches];
+
         for (int i = 0; i <numBlocks ; i++) {
+           blockStates[i]='U';
             for (int j = 0; j <numCaches ; j++) {
-                directoryData[i][j]='U';
+                blockInformation[i][j]=false;
             }
         }
+
     }
 
-    public void changeState(int numBlock, int numCache, char newState){
-        directoryData[numBlock][numCache]=newState;
+    public void changeState(int numBlock, int numCache, boolean newState){
+        blockInformation[numBlock][numCache]=newState;
     }
 
 
-    public char getStateOfBlockInOneCache(int numBlock, int numCache){
-        return directoryData[numBlock][numCache];
+    public Boolean getStateOfBlockInOneCache(int numBlock, int numCache){
+        return blockInformation[numBlock][numCache];
     }
 }
