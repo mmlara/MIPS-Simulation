@@ -12,10 +12,11 @@ public class Core {
     private InstructionCache instructionCache;
     private SystemThread asignedSystemThread;//para saber a quien estoy ejecutando
 
-
-
     public Core(){
-
+        context= new int[contextSize];
+        for (int i = 0; i <contextSize ; i++) {
+            context[i]=0;
+        }
     }
 
     public void setContext(int[] context) {
