@@ -3,6 +3,7 @@ import javafx.stage.Stage;
 import physicalcomponentssimulation.directory.Directory;
 import physicalcomponentssimulation.memory.Memory;
 import physicalcomponentssimulation.processor.Processor;
+import physicalcomponentssimulation.systemthread.SystemThread;
 import simulationviewer.gui.MainGUI;
 
 public class Main extends Application {
@@ -17,6 +18,9 @@ public class Main extends Application {
         Processor processor = new Processor(1,1,1,200, "DatosHilillos/P0", memory);
         processor.setDirectory(directory);
         processor.loadThreads();
+       SystemThread systemThread= processor.getAssignedSystemThreads().poll();
+        processor.getCores()[0].setAsignedSystemThread(systemThread);
+        processor.getCores()[0].run();
     }
 
 

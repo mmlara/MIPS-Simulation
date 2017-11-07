@@ -52,6 +52,14 @@ public class SystemThread {
         return contextSize;
     }
 
+    public int getPc() {
+        return pc;
+    }
+
+    public void setPc(int pc) {
+        this.pc = pc;
+    }
+
     public List<Instruction> getMyInstructions() {
         return myInstructions;
     }

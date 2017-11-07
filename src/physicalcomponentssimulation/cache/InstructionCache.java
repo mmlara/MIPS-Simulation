@@ -10,6 +10,7 @@ public class InstructionCache  {
     private int[] tags;
     InstructionMemory instructionMemory;
 
+
     public InstructionCache(){
         cacheInstruction = new BlockInstruction[numBlocks];
         tags= new int[numBlocks];
@@ -45,5 +46,24 @@ public class InstructionCache  {
 
     public void setInstructionMemory(InstructionMemory instructionMemory) {
         this.instructionMemory = instructionMemory;
+    }
+
+
+    public Instruction getInstruction(int indexInMemory){
+        Instruction instruction=null;
+
+        int blockTag = indexInMemory/4;
+
+
+        int indexInCache =blockTag%4;
+        if (blockTag == getTagOfBlock(indexInCache)){//hit case
+              int instructionNumberInBlock=indexInMemory%4;
+              instruction=getWord(indexInCache,instructionNumberInBlock);
+        }else {//miss case;
+             this.cacheInstruction[indexInCache]=this.instructionMemory.getBlockInstruction(blockTag);
+             int instructionNumberInBlock=indexInMemory%4;
+             instruction=getWord(indexInCache,instructionNumberInBlock);
+        }
+        return instruction;
     }
 }
