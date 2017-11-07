@@ -13,8 +13,7 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class Processor {
-
-
+    
     private final int INSTRUCTION_MEMORY_SIZE_P0 = 16;
     private final int INSTRUCTION_MEMORY_SIZE_P1 = 8;
 
