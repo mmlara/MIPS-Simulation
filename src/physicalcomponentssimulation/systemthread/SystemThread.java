@@ -94,6 +94,10 @@ public class SystemThread {
         this.currentCyclesInProcessor = currentCyclesInProcessor;
     }
 
+    public void setIdHilillo(int idHilillo) {
+        this.idHilillo = idHilillo;
+    }
+
     public void setNumCyclesInExecution(int numCyclesInExecution) {
         this.numCyclesInExecution = numCyclesInExecution;
     }

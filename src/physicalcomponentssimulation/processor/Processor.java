@@ -19,7 +19,7 @@ import java.util.Queue;
 
 public class Processor {
     
-    private final int INSTRUCTION_MEMORY_SIZE_P0 = 16;
+    private final int INSTRUCTION_MEMORY_SIZE_P0 = 24;
     private final int INSTRUCTION_MEMORY_SIZE_P1 = 8;
 
 
@@ -108,12 +108,15 @@ public class Processor {
     public void loadThreads() {
         File folder = new File(this.threadDirectoryPath);
         File[] listOfFiles = folder.listFiles();
-
+        int i=0;
         for (File file : listOfFiles) {
             if (file.isFile()) {
                 String threadFileFile = this.threadDirectoryPath + "/" + file.getName();
                 SystemThread systemThread = new SystemThread(threadFileFile);
+                systemThread.setIdHilillo(i);
+                i++;
                 this.assignedSystemThreads.add(systemThread);
+
                 System.out.println("Thread successfully loaded. Thread name: "+file.getName());
             }
         }
