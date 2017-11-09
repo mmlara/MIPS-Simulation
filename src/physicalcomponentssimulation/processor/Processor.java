@@ -1,5 +1,6 @@
 package physicalcomponentssimulation.processor;
 
+import blockinglogicalcomponents.Locks;
 import physicalcomponentssimulation.cache.DataCache;
 import physicalcomponentssimulation.cache.InstructionCache;
 import physicalcomponentssimulation.core.Core;
@@ -7,6 +8,7 @@ import physicalcomponentssimulation.directory.Directory;
 import physicalcomponentssimulation.memory.InstructionMemory;
 import physicalcomponentssimulation.memory.Memory;
 import physicalcomponentssimulation.systemthread.SystemThread;
+import physicalcomponentssimulation.time.Clock;
 
 import java.io.File;
 import java.util.ArrayDeque;
@@ -30,6 +32,9 @@ public class Processor {
     private InstructionMemory instructionMemory;
     private String threadDirectoryPath;
     private Queue<SystemThread> assignedSystemThreads;//para que sea más eficiente seleccionar al siguiente hilillo en el procesador.
+    private Clock clock;
+    private Locks locks;// Contains all lock objects
+
 
     Directory directory;
 
@@ -143,5 +148,17 @@ public class Processor {
 
     public void setAssignedSystemThreads(Queue<SystemThread> assignedSystemThreads) {
         this.assignedSystemThreads = assignedSystemThreads;
+    }
+
+    public Clock getClock() {
+        return clock;
+    }
+
+    public void setClock(Clock clock) {
+        this.clock = clock;
+    }
+
+    public void setLocks(Locks locks) {
+        this.locks = locks;
     }
 }
