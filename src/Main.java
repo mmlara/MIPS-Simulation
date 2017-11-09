@@ -17,21 +17,25 @@ public class Main extends Application {
         viewer = new MainGUI("/simulationviewer/guifiles/initialgui.fxml",primaryStage);
         Directory directory = new Directory(16, 1);
         Memory memory = new Memory(24);
-        int numCores=3;
+        int numCores=2;
         Processor processor = new Processor(0,numCores,1,5, "DatosHilillos/P0", memory);
         processor.setDirectory(directory);
-
 
         Clock clock = new Clock();
         processor.setClock(clock);
         Locks locks= new Locks(numCores,3,2,2);
         processor.setLocks(locks);
-        processor.getCores()[0].setMyProcessor(processor);
-        processor.getCores()[1].setMyProcessor(processor);
-        processor.getCores()[2].setMyProcessor(processor);
-        new Thread(processor.getCores()[0]).start();
-        new Thread(processor.getCores()[1]).start();
-        new Thread(processor.getCores()[2]).start();
+        for (int i = 0; i <numCores ; i++) {
+            processor.getCores()[i].setMyProcessor(processor);
+            processor.getCores()[i].setCoreID(i);
+            new Thread(processor.getCores()[i]).start();
+            //System.out.println("TERMINO EL CORE "+processor.getCores()[i].getCoreID());
+        }
+        //processor.getCores()[1].setMyProcessor(processor);
+        //processor.getCores()[2].setMyProcessor(processor);
+
+        //new Thread(processor.getCores()[1]).start();
+        //new Thread(processor.getCores()[2]).start();
 
 
     }
