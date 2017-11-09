@@ -4,6 +4,8 @@ import java.util.concurrent.Semaphore;
 
 public class Locks {
 
+    private int numCores;
+
     private  Semaphore[] cacheMutex;
     private boolean[] cacheState;//false represent a busy cache
     private int numCaches;
@@ -20,7 +22,8 @@ public class Locks {
     private Semaphore barrierCycleClock;
     private int numCoresWaiting;
 
-    public Locks(int numCaches, int numDirectories, int numBuses){
+    public Locks(int numCores,int numCaches, int numDirectories, int numBuses){
+        this.numCores=numCores;
         this.numCaches=numCaches;
         this.numDirectories=numDirectories;
         this.numBuses=numBuses;
@@ -45,7 +48,65 @@ public class Locks {
         for (int i = 0; i <bus.length ; i++) {
             bus[i]= new Semaphore(1);
             busState[i]=false;
-
         }
+
+        mutexBarrier= new Semaphore(1);
+        barrierCycleClock = new Semaphore(0);
+    }
+
+    public int getNumCores() {
+        return numCores;
+    }
+
+    public Semaphore[] getCacheMutex() {
+        return cacheMutex;
+    }
+
+    public boolean[] getCacheState() {
+        return cacheState;
+    }
+
+    public int getNumCaches() {
+        return numCaches;
+    }
+
+    public Semaphore[] getDirectoryMutex() {
+        return directoryMutex;
+    }
+
+    public boolean[] getDirectoryState() {
+        return directoryState;
+    }
+
+    public int getNumDirectories() {
+        return numDirectories;
+    }
+
+    public Semaphore[] getBus() {
+        return bus;
+    }
+
+    public boolean[] getBusState() {
+        return busState;
+    }
+
+    public int getNumBuses() {
+        return numBuses;
+    }
+
+    public Semaphore getMutexBarrier() {
+        return mutexBarrier;
+    }
+
+    public Semaphore getBarrierCycleClock() {
+        return barrierCycleClock;
+    }
+
+    public int getNumCoresWaiting() {
+        return numCoresWaiting;
+    }
+
+    public void setNumCoresWaiting(int numCoresWaiting) {
+        this.numCoresWaiting = numCoresWaiting;
     }
 }

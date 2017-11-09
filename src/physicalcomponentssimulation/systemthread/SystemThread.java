@@ -45,6 +45,7 @@ public class SystemThread {
         System.out.println(myInstructions.toString());
     }
 
+
     public int[] getContext() {
         return context;
     }
@@ -89,6 +90,14 @@ public class SystemThread {
         return currentCyclesInProcessor;
     }
 
+    public void setCurrentCyclesInProcessor(int currentCyclesInProcessor) {
+        this.currentCyclesInProcessor = currentCyclesInProcessor;
+    }
+
+    public void setNumCyclesInExecution(int numCyclesInExecution) {
+        this.numCyclesInExecution = numCyclesInExecution;
+    }
+
     public boolean isInMemory() {
         return inMemory;
     }
@@ -109,7 +118,8 @@ public class SystemThread {
         this.lastIndexInMemory = lastIndexInMemory;
     }
 
-
-
+    public void setLastClock(int lastClock) {
+        this.lastClock = lastClock;
+    }
 }
 

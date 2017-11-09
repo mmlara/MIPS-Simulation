@@ -17,15 +17,13 @@ public class Main extends Application {
         viewer = new MainGUI("/simulationviewer/guifiles/initialgui.fxml",primaryStage);
         Directory directory = new Directory(16, 1);
         Memory memory = new Memory(16);
-        Processor processor = new Processor(0,1,1,200, "DatosHilillos/P0", memory);
+        Processor processor = new Processor(0,1,1,5, "DatosHilillos/P0", memory);
         processor.setDirectory(directory);
-        processor.loadThreads();
-        SystemThread systemThread= processor.getAssignedSystemThreads().poll();
-        processor.getCores()[0].setAsignedSystemThread(systemThread);
+
 
         Clock clock = new Clock();
         processor.setClock(clock);
-        Locks locks= new Locks(3,2,2);
+        Locks locks= new Locks(1,3,2,2);
         processor.setLocks(locks);
         processor.getCores()[0].setMyProcessor(processor);
         processor.getCores()[0].run();
@@ -52,7 +50,7 @@ public class Main extends Application {
         int x=2;
         System.out.print("hopa"+(x<<2));
 */
-        //  SystemThread hilillo = new SystemThread("DatosHilillos/hililloPrueba.txt");
+        //
         /*
         File folder = new File("DatosHilillos/P0/");
         File[] listOfFiles = folder.listFiles();
