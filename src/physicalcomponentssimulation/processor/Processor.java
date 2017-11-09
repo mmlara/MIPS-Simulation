@@ -82,7 +82,7 @@ public class Processor {
     private void initializeCores() {
 
         for (int i = 0; i < numCores; i++) {
-            Core core = new Core();
+            Core core = new Core(assignedSystemThreads);
             DataCache dataCache = new DataCache();
             core.setDataCache(dataCache);
             InstructionCache instructionCache = new InstructionCache();
