@@ -15,14 +15,13 @@ public class Main extends Application {
         viewer = new MainGUI("/simulationviewer/guifiles/initialgui.fxml",primaryStage);
         Directory directory = new Directory(16, 1);
         Memory memory = new Memory(16);
-        Processor processor = new Processor(1,1,1,200, "DatosHilillos/P0", memory);
+        Processor processor = new Processor(0,1,1,200, "DatosHilillos/P0", memory);
         processor.setDirectory(directory);
         processor.loadThreads();
-       SystemThread systemThread= processor.getAssignedSystemThreads().poll();
+        SystemThread systemThread= processor.getAssignedSystemThreads().poll();
         processor.getCores()[0].setAsignedSystemThread(systemThread);
         processor.getCores()[0].run();
     }
-
 
     public static void main(String[] args) {
         launch(args);
