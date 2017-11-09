@@ -161,6 +161,7 @@ public class Core implements Runnable{
                         this.getMyProcessor().getLocks().getMutexBarrier().acquire();//get mutex
                         if (this.getMyProcessor().getLocks().getNumCoresWaiting() == this.getMyProcessor().getLocks().getNumCores() - 1) { //the last core in execution
                             this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
+                            this.getMyProcessor().getClock().increaseCurrentTime();//move on the clock when the third hilillo arrive
                             this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
                             this.getMyProcessor().getLocks().setNumCoresWaiting(0);
                         } else {
@@ -172,8 +173,6 @@ public class Core implements Runnable{
                         e.printStackTrace();
                     }
                 }
-
-                this.getMyProcessor().getClock().increaseCurrentTime();
 
             }//while end of quantum or end of thread
 
