@@ -87,9 +87,12 @@ public class Core implements Runnable{
     }
 
     public Instruction getNextInstruction(){
+
         int actualPC=this.assignedSystemThread.getPc();
         int initialInexThread= assignedSystemThread.getInitIndexInMemory();
+
         int instructionlocationInMemory= initialInexThread+actualPC;
+
         Instruction nextInstruction= this.instructionCache.getInstruction(instructionlocationInMemory);
         return nextInstruction;
     }
