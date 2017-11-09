@@ -9,22 +9,23 @@ import physicalcomponentssimulation.systemthread.SystemThread;
 
 import java.util.Queue;
 
-public class Core implements Runnable{
+public class Core implements Runnable {
 
     private int[] context;
-    private final int contextSize=33;//32 registros + pc;
+    private int coreID;
+    private final int contextSize = 33;//32 registros + pc;
     private DataCache dataCache;
     private InstructionCache instructionCache;
     private SystemThread assignedSystemThread;//para saber a quien estoy ejecutando
     private Queue<SystemThread> assignedSystemThreads;
     private Processor myProcessor;
 
-    public Core(Queue<SystemThread> assignedSystemThreads){
-        this.context= new int[contextSize];
-        for (int i = 0; i <contextSize ; i++) {
-            this.context[i]=0;
+    public Core(Queue<SystemThread> assignedSystemThreads) {
+        this.context = new int[contextSize];
+        for (int i = 0; i < contextSize; i++) {
+            this.context[i] = 0;
         }
-        this.assignedSystemThreads =  assignedSystemThreads;
+        this.assignedSystemThreads = assignedSystemThreads;
     }
 
     public void setContext(int[] context) {
@@ -35,19 +36,20 @@ public class Core implements Runnable{
         return this.context;
     }
 
-    public void saveContext(){
-        for (int i = 0; i <contextSize-1 ; i++) {
-            this.assignedSystemThread.getContext()[i]=context[i];
+    public void saveContext() {
+        for (int i = 0; i < contextSize - 1; i++) {
+            this.assignedSystemThread.getContext()[i] = context[i];
         }
-       this.assignedSystemThread.setPc(this.context[32]);
+        this.assignedSystemThread.setPc(this.context[32]);
     }
 
-    public void loadContext(){
-        for (int i = 0; i <contextSize-1 ; i++) {
-            this.context[i]= this.assignedSystemThread.getContext()[i];
+    public void loadContext() {
+        for (int i = 0; i < contextSize - 1; i++) {
+            this.context[i] = this.assignedSystemThread.getContext()[i];
         }
-        this.context[32]=this.assignedSystemThread.getPc();
+        this.context[32] = this.assignedSystemThread.getPc();
     }
+
     public DataCache getDataCache() {
         return this.dataCache;
     }
@@ -72,28 +74,38 @@ public class Core implements Runnable{
         this.myProcessor = myProcessor;
     }
 
-    public void executeLoadInstruction(Instruction instruction){
+    public int getCoreID() {
+        return coreID;
+    }
+
+    public void setCoreID(int coreID) {
+        this.coreID = coreID;
+    }
+
+    public void executeLoadInstruction(Instruction instruction) {
 
     }
 
-    public void executeStoreInstruction(Instruction instruction){
+    public void executeStoreInstruction(Instruction instruction) {
 
     }
+
+
 
     //TODO cuando se tenga acceso al reloj, preguntar que si es -1 el valor de hilillo.initialClock, en caso de ser así, asignarle el reloj actual.
 
-    public void setAsignedSystemThread(SystemThread systemThread){
+    public void setAsignedSystemThread(SystemThread systemThread) {
         this.assignedSystemThread = systemThread;
     }
 
-    public Instruction getNextInstruction(){
+    public Instruction getNextInstruction() {
 
-        int actualPC=this.assignedSystemThread.getPc();
-        int initialInexThread= assignedSystemThread.getInitIndexInMemory();
+        int actualPC = this.assignedSystemThread.getPc();
+        int initialInexThread = assignedSystemThread.getInitIndexInMemory();
 
-        int instructionlocationInMemory= initialInexThread+actualPC;
+        int instructionlocationInMemory = initialInexThread + actualPC;
 
-        Instruction nextInstruction= this.instructionCache.getInstruction(instructionlocationInMemory);
+        Instruction nextInstruction = this.instructionCache.getInstruction(instructionlocationInMemory);
         return nextInstruction;
     }
 
@@ -102,7 +114,8 @@ public class Core implements Runnable{
         ALU alu = new ALU(this.context);
 
         //If there are still "hilillos" in the queue then keep working
-        while(!assignedSystemThreads.isEmpty()) {
+        int cycleNumber = 0;
+        while (!assignedSystemThreads.isEmpty()) {
 
             //Get "hilillo", load its context and fetch the first instruction
             this.assignedSystemThread = assignedSystemThreads.poll();
@@ -115,8 +128,10 @@ public class Core implements Runnable{
             this.loadContext();
             Boolean instructionSucceeded = false;
             Instruction instruction = getNextInstruction();
-            while ((assignedSystemThread.getCurrentCyclesInProcessor() < this.getMyProcessor().getQuantumSize())&& !systemThreadFinished) {
-                int cyclesWaitingInThisInstruction=0;
+            while ((assignedSystemThread.getCurrentCyclesInProcessor() < this.getMyProcessor().getQuantumSize()) && !systemThreadFinished) {
+                System.out.println("número de ciclo" + cycleNumber + "del hilillo "+ assignedSystemThread.getIdHilillo());
+                cycleNumber++;
+                int cyclesWaitingInThisInstruction = 0;
                 //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
                 //If the "hilillo" is done then stop working.
                 //while((!quantumFinished || instructionSucceeded) && !systemThreadFinished)
@@ -146,25 +161,30 @@ public class Core implements Runnable{
                 else if (instruction.getOperationCode() == 63) {
                     systemThreadFinished = true;
                     instructionSucceeded = true;
-                    System.out.println("Terminó un hilillo");
-                    cyclesWaitingInThisInstruction=1;
+                    System.out.println("Terminó el hilillo "+this.assignedSystemThread.getIdHilillo());
+                    cyclesWaitingInThisInstruction = 1;
                 } else {
                     alu.executionOperation(instruction);
                     instructionSucceeded = true;
-                    this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor()+1);//suma un ciclo en procesador;
-                    this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution()+1);//add the total time in execution using the processor
-                    cyclesWaitingInThisInstruction=1;
+                    this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 1);//suma un ciclo en procesador;
+                    this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 1);//add the total time in execution using the processor
+                    cyclesWaitingInThisInstruction = 1;
                 }
+                System.out.println("ejecuta la instrucción hilillo "+assignedSystemThread.getIdHilillo());
 
-                for (int i = 0; i <cyclesWaitingInThisInstruction ; i++) {
+                for (int i = 0; i < cyclesWaitingInThisInstruction; i++) {
                     try {
+
                         this.getMyProcessor().getLocks().getMutexBarrier().acquire();//get mutex
                         if (this.getMyProcessor().getLocks().getNumCoresWaiting() == this.getMyProcessor().getLocks().getNumCores() - 1) { //the last core in execution
-                            this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
+                            System.out.println("verdadero");
                             this.getMyProcessor().getClock().increaseCurrentTime();//move on the clock when the third hilillo arrive
-                            this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
+                             //release mutex
+                            this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
                             this.getMyProcessor().getLocks().setNumCoresWaiting(0);
+                            this.getMyProcessor().getLocks().getMutexBarrier().release();
                         } else {
+                            System.out.println("falso");
                             this.getMyProcessor().getLocks().setNumCoresWaiting(this.getMyProcessor().getLocks().getNumCoresWaiting() + 1);
                             this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
                             this.getMyProcessor().getLocks().getBarrierCycleClock().acquire();
@@ -174,6 +194,7 @@ public class Core implements Runnable{
                     }
                 }
 
+                System.out.println("Se desbloquea el hilillo " +assignedSystemThread.getIdHilillo());
             }//while end of quantum or end of thread
 
             if (!systemThreadFinished) {
@@ -185,5 +206,60 @@ public class Core implements Runnable{
                 this.assignedSystemThread.setLastClock(this.myProcessor.getClock().getCurrentTime());
             }
         }//end while empty queue
+
+        try {
+
+            this.getMyProcessor().getLocks().getFinishedCoresMutex().acquire();
+            this.getMyProcessor().getLocks().setFinishedCores(this.getMyProcessor().getLocks().getFinishedCores()+1);
+            System.out.println("HAN TERMINADO "+ this.getMyProcessor().getLocks().getFinishedCores());
+            try {
+                this.getMyProcessor().getLocks().getMutexBarrier().acquire();//get mutex
+                System.out.println("EL HILILLO "+ assignedSystemThread.getIdHilillo()+ " compara "+this.getMyProcessor().getLocks().getFinishedCores()+ " con "+this.getMyProcessor().getLocks().getNumCores() );
+                if (this.getMyProcessor().getLocks().getFinishedCores() == this.getMyProcessor().getLocks().getNumCores() ) { //the last core in execution
+                    this.getMyProcessor().getLocks().setAllThreadsFinished(true);//
+                    this.getMyProcessor().getClock().increaseCurrentTime();
+                    this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
+                    //move on the clock when the third hilillo arrive
+                    this.getMyProcessor().getLocks().setNumCoresWaiting(0);
+                    this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
+                    this.getMyProcessor().getLocks().getFinishedCoresMutex().release();
+
+                } else {
+                    this.getMyProcessor().getLocks().getFinishedCoresMutex().release();
+                    this.getMyProcessor().getLocks().getMutexBarrier().release();
+                    while (!this.getMyProcessor().getLocks().isAllThreadsFinished()) {
+                        System.out.println("El hilillo "+assignedSystemThread.getIdHilillo()+ "Está zombie");
+                        try {
+
+                            System.out.println("Zombie adquiere el mutex");
+                            this.getMyProcessor().getLocks().getMutexBarrier().acquire();
+                            if (this.getMyProcessor().getLocks().getNumCoresWaiting() == this.getMyProcessor().getLocks().getNumCores() - 1) { //the last core in execution
+                                System.out.println("Zombie en verdadero esperan" + this.getMyProcessor().getLocks().getNumCoresWaiting());
+                                this.getMyProcessor().getClock().increaseCurrentTime();//move on the clock when the third hilillo arrive
+
+                                 //release mutex
+                                this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
+                                this.getMyProcessor().getLocks().setNumCoresWaiting(0);
+                                this.getMyProcessor().getLocks().getMutexBarrier().release();
+                            } else {
+                                System.out.println(" Hilillo "+this.assignedSystemThread.getIdHilillo()+" Zombie en falso");
+                                this.getMyProcessor().getLocks().setNumCoresWaiting(this.getMyProcessor().getLocks().getNumCoresWaiting() + 1);
+                                this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
+                                this.getMyProcessor().getLocks().getBarrierCycleClock().acquire();
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }   catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        System.out.println("SALE EL HILILLO : "+assignedSystemThread.getIdHilillo()+" y hay "+this.myProcessor.getFinishedThreads().size()+"Ejecutados");
+
     }
 }

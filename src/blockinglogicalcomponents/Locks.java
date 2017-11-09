@@ -21,6 +21,9 @@ public class Locks {
     private Semaphore mutexBarrier;
     private Semaphore barrierCycleClock;
     private int numCoresWaiting;
+    private Semaphore finishedCoresMutex;
+    private int finishedCores;
+    private boolean allThreadsFinished;
 
     public Locks(int numCores,int numCaches, int numDirectories, int numBuses){
         this.numCores=numCores;
@@ -28,6 +31,8 @@ public class Locks {
         this.numDirectories=numDirectories;
         this.numBuses=numBuses;
         this.numCoresWaiting=0;
+        finishedCores=0;
+        allThreadsFinished=false;
 
         cacheMutex= new Semaphore[numCaches];
         cacheState= new boolean[numCaches];
@@ -52,6 +57,7 @@ public class Locks {
 
         mutexBarrier= new Semaphore(1);
         barrierCycleClock = new Semaphore(0);
+        finishedCoresMutex=new Semaphore(1);
     }
 
     public int getNumCores() {
@@ -108,5 +114,25 @@ public class Locks {
 
     public void setNumCoresWaiting(int numCoresWaiting) {
         this.numCoresWaiting = numCoresWaiting;
+    }
+
+    public Semaphore getFinishedCoresMutex() {
+        return finishedCoresMutex;
+    }
+
+    public int getFinishedCores() {
+        return finishedCores;
+    }
+
+    public void setFinishedCores(int finishedCores) {
+        this.finishedCores = finishedCores;
+    }
+
+    public boolean isAllThreadsFinished() {
+        return allThreadsFinished;
+    }
+
+    public void setAllThreadsFinished(boolean allThreadsFinished) {
+        this.allThreadsFinished = allThreadsFinished;
     }
 }
