@@ -1,9 +1,11 @@
+import blockinglogicalcomponents.Locks;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import physicalcomponentssimulation.directory.Directory;
 import physicalcomponentssimulation.memory.Memory;
 import physicalcomponentssimulation.processor.Processor;
 import physicalcomponentssimulation.systemthread.SystemThread;
+import physicalcomponentssimulation.time.Clock;
 import simulationviewer.gui.MainGUI;
 
 public class Main extends Application {
@@ -20,7 +22,14 @@ public class Main extends Application {
         processor.loadThreads();
         SystemThread systemThread= processor.getAssignedSystemThreads().poll();
         processor.getCores()[0].setAsignedSystemThread(systemThread);
+
+        Clock clock = new Clock();
+        processor.setClock(clock);
+        Locks locks= new Locks(3,2,2);
+        processor.setLocks(locks);
+        processor.getCores()[0].setMyProcessor(processor);
         processor.getCores()[0].run();
+
     }
 
     public static void main(String[] args) {

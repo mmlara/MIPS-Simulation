@@ -2,6 +2,7 @@ package physicalcomponentssimulation.core;
 
 import physicalcomponentssimulation.cache.DataCache;
 import physicalcomponentssimulation.cache.InstructionCache;
+import physicalcomponentssimulation.processor.Processor;
 import physicalcomponentssimulation.processorsparts.ALU;
 import physicalcomponentssimulation.processorsparts.Instruction;
 import physicalcomponentssimulation.systemthread.SystemThread;
@@ -16,11 +17,12 @@ public class Core implements Runnable{
     private InstructionCache instructionCache;
     private SystemThread assignedSystemThread;//para saber a quien estoy ejecutando
     private Queue<SystemThread> assignedSystemThreads;
+    private Processor myProcessor;
 
     public Core(Queue<SystemThread> assignedSystemThreads){
-        context= new int[contextSize];
+        this.context= new int[contextSize];
         for (int i = 0; i <contextSize ; i++) {
-            context[i]=0;
+            this.context[i]=0;
         }
         this.assignedSystemThreads =  assignedSystemThreads;
     }
@@ -30,22 +32,24 @@ public class Core implements Runnable{
     }
 
     public int[] getContext() {
-        return context;
+        return this.context;
     }
 
     public void saveContext(){
-        for (int i = 0; i <contextSize ; i++) {
-            assignedSystemThread.getContext()[i]=context[i];
+        for (int i = 0; i <contextSize-1 ; i++) {
+            this.assignedSystemThread.getContext()[i]=context[i];
         }
+       this.assignedSystemThread.setPc(this.context[32]);
     }
 
     public void loadContext(){
-        for (int i = 0; i <contextSize ; i++) {
-            context[i]= assignedSystemThread.getContext()[i];
+        for (int i = 0; i <contextSize-1 ; i++) {
+            this.context[i]= this.assignedSystemThread.getContext()[i];
         }
+        this.context[32]=this.assignedSystemThread.getPc();
     }
     public DataCache getDataCache() {
-        return dataCache;
+        return this.dataCache;
     }
 
     public void setDataCache(DataCache dataCache) {
@@ -53,11 +57,27 @@ public class Core implements Runnable{
     }
 
     public InstructionCache getInstructionCache() {
-        return instructionCache;
+        return this.instructionCache;
     }
 
     public void setInstructionCache(InstructionCache instructionCache) {
         this.instructionCache = instructionCache;
+    }
+
+    public Processor getMyProcessor() {
+        return myProcessor;
+    }
+
+    public void setMyProcessor(Processor myProcessor) {
+        this.myProcessor = myProcessor;
+    }
+
+    public void executeLoadInstruction(Instruction instruction){
+
+    }
+
+    public void executeStoreInstruction(Instruction instruction){
+
     }
 
     //TODO cuando se tenga acceso al reloj, preguntar que si es -1 el valor de hilillo.initialClock, en caso de ser así, asignarle el reloj actual.
@@ -85,7 +105,11 @@ public class Core implements Runnable{
 
             //Get "hilillo", load its context and fetch the first instruction
             assignedSystemThread = assignedSystemThreads.poll();
-            loadContext();
+            if(assignedSystemThread.getInitialClock()==-1){
+                assignedSystemThread.setInitialClock(this.myProcessor.getClock().getCurrentTime());//
+            }
+
+            this.loadContext();
             Boolean systemThreadFinished = false;
             Boolean instructionSucceeded = false;
             Instruction instruction = getNextInstruction();
@@ -103,14 +127,16 @@ public class Core implements Runnable{
                 //Load
                 if(instruction.getOperationCode() == 35){
                     //Load Implementation
+                    executeStoreInstruction(instruction);
                     instructionSucceeded = true;
-                    this.context[32] =+ 4;
+                    this.context[32] =+ 1;
                 }
                 //Store
                 else if(instruction.getOperationCode() == 43){
                     //Store Implementation
+                    executeStoreInstruction(instruction);
                     instructionSucceeded = true;
-                    this.context[32] =+ 4;
+                    this.context[32] =+ 1;
                 }
                 //Fin
                 else if(instruction.getOperationCode() == 63){
@@ -132,4 +158,6 @@ public class Core implements Runnable{
             saveContext();
         }
     }
+
+
 }

@@ -15,7 +15,7 @@ public class SystemThread {
     private List<Instruction> myInstructions;
     private int idHilillo; //necesario para identificar al hilillo para presentar luego la información.
     private int numCyclesInExecution;//total de ciclos que tardo en ejecutarse (tiempo de CPU)
-    private int initialClock=-1;//default -1 para saber cuando se ejecuta por primera vez.
+    private int initialClock;//default -1 para saber cuando se ejecuta por primera vez.
     private int lastClock;
     private int initIndexInMemory;
     private int lastIndexInMemory;
@@ -24,6 +24,7 @@ public class SystemThread {
 
     public SystemThread(String path){
         this.numCyclesInExecution=0;
+        this.initialClock=-1;
         context= new int[contextSize];
         myInstructions = new ArrayList<Instruction>();
         try {
@@ -76,6 +77,10 @@ public class SystemThread {
         return initialClock;
     }
 
+    public void setInitialClock(int initialClock) {
+        this.initialClock = initialClock;
+    }
+
     public int getLastClock() {
         return lastClock;
     }
@@ -103,6 +108,7 @@ public class SystemThread {
     public void setLastIndexInMemory(int lastIndexInMemory) {
         this.lastIndexInMemory = lastIndexInMemory;
     }
+
 
 
 }
