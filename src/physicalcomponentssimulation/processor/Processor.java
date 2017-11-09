@@ -10,8 +10,11 @@ import physicalcomponentssimulation.memory.Memory;
 import physicalcomponentssimulation.systemthread.SystemThread;
 import physicalcomponentssimulation.time.Clock;
 
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 public class Processor {
@@ -32,6 +35,7 @@ public class Processor {
     private InstructionMemory instructionMemory;
     private String threadDirectoryPath;
     private Queue<SystemThread> assignedSystemThreads;//para que sea más eficiente seleccionar al siguiente hilillo en el procesador.
+    private List<SystemThread> finishedThreads;
     private Clock clock;
     private Locks locks;// Contains all lock objects
 
@@ -53,6 +57,7 @@ public class Processor {
         this.quantumSize = quantumSize;
         this.threadDirectoryPath = threadDirectoryPath;
         this.assignedSystemThreads = new ArrayDeque<>();
+        this.finishedThreads = new ArrayList<>();
         this.memory = memory;
 
         this.initializeCores();
@@ -146,6 +151,10 @@ public class Processor {
         return assignedSystemThreads;
     }
 
+    public List<SystemThread> getFinishedThreads() {
+        return finishedThreads;
+    }
+
     public void setAssignedSystemThreads(Queue<SystemThread> assignedSystemThreads) {
         this.assignedSystemThreads = assignedSystemThreads;
     }
@@ -160,5 +169,9 @@ public class Processor {
 
     public void setLocks(Locks locks) {
         this.locks = locks;
+    }
+
+    public Locks getLocks() {
+        return locks;
     }
 }
