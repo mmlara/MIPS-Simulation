@@ -19,6 +19,7 @@ public class Core implements Runnable {
     private SystemThread assignedSystemThread;//para saber a quien estoy ejecutando
     private Queue<SystemThread> assignedSystemThreads;
     private Processor myProcessor;
+    private boolean instructionSucceeded = false;
 
     public Core(Queue<SystemThread> assignedSystemThreads) {
         this.context = new int[contextSize];
@@ -82,12 +83,136 @@ public class Core implements Runnable {
         this.coreID = coreID;
     }
 
-    public void executeLoadInstruction(Instruction instruction) {
+    public int executeLoadInstruction(Instruction instruction) {
+        try {
+            int cyclesWaitingInThisInstruction = 0;
+            //Got the cache lock
+            if(this.getMyProcessor().getLocks().getCacheMutex()[getCoreID()].tryAcquire()){
+                try {
+                    cyclesWaitingInThisInstruction++;
+                    //Check if data is in cache
+                    if (true/*If it is then read the word and return*/) {
+                        instructionSucceeded = true;
+                        return cyclesWaitingInThisInstruction;
+                    }
+                    //If it is not then select victim
+                    else {
+                        //Check victims state
+                        if(true/*If victims state is not invalid then*/){
+                            if(true/*If you got the victims directory lock*/){
+                                try{
+                                    if(true/*If victims directory is local*/)
+                                        cyclesWaitingInThisInstruction++;
+                                    else
+                                        cyclesWaitingInThisInstruction += 5;
+                                    if(true/*If victim is shared*/) {
+                                        //Change state of block in cache to invalid
+                                        //Update directory
+                                    }
+                                    else{//It is modified
+                                        if(true/*If you got the victims memory bus lock*/){
+                                            try{
+                                                if(true/*If bus is local*/)
+                                                    cyclesWaitingInThisInstruction += 16;
+                                                else
+                                                    cyclesWaitingInThisInstruction += 40;
+                                                //Change block state in cache to invalid
+                                                //Update directory
+                                                //Write modified block to memory
+                                            }
+                                            finally {
+                                                //Release bus lock
+                                            }
+                                        }
+                                        else{//If you did not get the memory lock release everything and restart
+                                            return cyclesWaitingInThisInstruction;
+                                        }
+                                    }
+                                }
+                                finally {
+                                    //Release the victim directories lock
+                                }
+                            }
+                            else{//If you did not get the directory lock release everything and restart the instruction
+                                return cyclesWaitingInThisInstruction;
+                            }
+                        }
+                    }
 
+                    //Victim is evicted. Now fetch the block and load it to cache
+                    if(true/*If you got the house directory for the target block*/){
+                        try{
+                            if(true/*If directory is local*/)
+                                cyclesWaitingInThisInstruction += 1;
+                            else
+                                cyclesWaitingInThisInstruction += 5;
+                            if(true/*If you got the target block memory bus lock*/){
+                                try{
+                                    if(true/*If bus is local*/)
+                                        cyclesWaitingInThisInstruction += 16;
+                                    else
+                                        cyclesWaitingInThisInstruction += 40;
+                                    if(true/*Target block is modified*/){
+                                        if(true/*If you got the lock to the cache with the modified block*/){
+                                            try {
+                                                if(true/*If directory is local*/)
+                                                    cyclesWaitingInThisInstruction += 1;
+                                                else
+                                                    cyclesWaitingInThisInstruction += 5;
+                                                //Get modified block from cache and write to memory
+                                                //Update house directory of target block
+                                            }
+                                            finally {
+                                                //Release cache lock
+                                            }
+                                        }
+                                        else{//If you did not get the cache lock release everything and restart
+                                            return cyclesWaitingInThisInstruction;
+                                        }
+                                    }
+                                    else{
+                                        //Update target block directory accordingly
+                                    }
+                                    //Cycles symbolize access to memory to fetch the block
+                                    if(true/*If bus is local*/)
+                                        cyclesWaitingInThisInstruction += 16;
+                                    else
+                                        cyclesWaitingInThisInstruction += 40;
+                                    //Fetch the block from memory
+                                    //Update our cache with block from memory
+                                    //Load word to register from cache
+                                    return cyclesWaitingInThisInstruction;
+                                }
+                                finally {
+                                    //Release bus lock
+                                }
+                            }
+                            else{//If you did not get the memory lock lock release everything and restart the instruction
+                                return cyclesWaitingInThisInstruction;
+                            }
+                        }
+                        finally {
+                            //Release directory lock
+                        }
+                    }
+                    else{//If you did not get the house directory lock release everything and restart the instruction
+                        return cyclesWaitingInThisInstruction;
+                    }
+                }
+                finally{
+                    this.getMyProcessor().getLocks().getCacheMutex()[getCoreID()].release();
+                }
+            }
+            //Did not get the cache lock
+            else {
+                cyclesWaitingInThisInstruction++;
+                return cyclesWaitingInThisInstruction;
+            }
+        }catch (Exception e){e.printStackTrace(); return 1;}
     }
 
-    public void executeStoreInstruction(Instruction instruction) {
-
+    public int executeStoreInstruction(Instruction instruction) {
+        return 0;
     }
 
 
@@ -153,15 +278,14 @@ public class Core implements Runnable {
                     this.assignedSystemThread.setCurrentCyclesInProcessor(0);//init execution
                     Boolean systemThreadFinished = false;
                     this.loadContext();
-                    Boolean instructionSucceeded = false;
                     Instruction instruction = getNextInstruction();
-                    while ((assignedSystemThread.getCurrentCyclesInProcessor() < this.getMyProcessor().getQuantumSize()) && !systemThreadFinished) {
+
+                    //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
+                    //If the "hilillo" is done then stop working.
+                    while (((assignedSystemThread.getCurrentCyclesInProcessor() < this.getMyProcessor().getQuantumSize()) || !instructionSucceeded) && !systemThreadFinished) {
                         System.out.println("número de ciclo" + cycleNumber + "del hilillo " + assignedSystemThread.getIdHilillo());
                         cycleNumber++;
                         int cyclesWaitingInThisInstruction = 0;
-                        //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
-                        //If the "hilillo" is done then stop working.
-                        //while((!quantumFinished || instructionSucceeded) && !systemThreadFinished)
                         //If the instruction finished and the quantum has not then fetch another instruction
                         if (instructionSucceeded) {
                             instruction = getNextInstruction();
@@ -171,17 +295,17 @@ public class Core implements Runnable {
                         //Load
                         if (instruction.getOperationCode() == 35) {
                             //Load Implementation
-                            executeStoreInstruction(instruction);
-                            instructionSucceeded = true;
-                            this.context[32] = +1;
+                            cyclesWaitingInThisInstruction = executeLoadInstruction(instruction);
+                            if(instructionSucceeded)
+                                this.context[32] += 1;
                             //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
                         }
                         //Store
                         else if (instruction.getOperationCode() == 43) {
                             //Store Implementation
-                            executeStoreInstruction(instruction);
-                            instructionSucceeded = true;
-                            this.context[32] = +1;
+                            cyclesWaitingInThisInstruction = executeStoreInstruction(instruction);
+                            if(instructionSucceeded)
+                                this.context[32] += 1;
                             //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
                         }
                         //Fin
