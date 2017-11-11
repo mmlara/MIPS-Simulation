@@ -34,6 +34,10 @@ public class Directory {
         return blockInformation[numBlock][numCache];
     }
 
+    public char getStateOfBlock(int numBlock){
+        return blockStates[numBlock];
+    }
+
     public int countOfCachesThatContainBlock(int numBlock){
         int x = 0;
         for (Boolean contains : blockInformation[numBlock]) {
@@ -42,5 +46,17 @@ public class Directory {
             }
         }
         return x;
+    }
+
+    public int getNumberOfCacheWithModifiedBlock(int blockNumber){
+        if(blockStates[blockNumber] == 'M'){
+            int x = 0;
+            for (Boolean state : blockInformation[blockNumber]){
+                if(state)
+                    return x;
+                x++;
+            }
+        }
+        return -1;
     }
 }

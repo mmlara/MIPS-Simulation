@@ -67,6 +67,10 @@ public class DataCache  {
         return tags[index];
     }
 
+    public void loadBlock(int blockIndex, Block block){
+        cacheData[blockIndex] = block;
+    }
+
     public int getnumBlocks() {
         return numBlocks;
     }
