@@ -25,9 +25,10 @@ public class Main extends Application {
         Directory directory1 = new Directory(16, numCachesP1);
         Memory memory1 = new Memory(24);
 
+        boolean slowMode=false;
 
-        Processor processorP0 = new Processor(0,numCoresP0,numCachesP0,5, "DatosHilillos/P0", memory0);
-        Processor processorP1 = new Processor(1,numCoresP1,numCachesP1,5, "DatosHilillos/P1", memory1);
+        Processor processorP0 = new Processor(0,numCoresP0,numCachesP0,5, slowMode,"DatosHilillos/P0", memory0);
+        Processor processorP1 = new Processor(1,numCoresP1,numCachesP1,5, slowMode,"DatosHilillos/P1", memory1);
 
         processorP0.setDirectory(directory0);
         processorP1.setDirectory(directory1);
