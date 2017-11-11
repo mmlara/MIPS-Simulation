@@ -24,7 +24,7 @@ public class Processor {
 
 
     // Local variables which represents physical parts inside a our physicalcomponentssimulation.processor
-
+    private Processor neigborProcessor;
     private int processorId;
     private int quantumSize;//cambiar este valor y chequear si se escribe así
     private int numCores;
@@ -120,6 +120,14 @@ public class Processor {
                 System.out.println("Thread successfully loaded. Thread name: "+file.getName());
             }
         }
+    }
+
+    public Processor getNeigborProcessor() {
+        return neigborProcessor;
+    }
+
+    public void setNeigborProcessor(Processor neigborProcessor) {
+        this.neigborProcessor = neigborProcessor;
     }
 
     public int getQuantumSize() {
