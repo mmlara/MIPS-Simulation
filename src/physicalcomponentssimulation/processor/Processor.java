@@ -26,6 +26,7 @@ public class Processor {
 
     // Local variables which represents physical parts inside a our physicalcomponentssimulation.processor
     private Processor neigborProcessor;
+    private boolean inSlowExecution;
     private int processorId;
     private int quantumSize;//cambiar este valor y chequear si se escribe así
     private int numCores;
@@ -50,12 +51,13 @@ public class Processor {
      * @param quantumSize         Quantum size which defines the cpu time before the system change the thread assigned to the physicalcomponentssimulation.core
      * @param threadDirectoryPath Path to execution information about the thread to load
      */
-    public Processor(int processorId, int numCores, int numOfCaches, int quantumSize, String threadDirectoryPath, Memory memory) {
+    public Processor(int processorId, int numCores, int numOfCaches, int quantumSize,boolean inSlowExecution, String threadDirectoryPath, Memory memory) {
         this.processorId = processorId;
         this.numCores = numCores;
         this.cores = new Core[numCores];
         this.numOfCaches = numOfCaches;
         this.quantumSize = quantumSize;
+        this.inSlowExecution=inSlowExecution;
         this.threadDirectoryPath = threadDirectoryPath;
         this.assignedSystemThreads = new ArrayDeque<>();
         this.finishedThreads = new ArrayList<>();
@@ -196,5 +198,13 @@ public class Processor {
 
     public void setProcessorId(int processorId) {
         this.processorId = processorId;
+    }
+
+    public boolean isInSlowExecution() {
+        return inSlowExecution;
+    }
+
+    public void setInSlowExecution(boolean inSlowExecution) {
+        this.inSlowExecution = inSlowExecution;
     }
 }

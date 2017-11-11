@@ -11,6 +11,7 @@ import physicalcomponentssimulation.systemthread.SystemThread;
 import physicalcomponentssimulation.directory.Directory;
 
 import java.util.Queue;
+import java.util.Scanner;
 
 public class Core implements Runnable {
 
@@ -301,7 +302,9 @@ public class Core implements Runnable {
 
     @Override
     public void run() {
+        Scanner sc = new Scanner(System.in);
         ALU alu = new ALU(this.context);
+        boolean slowExecution=this.getMyProcessor().isInSlowExecution();
 
         //If there are still "hilillos" in the queue then keep working
         int cycleNumber = 0;
@@ -394,14 +397,18 @@ public class Core implements Runnable {
 
                             this.getMyProcessor().getLocks().getMutexBarrier().acquire();//get mutex
                             if (this.getMyProcessor().getLocks().getNumCoresWaiting() == this.getMyProcessor().getLocks().getNumCores() - 1) { //the last core in execution
-                                System.out.println("verdadero");
+
                                 this.getMyProcessor().getClock().increaseCurrentTime();//move on the clock when the third hilillo arrive
                                 //release mutex
+                                if(slowExecution){
+                                    System.out.println("Ejecutando el ciclo número "+this.getMyProcessor().getClock().getCurrentTime());
+                                    sc.next();
+                                }
                                 this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
                                 this.getMyProcessor().getLocks().setNumCoresWaiting(0);
                                 this.getMyProcessor().getLocks().getMutexBarrier().release();
                             } else {
-                                System.out.println("falso");
+
                                 this.getMyProcessor().getLocks().setNumCoresWaiting(this.getMyProcessor().getLocks().getNumCoresWaiting() + 1);
                                 this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
                                 this.getMyProcessor().getLocks().getBarrierCycleClock().acquire();
