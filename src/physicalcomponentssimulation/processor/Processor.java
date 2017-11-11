@@ -1,6 +1,7 @@
 package physicalcomponentssimulation.processor;
 
 import blockinglogicalcomponents.Locks;
+import org.omg.CORBA.PUBLIC_MEMBER;
 import physicalcomponentssimulation.cache.DataCache;
 import physicalcomponentssimulation.cache.InstructionCache;
 import physicalcomponentssimulation.core.Core;
@@ -67,7 +68,6 @@ public class Processor {
 
 
         for (int i = 0; i < numCores; i++) {//setea los "punteros de las caches de los cores a las respectivas memorias"
-            this.cores[i].getDataCache().setShareMemoryAccess(memory);
             this.cores[i].getInstructionCache().setInstructionMemory(this.instructionMemory);
         }
     }
@@ -158,6 +158,8 @@ public class Processor {
         this.directory = directory;
     }
 
+    public Directory getDirectory() {return this.directory;}
+
     public Queue<SystemThread> getAssignedSystemThreads() {
         return assignedSystemThreads;
     }
@@ -185,4 +187,6 @@ public class Processor {
     public Locks getLocks() {
         return locks;
     }
+
+    public Memory getMemory(){return memory;}
 }
