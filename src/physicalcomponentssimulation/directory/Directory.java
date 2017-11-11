@@ -22,26 +22,25 @@ public class Directory {
 
     }
 
-    public void changeState(int numBlock, int numCache, boolean newState){
+    public void changeInformation(int numBlock, int numCache, boolean newState){
         blockInformation[numBlock][numCache]=newState;
     }
 
+    public void changeState(int numBlock, char newState){
+        blockStates[numBlock] = newState;
+    }
 
     public Boolean getStateOfBlockInOneCache(int numBlock, int numCache){
         return blockInformation[numBlock][numCache];
     }
 
-    public List<Integer> getCachesThatContainBlock(int numBlock, int numCache) {
-        List<Integer> caches = new LinkedList<>();
-        if(blockStates[numBlock] != 'U') {
-            int x = 0;
-            for (Boolean contains : blockInformation[numBlock]) {
-                if (contains && numCache != x) {
-                    caches.add(x);
-                }
+    public int countOfCachesThatContainBlock(int numBlock){
+        int x = 0;
+        for (Boolean contains : blockInformation[numBlock]) {
+            if (contains) {
                 x++;
             }
         }
-        return caches;
+        return x;
     }
 }

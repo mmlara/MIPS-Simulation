@@ -8,8 +8,12 @@ public class DataCache  {
     final int numBlocks=4;
     private Block[] cacheData;
     private int[] tags;
-    private boolean[] validInformation;
-    Memory shareMemoryAccess;
+    private int[] validInformation;
+
+    final private int I = 0;
+    final private int C = 1;
+    final private int M = 2;
+
 
     /**
      * Constructor default que inicializa los datos de la  caché según el enunciado.
@@ -17,23 +21,21 @@ public class DataCache  {
     public DataCache(){
         this.cacheData = new Block[numBlocks];
         tags= new int[numBlocks];
-        validInformation= new boolean[numBlocks];
+        validInformation= new int[numBlocks];
         for (int i = 0; i <numBlocks ; i++) {
             Block b= new Block();
             cacheData[i]= b;
             tags[i]=-1;
-            validInformation[i]=false;
+            validInformation[i] = I;
         }
     }
 
     /**
      *
      * @param index índice de la caché del cual se quiere conocer su estado
-     * @return estado del bloque en el índice enviado por parámetro
+     * @return si el bloque en el indice indicado esta modificado
      */
-    public boolean itIsAModifiedBlock(int index) {
-        return validInformation[index];
-    }
+    public boolean isItAModifiedBlock(int index) { return validInformation[index] == M; }
 
     /**
      *
@@ -52,7 +54,7 @@ public class DataCache  {
      * @param index índice  del bloque del cual se desea conocer el estado
      * @return estado de bloque indicado
      */
-    public boolean getStatusBlock(int index){
+    public int getStatusBlock(int index){
         return this.validInformation[index];
     }
 
@@ -63,21 +65,6 @@ public class DataCache  {
      */
     public int getTagOfBlock(int index){
         return tags[index];
-    }
-
-    /**
-     *
-     * @param index índice de la physicalcomponentssimulation.cache del cuál se cargará un dato
-     * @return bloque contenido en el índice indica
-     */
-    public Block loadBlock(int index) {
-        Block block=shareMemoryAccess.getBlock(index);
-        cacheData[index%numBlocks]= block;
-        return block;
-    }
-
-    public void storeBlock(int blockIndex, Block block) {
-        shareMemoryAccess.setBlock(blockIndex , block);
     }
 
     public int getnumBlocks() {
@@ -92,12 +79,8 @@ public class DataCache  {
         this.cacheData = cacheData;
     }
 
-    public Memory getShareMemoryAccess() {
-        return shareMemoryAccess;
-    }
+    public void setIndexStatus(int index, int status){ this.validInformation[index] = status; }
 
-    public void setShareMemoryAccess(Memory shareMemoryAccess) {
-        this.shareMemoryAccess = shareMemoryAccess;
-    }
+    public Block getBlockAtIndex(int index){return cacheData[index];}
 
 }

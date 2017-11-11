@@ -21,6 +21,10 @@ public class Core implements Runnable {
     private Processor myProcessor;
     private boolean instructionSucceeded = false;
 
+    final private int I = 0;
+    final private int C = 1;
+    final private int M = 2;
+
     public Core(Queue<SystemThread> assignedSystemThreads) {
         this.context = new int[contextSize];
         for (int i = 0; i < contextSize; i++) {
@@ -86,42 +90,58 @@ public class Core implements Runnable {
     public int executeLoadInstruction(Instruction instruction) {
         try {
             int cyclesWaitingInThisInstruction = 0;
+            int blockNumber = instruction.getThirdParameter() + context[instruction.getFirsParameter()];
+            int blockIndex = blockNumber % 4;
             //Got the cache lock
             if(this.getMyProcessor().getLocks().getCacheMutex()[getCoreID()].tryAcquire()){
                 try {
                     cyclesWaitingInThisInstruction++;
+                    int tag = dataCache.getTagOfBlock(blockIndex);
                     //Check if data is in cache
-                    if (true/*If it is then read the word and return*/) {
+                    if (tag == blockNumber) {
                         instructionSucceeded = true;
                         return cyclesWaitingInThisInstruction;
                     }
-                    //If it is not then select victim
-                    else {
+                    else {//If it is not then select victim
+                        int state = dataCache.getStatusBlock(blockIndex);
                         //Check victims state
-                        if(true/*If victims state is not invalid then*/){
-                            if(true/*If you got the victims directory lock*/){
+                        if(state != I){
+                            //Try to get lock of victims directory
+                            if(getMyProcessor().getLocks().getDirectoryMutex()[ ( dataCache.getTagOfBlock(blockIndex) <= 15 ) ? 0 : 1 ].tryAcquire()){
                                 try{
-                                    if(true/*If victims directory is local*/)
-                                        cyclesWaitingInThisInstruction++;
-                                    else
-                                        cyclesWaitingInThisInstruction += 5;
-                                    if(true/*If victim is shared*/) {
+                                    if(coreID < 2) {
+                                        cyclesWaitingInThisInstruction += (dataCache.getTagOfBlock(blockIndex) <= 15) ? 1 : 5;
+                                    }
+                                    else {
+                                        cyclesWaitingInThisInstruction += (dataCache.getTagOfBlock(blockIndex) > 15) ? 1 : 5;
+                                    }
+                                    if(dataCache.getStatusBlock(blockIndex) == C) {
                                         //Change state of block in cache to invalid
-                                        //Update directory
+                                        dataCache.setIndexStatus(blockIndex, I);
+                                        //Update directory TODO: you should modify the correct directory
+                                        getMyProcessor().getDirectory().changeInformation(blockNumber, coreID, false);
+                                        if(getMyProcessor().getDirectory().countOfCachesThatContainBlock(blockNumber) == 0)
+                                            getMyProcessor().getDirectory().changeState(blockNumber,'U');
                                     }
                                     else{//It is modified
-                                        if(true/*If you got the victims memory bus lock*/){
+                                        if(getMyProcessor().getLocks().getBus()[ ( dataCache.getTagOfBlock(blockIndex) <= 15 ) ? 0 : 1 ].tryAcquire()){
                                             try{
-                                                if(true/*If bus is local*/)
-                                                    cyclesWaitingInThisInstruction += 16;
-                                                else
-                                                    cyclesWaitingInThisInstruction += 40;
+                                                if(coreID < 2) {
+                                                    cyclesWaitingInThisInstruction += (dataCache.getTagOfBlock(blockIndex) <= 15) ? 16 : 40;
+                                                }
+                                                else {
+                                                    cyclesWaitingInThisInstruction += (dataCache.getTagOfBlock(blockIndex) > 15) ? 16 : 40;
+                                                }
                                                 //Change block state in cache to invalid
-                                                //Update directory
-                                                //Write modified block to memory
+                                                dataCache.setIndexStatus(blockIndex, I);
+                                                //Update directory TODO: you should modify the correct directory
+                                                getMyProcessor().getDirectory().changeInformation(blockNumber, coreID, false);
+                                                getMyProcessor().getDirectory().changeState(blockNumber,'U');
+                                                //Write modified block to memory TODO: you should modify the correct memory
+                                                getMyProcessor().getMemory().setBlock(blockNumber, dataCache.getBlockAtIndex(blockIndex));
                                             }
                                             finally {
-                                                //Release bus lock
+                                                getMyProcessor().getLocks().getBus()[ ( dataCache.getTagOfBlock(blockIndex) <= 15 ) ? 0 : 1 ].release();
                                             }
                                         }
                                         else{//If you did not get the memory lock release everything and restart
@@ -130,7 +150,7 @@ public class Core implements Runnable {
                                     }
                                 }
                                 finally {
-                                    //Release the victim directories lock
+                                    getMyProcessor().getLocks().getDirectoryMutex()[ ( dataCache.getTagOfBlock(blockIndex) <= 15 ) ? 0 : 1 ].release();
                                 }
                             }
                             else{//If you did not get the directory lock release everything and restart the instruction
@@ -139,28 +159,31 @@ public class Core implements Runnable {
                         }
                     }
 
+                    int wordIndex = ( ( instruction.getThirdParameter() + context[instruction.getFirsParameter()] ) % 16 ) / 4;
                     //Victim is evicted. Now fetch the block and load it to cache
-                    if(true/*If you got the house directory for the target block*/){
+                    if(getMyProcessor().getLocks().getDirectoryMutex()[ ( blockNumber <= 15 ) ? 0 : 1 ].tryAcquire()){
                         try{
-                            if(true/*If directory is local*/)
-                                cyclesWaitingInThisInstruction += 1;
-                            else
-                                cyclesWaitingInThisInstruction += 5;
-                            if(true/*If you got the target block memory bus lock*/){
+                            if(coreID < 2) {
+                                cyclesWaitingInThisInstruction += (blockNumber <= 15) ? 1 : 5;
+                            }
+                            else {
+                                cyclesWaitingInThisInstruction += (blockNumber > 15) ? 1 : 5;
+                            }
+                            if(getMyProcessor().getLocks().getBus()[ ( blockNumber <= 15 ) ? 0 : 1 ].tryAcquire()){
                                 try{
-                                    if(true/*If bus is local*/)
-                                        cyclesWaitingInThisInstruction += 16;
-                                    else
-                                        cyclesWaitingInThisInstruction += 40;
+                                    if(coreID < 2) {
+                                        cyclesWaitingInThisInstruction += (blockNumber <= 15) ? 16 : 40;
+                                    }
+                                    else {
+                                        cyclesWaitingInThisInstruction += (blockNumber > 15) ? 16 : 40;
+                                    }
+                                    //TODO Access correct directory
                                     if(true/*Target block is modified*/){
                                         if(true/*If you got the lock to the cache with the modified block*/){
                                             try {
-                                                if(true/*If directory is local*/)
-                                                    cyclesWaitingInThisInstruction += 1;
-                                                else
-                                                    cyclesWaitingInThisInstruction += 5;
-                                                //Get modified block from cache and write to memory
-                                                //Update house directory of target block
+                                                //TODO add proper delay for accessing cache
+                                                //TODO Get modified block from cache and write to memory
+                                                //TODO Update house directory of target block
                                             }
                                             finally {
                                                 //Release cache lock
@@ -171,20 +194,23 @@ public class Core implements Runnable {
                                         }
                                     }
                                     else{
-                                        //Update target block directory accordingly
+                                        //TODO Update target block directory accordingly
                                     }
                                     //Cycles symbolize access to memory to fetch the block
-                                    if(true/*If bus is local*/)
-                                        cyclesWaitingInThisInstruction += 16;
-                                    else
-                                        cyclesWaitingInThisInstruction += 40;
-                                    //Fetch the block from memory
-                                    //Update our cache with block from memory
+                                    if(coreID < 2) {
+                                        cyclesWaitingInThisInstruction += (blockNumber <= 15) ? 16 : 40;
+                                    }
+                                    else {
+                                        cyclesWaitingInThisInstruction += (blockNumber > 15) ? 16 : 40;
+                                    }
+                                    //TODO Fetch the block from memory
+                                    //TODO Update our cache with block from memory
                                     //Load word to register from cache
+                                    context[instruction.getSecondParameter()] = dataCache.getWord(blockIndex, wordIndex);
                                     return cyclesWaitingInThisInstruction;
                                 }
                                 finally {
-                                    //Release bus lock
+                                    getMyProcessor().getLocks().getBus()[ ( blockNumber <= 15 ) ? 0 : 1 ].release();
                                 }
                             }
                             else{//If you did not get the memory lock lock release everything and restart the instruction
@@ -192,7 +218,7 @@ public class Core implements Runnable {
                             }
                         }
                         finally {
-                            //Release directory lock
+                            getMyProcessor().getLocks().getDirectoryMutex()[ ( blockNumber <= 15 ) ? 0 : 1 ].release();
                         }
                     }
                     else{//If you did not get the house directory lock release everything and restart the instruction
