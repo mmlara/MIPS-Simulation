@@ -6,6 +6,7 @@ public class Block {
     private int[] dataBlock;
 
 
+
     public Block() {
         this.dataBlock =new int[blockSize] ;
         for (int i = 0; i <blockSize ; i++) {
@@ -13,6 +14,16 @@ public class Block {
         }
 
     }
+
+    //TODO quitar el mod 4 que tiene el bloque por default
+    public Block(int x) {
+        this.dataBlock =new int[blockSize] ;
+        for (int i = 0; i <blockSize ; i++) {
+            dataBlock[i]=i%4;
+        }
+
+    }
+
 
     public void setWord(int index, int value ){
         this.dataBlock[index]=value;

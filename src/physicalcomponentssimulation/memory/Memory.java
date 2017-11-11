@@ -8,12 +8,12 @@ public class Memory {
 
     public int shareMemorySize;
     private Block[] shareMemory;
-
+//TODO Cambiar por el constructor default, este se usó para ver los datos si los ponía en caché
     public Memory(int memorySize) {
         this.shareMemorySize=memorySize;
         this.shareMemory = new Block[shareMemorySize];
         for (int i = 0; i <shareMemorySize ; i++) {
-            Block block = new Block();
+            Block block = new Block(1);
             shareMemory[i]=block;
         }
     }
