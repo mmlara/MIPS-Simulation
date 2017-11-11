@@ -23,6 +23,7 @@ public class Directory {
     }
 
     public void changeInformation(int numBlock, int numCache, boolean newState){
+
         blockInformation[numBlock][numCache]=newState;
     }
 

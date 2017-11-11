@@ -21,7 +21,7 @@ import java.util.Queue;
 public class Processor {
     
     private final int INSTRUCTION_MEMORY_SIZE_P0 = 24;
-    private final int INSTRUCTION_MEMORY_SIZE_P1 = 8;
+    private final int INSTRUCTION_MEMORY_SIZE_P1 = 16;
 
 
     // Local variables which represents physical parts inside a our physicalcomponentssimulation.processor
@@ -189,4 +189,12 @@ public class Processor {
     }
 
     public Memory getMemory(){return memory;}
+
+    public int getProcessorId() {
+        return processorId;
+    }
+
+    public void setProcessorId(int processorId) {
+        this.processorId = processorId;
+    }
 }

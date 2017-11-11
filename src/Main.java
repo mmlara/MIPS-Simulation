@@ -15,29 +15,46 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         viewer = new MainGUI("/simulationviewer/guifiles/initialgui.fxml",primaryStage);
-        Directory directory = new Directory(16, 1);
-        Memory memory = new Memory(24);
-        int numCores=2;
-        Processor processor = new Processor(0,numCores,1,5, "DatosHilillos/P0", memory);
-        processor.setDirectory(directory);
+        int numCoresP0=2;
+        int numCachesP0=2;
+        int numCoresP1=1;
+        int numCachesP1=1;
+        Directory directory0 = new Directory(16, numCachesP0);
+        Memory memory0 = new Memory(24);
+
+        Directory directory1 = new Directory(16, numCachesP1);
+        Memory memory1 = new Memory(24);
+
+
+        Processor processorP0 = new Processor(0,numCoresP0,numCachesP0,5, "DatosHilillos/P0", memory0);
+        Processor processorP1 = new Processor(1,numCoresP1,numCachesP1,5, "DatosHilillos/P1", memory1);
+
+        processorP0.setDirectory(directory0);
+        processorP1.setDirectory(directory1);
 
         Clock clock = new Clock();
-        processor.setClock(clock);
-        Locks locks= new Locks(numCores,3,2,2);
-        processor.setLocks(locks);
-        for (int i = 0; i <numCores ; i++) {
-            processor.getCores()[i].setMyProcessor(processor);
-            processor.getCores()[i].setCoreID(i);
-            new Thread(processor.getCores()[i]).start();
-            //System.out.println("TERMINO EL CORE "+processor.getCores()[i].getCoreID());
+        processorP0.setClock(clock);
+        processorP1.setClock(clock);
+
+        Locks locks= new Locks(numCoresP0+numCoresP1,numCachesP0+numCachesP1,2,2);
+        processorP0.setLocks(locks);
+        processorP1.setLocks(locks);
+
+        processorP0.setNeigborProcessor(processorP1);
+        processorP1.setNeigborProcessor(processorP0);
+
+        for (int i = 0; i <numCoresP0 ; i++) {
+            processorP0.getCores()[i].setMyProcessor(processorP0);
+            processorP0.getCores()[i].setCoreID(i);
+            new Thread(processorP0.getCores()[i]).start();
         }
-        //processor.getCores()[1].setMyProcessor(processor);
-        //processor.getCores()[2].setMyProcessor(processor);
 
-        //new Thread(processor.getCores()[1]).start();
-        //new Thread(processor.getCores()[2]).start();
+        for (int i = 0; i <numCoresP1 ; i++) {
 
-
+            processorP1.getCores()[i].setMyProcessor(processorP1);
+            processorP1.getCores()[i].setCoreID(i);
+            new Thread(processorP1.getCores()[i]).start();
+        }
     }
 
     public static void main(String[] args) {

@@ -227,7 +227,9 @@ public class Core implements Runnable {
                                     else{//Uncached or shared
                                         //Set state of block in directory to shared and add my cache to the ones that have it
                                         dir.changeState(blockNumber%16, 'C');
+
                                         dir.changeInformation(blockNumber%16, coreID, true);
+
                                     }
                                     //Cycles symbolize access to memory to fetch the block
                                     if(coreID < 2) {
@@ -243,6 +245,7 @@ public class Core implements Runnable {
                                     dataCache.setIndexStatus(blockIndex, C);
                                     //Load word to register from cache
                                     context[instruction.getSecondParameter()] = dataCache.getWord(blockIndex, wordIndex);
+                                    instructionSucceeded=true;
                                     return cyclesWaitingInThisInstruction;
                                 }
                                 finally {
@@ -287,7 +290,7 @@ public class Core implements Runnable {
 
     public Instruction getNextInstruction() {
 
-        int actualPC = this.assignedSystemThread.getPc();
+        int actualPC = this.context[32];
         int initialInexThread = assignedSystemThread.getInitIndexInMemory();
 
         int instructionlocationInMemory = initialInexThread + actualPC;
@@ -358,9 +361,11 @@ public class Core implements Runnable {
                         if (instruction.getOperationCode() == 35) {
                             //Load Implementation
                             cyclesWaitingInThisInstruction = executeLoadInstruction(instruction);
+                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                             if(instructionSucceeded)
                                 this.context[32] += 1;
-                            //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
+                           //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
                         }
                         //Store
                         else if (instruction.getOperationCode() == 43) {
@@ -420,7 +425,7 @@ public class Core implements Runnable {
         }catch(InterruptedException e){
             e.printStackTrace();
         }
-        System.out.println("TERMINO EL CORE "+this.getCoreID() +"y tardó el último hilillo"+this.assignedSystemThread.getNumCyclesInExecution());
+        System.out.println("TERMINO EL CORE "+this.getCoreID() +"y tardó el último hilillo"+this.assignedSystemThread.getNumCyclesInExecution() +"Del procesador "+getMyProcessor().getProcessorId());
         System.out.println();
     }
 }
