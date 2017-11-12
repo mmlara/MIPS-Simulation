@@ -1,5 +1,6 @@
 package physicalcomponentssimulation.directory;
 
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,9 +8,12 @@ public class Directory {
 
     private char[] blockStates;
     private Boolean[][] blockInformation;
-
+    private int numBlocks;
+    private int numCaches;
     public Directory(int numBlocks,int numCaches){
 
+        this.numBlocks=numBlocks;
+        this.numCaches=numCaches;
         blockStates= new char[numBlocks];
         blockInformation= new Boolean[numBlocks][numCaches];
 
@@ -59,5 +63,15 @@ public class Directory {
             }
         }
         return -1;
+    }
+
+    public List<Integer> getCachesIdThatShareSomeBlock(int block, int cacheMakeQuestion){
+        List<Integer> idCaches= new LinkedList<>();
+        for (int i = 0; i <this.numCaches ; i++) {
+            if(blockInformation[block][i]==true && i!= cacheMakeQuestion) {
+                idCaches.add(i);
+            }
+        }
+        return idCaches;
     }
 }
