@@ -343,11 +343,14 @@ public class Core implements Runnable {
 
                                 Pair<Boolean, Integer> handleModifiedResult = handleModifiedBlock(blockNumber, blockIndex);
                                 cyclesWaitingInThisInstruction += handleModifiedResult.getValue();
-                                
+
                                 if (!handleModifiedResult.getKey())
                                     return cyclesWaitingInThisInstruction;
 
-
+                                int numWord = (instruction.getThirdParameter() + context[instruction.getFirsParameter()] / 4) % 4;
+                                dataCache.setWord(blockIndex, numWord, context[instruction.getSecondParameter()]);
+                                dataCache.setIndexStatus(blockIndex, M);
+                                
                             } finally {
                                 getMyProcessor().getLocks().getDirectoryMutex()[directoryID].release();
                             }
