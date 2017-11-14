@@ -6,7 +6,6 @@ public class Block {
     private int[] dataBlock;
 
 
-
     public Block() {
         this.dataBlock =new int[blockSize] ;
         for (int i = 0; i <blockSize ; i++) {

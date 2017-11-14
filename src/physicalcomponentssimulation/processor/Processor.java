@@ -51,7 +51,7 @@ public class Processor {
      * @param quantumSize         Quantum size which defines the cpu time before the system change the thread assigned to the physicalcomponentssimulation.core
      * @param threadDirectoryPath Path to execution information about the thread to load
      */
-    public Processor(int processorId, int numCores, int numOfCaches, int quantumSize,boolean inSlowExecution, String threadDirectoryPath, Memory memory) {
+    public Processor(int processorId, int numCores, int numOfCaches, int quantumSize,boolean inSlowExecution, String threadDirectoryPath, Memory memory, InstructionMemory instructionMemory) {
         this.processorId = processorId;
         this.numCores = numCores;
         this.cores = new Core[numCores];
@@ -62,29 +62,14 @@ public class Processor {
         this.assignedSystemThreads = new ArrayDeque<>();
         this.finishedThreads = new ArrayList<>();
         this.memory = memory;
-
+        this.instructionMemory = instructionMemory;
         this.initializeCores();
-        this.initializeInstructionMemory();
         this.loadThreads();                                                             // Load the information of the files located in the physicalcomponentssimulation.directory path sent
         this.instructionMemory.loadInstructionsInMemory(this.assignedSystemThreads);
 
 
         for (int i = 0; i < numCores; i++) {//setea los "punteros de las caches de los cores a las respectivas memorias"
             this.cores[i].getInstructionCache().setInstructionMemory(this.instructionMemory);
-        }
-    }
-
-    /**
-     * This method initialize the instruction physicalcomponentssimulation.memory, setting a custom size that depends on the
-     * local physicalcomponentssimulation.processor id
-     */
-    private void initializeInstructionMemory() {
-        if (this.processorId == 0) {
-            this.instructionMemory = new InstructionMemory(INSTRUCTION_MEMORY_SIZE_P0);
-        } else if (this.processorId == 1) {
-            this.instructionMemory = new InstructionMemory(INSTRUCTION_MEMORY_SIZE_P1);
-        } else {
-            System.out.println("Invalid physicalcomponentssimulation.processor id");
         }
     }
 
