@@ -19,11 +19,11 @@ public class SimulationController {
 
     public void run(int numCoresP0, int numCachesP0, int numCoresP1, int numCachesP1) {
 
-        Directory directory0 = new Directory(16, numCachesP0);
-        Memory memory0 = new Memory(24);
+        Directory directory0 = new Directory(16, numCachesP0+numCachesP1);
+        Memory memory0 = new Memory(16);
 
-        Directory directory1 = new Directory(16, numCachesP1);
-        Memory memory1 = new Memory(24);
+        Directory directory1 = new Directory(8, numCachesP0+numCachesP1);
+        Memory memory1 = new Memory(8);
 
         boolean slowMode = false;
 
@@ -47,7 +47,7 @@ public class SimulationController {
         for (int i = 0; i < numCoresP0; i++) {
             processorP0.getCores()[i].setMyProcessor(processorP0);
             processorP0.getCores()[i].setCoreID(i);
-            new Thread(processorP0.getCores()[i]).start();
+            //new Thread(processorP0.getCores()[i]).start();
         }
 
         for (int i = 0; i < numCoresP1; i++) {
@@ -58,8 +58,6 @@ public class SimulationController {
         }
 
     }
-
-
     /**
      * This method initialize the instruction physicalcomponentssimulation.memory, setting a custom size that depends on the
      * local physicalcomponentssimulation.processor id
