@@ -307,15 +307,13 @@ public class Core implements Runnable {
 
                                     if (statusBlock == I) {
 
-                                        int cacheWithModifiedBlock = getMyProcessor().getDirectory().getNumberOfCacheWithModifiedBlock(blockNumber);
-                                        if (cacheWithModifiedBlock > 0) {
+                                        Pair<Boolean, Integer> handleModifiedResult = handleModifiedBlock(blockNumber, blockIndex);
+                                        cyclesWaitingInThisInstruction += handleModifiedResult.getValue();
 
-                                            Pair<Boolean, Integer> handleModifiedResult = handleModifiedBlock(cacheWithModifiedBlock, blockNumber, blockIndex);
-                                            cyclesWaitingInThisInstruction += handleModifiedResult.getValue();
+                                        if (!handleModifiedResult.getKey())
+                                            return cyclesWaitingInThisInstruction;
 
-                                            if (!handleModifiedResult.getKey())
-                                                return cyclesWaitingInThisInstruction;
-                                        }
+
                                     }
 
                                 } finally {
@@ -343,13 +341,12 @@ public class Core implements Runnable {
                                     return cyclesWaitingInThisInstruction;
 
 
-                                int cacheWithModifiedBlock = getMyProcessor().getDirectory().getNumberOfCacheWithModifiedBlock(blockNumber);
-                                if (cacheWithModifiedBlock > 0) {
-                                    Pair<Boolean, Integer> handleModifiedResult = handleModifiedBlock(cacheWithModifiedBlock, blockNumber, blockIndex);
-                                    cyclesWaitingInThisInstruction += handleModifiedResult.getValue();
-                                    if (!handleModifiedResult.getKey())
-                                        return cyclesWaitingInThisInstruction;
-                                }
+                                Pair<Boolean, Integer> handleModifiedResult = handleModifiedBlock(blockNumber, blockIndex);
+                                cyclesWaitingInThisInstruction += handleModifiedResult.getValue();
+                                
+                                if (!handleModifiedResult.getKey())
+                                    return cyclesWaitingInThisInstruction;
+
 
                             } finally {
                                 getMyProcessor().getLocks().getDirectoryMutex()[directoryID].release();
@@ -390,41 +387,46 @@ public class Core implements Runnable {
 
     }
 
-    public Pair<Boolean, Integer> handleModifiedBlock(int cacheWithModifiedBlock, int blockNumber, int blockIndex) {
+    public Pair<Boolean, Integer> handleModifiedBlock(int blockNumber, int blockIndex) {
         int cyclesWaitingInThisInstruction = 0;
-        Processor processorCache = (cacheWithModifiedBlock < 2) ? getProcessor(0) : getProcessor(1);
+        int cacheWithModifiedBlock = getMyProcessor().getDirectory().getNumberOfCacheWithModifiedBlock(blockNumber);
 
-        if (processorCache.getLocks().getCacheMutex()[cacheWithModifiedBlock].tryAcquire()) {
-            try {
-                int idMemoryOfBlock = (blockNumber < 16) ? 0 : 1;
-                if (getMyProcessor().getLocks().getBus()[idMemoryOfBlock].tryAcquire()) {
-                    try {
-                        Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
-                        memoryOfBlock.setBlock(blockNumber % 16, processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().getBlockAtIndex(blockIndex));
-                        cyclesWaitingInThisInstruction += isLocalMemory(blockNumber) ? 16 : 40;
+        if (cacheWithModifiedBlock > -1) {
+            Processor processorCache = (cacheWithModifiedBlock < 2) ? getProcessor(0) : getProcessor(1);
 
-                        Pair<Boolean, Integer> evictVictimResult = evictVictim(blockNumber, blockIndex);
-                        dataCache.loadBlock(blockIndex, memoryOfBlock.getBlock(blockNumber));
+            if (processorCache.getLocks().getCacheMutex()[cacheWithModifiedBlock].tryAcquire()) {
+                try {
+                    int idMemoryOfBlock = (blockNumber < 16) ? 0 : 1;
+                    if (getMyProcessor().getLocks().getBus()[idMemoryOfBlock].tryAcquire()) {
+                        try {
+                            Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
+                            memoryOfBlock.setBlock(blockNumber % 16, processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().getBlockAtIndex(blockIndex));
+                            cyclesWaitingInThisInstruction += isLocalMemory(blockNumber) ? 16 : 40;
 
-                        if (evictVictimResult.getKey()) {
-                            cyclesWaitingInThisInstruction += evictVictimResult.getValue();
-                        } else {
-                            return new Pair<>(false, cyclesWaitingInThisInstruction);
+                            Pair<Boolean, Integer> evictVictimResult = evictVictim(blockNumber, blockIndex);
+                            dataCache.loadBlock(blockIndex, memoryOfBlock.getBlock(blockNumber));
+
+                            if (evictVictimResult.getKey()) {
+                                cyclesWaitingInThisInstruction += evictVictimResult.getValue();
+                            } else {
+                                return new Pair<>(false, cyclesWaitingInThisInstruction);
+                            }
+
+                        } finally {
+                            getMyProcessor().getLocks().getBus()[idMemoryOfBlock].release();
                         }
-
-                    } finally {
-                        getMyProcessor().getLocks().getBus()[idMemoryOfBlock].release();
+                    } else {
+                        return new Pair<>(false, cyclesWaitingInThisInstruction);
                     }
-                } else {
-                    return new Pair<>(false, cyclesWaitingInThisInstruction);
+                    processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().setIndexStatus(blockIndex, I);
+                } finally {
+                    processorCache.getLocks().getCacheMutex()[cacheWithModifiedBlock].release();
                 }
-                processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().setIndexStatus(blockIndex, I);
-            } finally {
-                processorCache.getLocks().getCacheMutex()[cacheWithModifiedBlock].release();
+            } else {
+                return new Pair<>(false, cyclesWaitingInThisInstruction);
             }
-        } else {
-            return new Pair<>(false, cyclesWaitingInThisInstruction);
         }
+
         return new Pair<>(true, cyclesWaitingInThisInstruction);
     }
 
