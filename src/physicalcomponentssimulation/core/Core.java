@@ -629,6 +629,7 @@ public class Core implements Runnable {
                     //Get "hilillo", load its context and fetch the first instruction
 
                     if (assignedSystemThread.getInitialClock() == -1) {
+                        assignedSystemThread.setIdProcessorAsigned(this.myProcessor.getProcessorId());
                         assignedSystemThread.setInitialClock(this.myProcessor.getClock().getCurrentTime());//
                     }
                     this.assignedSystemThread.setCurrentCyclesInProcessor(0);//init execution
