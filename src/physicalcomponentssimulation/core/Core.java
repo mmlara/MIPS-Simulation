@@ -335,6 +335,8 @@ public class Core implements Runnable {
                         int numWord = (instruction.getThirdParameter() + context[instruction.getFirsParameter()] / 4) % 4;
                         dataCache.setWord(blockIndex, numWord, context[instruction.getSecondParameter()]);
                         dataCache.setIndexStatus(blockIndex, M);
+                        instructionSucceeded = true;
+
 
                     } else {
                         int directoryID = (dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1;
@@ -363,6 +365,7 @@ public class Core implements Runnable {
                                 dataCache.setIndexStatus(blockIndex, M);
                                 dir.changeInformation(blockNumber, getCoreID(), true);
                                 dir.changeState(blockNumber, 'M');
+                                instructionSucceeded = true;
 
                             } finally {
                                 getMyProcessor().getLocks().getDirectoryMutex()[directoryID].release();
@@ -408,39 +411,40 @@ public class Core implements Runnable {
         int idMemoryOfBlock = (blockNumber < 16) ? 0 : 1;
         int cyclesWaitingInThisInstruction = 0;
 
-        if (getMyProcessor().getLocks().getBus()[idMemoryOfBlock].tryAcquire()) {
-            try {
-                Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
 
-                if (!isLoaded) {
+        if (!isLoaded) {
 
-                    boolean blocksInSameDirectory = (blockNumber <= 15 && dataCache.getTagOfBlock(blockIndex) <= 15) || (blockNumber > 15 && dataCache.getTagOfBlock(blockIndex) > 15);
+            boolean blocksInSameDirectory = (blockNumber <= 15 && dataCache.getTagOfBlock(blockIndex) <= 15) || (blockNumber > 15 && dataCache.getTagOfBlock(blockIndex) > 15);
 
-                    if (blocksInSameDirectory) {
+            if (blocksInSameDirectory) {
+                Pair<Boolean, Integer> evictVictimResult = evictVictim(blockNumber, blockIndex);
+                if (evictVictimResult.getKey()) {
+                    cyclesWaitingInThisInstruction += evictVictimResult.getValue();
+                } else {
+                    return new Pair<>(false, cyclesWaitingInThisInstruction);
+                }
+            } else {
+                int victimBlock = dataCache.getTagOfBlock(blockIndex);
+                if (getMyProcessor().getLocks().getDirectoryMutex()[ (victimBlock <= 15) ? 0 : 1].tryAcquire()) {
+                    try {
                         Pair<Boolean, Integer> evictVictimResult = evictVictim(blockNumber, blockIndex);
                         if (evictVictimResult.getKey()) {
                             cyclesWaitingInThisInstruction += evictVictimResult.getValue();
                         } else {
                             return new Pair<>(false, cyclesWaitingInThisInstruction);
                         }
-                    } else {
-                        if (getMyProcessor().getLocks().getDirectoryMutex()[(dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1].tryAcquire()) {
-                            try {
-                                Pair<Boolean, Integer> evictVictimResult = evictVictim(blockNumber, blockIndex);
-                                if (evictVictimResult.getKey()) {
-                                    cyclesWaitingInThisInstruction += evictVictimResult.getValue();
-                                } else {
-                                    return new Pair<>(false, cyclesWaitingInThisInstruction);
-                                }
-                            } finally {
-                                getMyProcessor().getLocks().getDirectoryMutex()[(dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1].release();
-                            }
-                        } else {
-                            return new Pair<>(false, cyclesWaitingInThisInstruction);
-                        }
+                    } finally {
+                        getMyProcessor().getLocks().getDirectoryMutex()[(dataCache.getTagOfBlock(victimBlock) <= 15) ? 0 : 1].release();
                     }
+                } else {
+                    return new Pair<>(false, cyclesWaitingInThisInstruction);
                 }
+            }
+        }
 
+        if (getMyProcessor().getLocks().getBus()[idMemoryOfBlock].tryAcquire()) {
+            try {
+                Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
                 dataCache.loadBlock(blockIndex, memoryOfBlock.getBlock(blockNumber));
 
             } finally {
