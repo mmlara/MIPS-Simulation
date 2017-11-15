@@ -56,7 +56,7 @@ public class ALU {
             case BEQZ:
                 //If source register is 0 then PC is equal PC + immediate value * 4
                 if(registers[instruction.getFirsParameter()] == 0) {
-                    registers[PC] +=  registers[instruction.getThirdParameter()];
+                    registers[PC] +=  instruction.getThirdParameter()+1;
                 }
                 else{
                     registers[PC] += 1;
@@ -67,7 +67,7 @@ public class ALU {
             case BNEZ:
                 //If source register is not 0 then PC is equal PC + immediate value * 4
                 if(registers[instruction.getFirsParameter()] != 0) {
-                    registers[PC] +=  registers[instruction.getThirdParameter()];
+                    registers[PC] +=  instruction.getThirdParameter()+1;
                 }
                 else{
                     registers[PC] += 1;
@@ -77,35 +77,35 @@ public class ALU {
 
             case DADDI :
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
-                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] + instruction.getThirdParameter();
+                registers[instruction.getSecondParameter()] = registers[instruction.getFirsParameter()] + instruction.getThirdParameter();
                 successOperation = true;
                 registers[PC] += 1;
                 break;
 
             case DMUL:
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
-                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] * registers[instruction.getThirdParameter()];
+                registers[instruction.getThirdParameter()] = registers[instruction.getSecondParameter()] * registers[instruction.getFirsParameter()];
                 successOperation = true;
                 registers[PC] += 1;
                 break;
 
             case DDIV:
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
-                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] / registers[instruction.getThirdParameter()];
+                registers[instruction.getThirdParameter()] = registers[instruction.getFirsParameter()] / registers[instruction.getSecondParameter()];
                 successOperation = true;
                 registers[PC] += 1;
                 break;
 
             case DADD:
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
-                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] + registers[instruction.getThirdParameter()];
+                registers[instruction.getThirdParameter()] = registers[instruction.getSecondParameter()] + registers[instruction.getFirsParameter()];
                 successOperation = true;
                 registers[PC] += 1;
                 break;
 
             case DSUB:
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
-                registers[instruction.getFirsParameter()] = registers[instruction.getSecondParameter()] - registers[instruction.getThirdParameter()];
+                registers[instruction.getThirdParameter()] = registers[instruction.getFirsParameter()] - registers[instruction.getSecondParameter()];
                 successOperation = true;
                 registers[PC] += 1;
                 break;

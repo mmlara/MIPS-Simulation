@@ -640,7 +640,7 @@ public class Core implements Runnable {
                         //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
                         //If the "hilillo" is done then stop working.
                         while (((assignedSystemThread.getCurrentCyclesInProcessor() < this.getMyProcessor().getQuantumSize()) || !instructionSucceeded) && !systemThreadFinished) {
-                            System.out.println("número de ciclo" + cycleNumber + "del hilillo " + assignedSystemThread.getIdHilillo());
+                            System.out.println("número de ciclo" + cycleNumber + "del hilillo " + assignedSystemThread.getIdHilillo() + " estaba ejecutando "+instruction.getOperationCode() );
                             cycleNumber++;
                             int cyclesWaitingInThisInstruction = 0;
                             //If the instruction finished and the quantum has not then fetch another instruction

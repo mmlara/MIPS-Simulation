@@ -27,8 +27,8 @@ public class SimulationController {
 
         boolean slowMode = false;
 
-        Processor processorP0 = new Processor(0, numCoresP0, numCachesP0, 5, slowMode, "DatosHilillos/P0", memory0, initializeInstructionMemory(0));
-        Processor processorP1 = new Processor(1, numCoresP1, numCachesP1, 5, slowMode, "DatosHilillos/P1", memory1, initializeInstructionMemory(1));
+        Processor processorP0 = new Processor(0, numCoresP0, numCachesP0, 200, slowMode, "DatosHilillos/P0", memory0, initializeInstructionMemory(0));
+        Processor processorP1 = new Processor(1, numCoresP1, numCachesP1, 200, slowMode, "DatosHilillos/P1", memory1, initializeInstructionMemory(1));
 
         processorP0.setDirectory(directory0);
         processorP1.setDirectory(directory1);
@@ -56,7 +56,6 @@ public class SimulationController {
             processorP1.getCores()[i].setCoreID(i);
             new Thread(processorP1.getCores()[i]).start();
         }
-
     }
     /**
      * This method initialize the instruction physicalcomponentssimulation.memory, setting a custom size that depends on the
