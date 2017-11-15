@@ -318,7 +318,12 @@ public class Core implements Runnable {
                                             if (!handleModifiedResult.getKey())
                                                 return cyclesWaitingInThisInstruction;
 
-                                            loadBlockIntoCache(blockNumber, blockIndex, true);
+                                            Pair<Boolean,Integer> loadResult = loadBlockIntoCache(blockNumber, blockIndex, true);
+                                            cyclesWaitingInThisInstruction += loadResult.getValue();
+
+                                            if(!loadResult.getKey())
+                                                return cyclesWaitingInThisInstruction;
+
                                         }
 
                                     }
@@ -356,6 +361,11 @@ public class Core implements Runnable {
                                 cyclesWaitingInThisInstruction += handleModifiedResult.getValue();
 
                                 loadBlockIntoCache(blockNumber, blockIndex, false);
+                                Pair<Boolean,Integer> loadResult = loadBlockIntoCache(blockNumber, blockIndex, true);
+                                cyclesWaitingInThisInstruction += loadResult.getValue();
+
+                                if(!loadResult.getKey())
+                                    return cyclesWaitingInThisInstruction;
 
                                 if (!handleModifiedResult.getKey())
                                     return cyclesWaitingInThisInstruction;
@@ -389,6 +399,7 @@ public class Core implements Runnable {
     public Pair<Boolean, Integer> handleSharedBlock(Directory dir, int blockNumber, int blockIndex) {
         int cyclesWaitingInThisInstruction = 0;
         List<Integer> idCacheSharedBlock = dir.getCachesIdThatShareSomeBlock(coreID, blockNumber);
+        cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber))?1:5;
         for (Integer cacheWithSharedBlock : idCacheSharedBlock) {
 
             Processor processorCache = (cacheWithSharedBlock < 2) ? getProcessor(0) : getProcessor(1);
@@ -403,6 +414,7 @@ public class Core implements Runnable {
                 return new Pair<>(false, cyclesWaitingInThisInstruction);
             }
         }
+        cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber))?1:5;
         return new Pair<>(true, cyclesWaitingInThisInstruction);
 
     }
@@ -446,6 +458,8 @@ public class Core implements Runnable {
             try {
                 Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
                 dataCache.loadBlock(blockIndex, memoryOfBlock.getBlock(blockNumber));
+                
+                cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber))?16:40;
 
             } finally {
                 getMyProcessor().getLocks().getBus()[idMemoryOfBlock].release();
@@ -480,6 +494,7 @@ public class Core implements Runnable {
                     }
                     processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().setIndexStatus(blockIndex, I);
                     dir.changeInformation(blockNumber, cacheWithModifiedBlock, false);
+                    cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber))?1:5;
                 } finally {
                     processorCache.getLocks().getCacheMutex()[cacheWithModifiedBlock].release();
                 }
@@ -487,7 +502,6 @@ public class Core implements Runnable {
                 return new Pair<>(false, cyclesWaitingInThisInstruction);
             }
         }
-
         return new Pair<>(true, cyclesWaitingInThisInstruction);
     }
 
