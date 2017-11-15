@@ -69,4 +69,12 @@ public class InstructionCache  {
         }
         return pair;
     }
+
+    public BlockInstruction[] getCacheInstruction() {
+        return cacheInstruction;
+    }
+
+    public int[] getTags() {
+        return tags;
+    }
 }

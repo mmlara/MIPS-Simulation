@@ -109,6 +109,10 @@ public class Processor {
         }
     }
 
+    public InstructionMemory getInstructionMemory() {
+        return instructionMemory;
+    }
+
     public Processor getNeigborProcessor() {
         return neigborProcessor;
     }
