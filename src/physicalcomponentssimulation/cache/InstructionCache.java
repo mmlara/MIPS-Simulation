@@ -61,6 +61,7 @@ public class InstructionCache  {
               instruction=getWord(indexInCache,instructionNumberInBlock);
         }else {//miss case;
              this.cacheInstruction[indexInCache]=this.instructionMemory.getBlockInstruction(blockTag);
+             this.tags[indexInCache]=blockTag;
              int instructionNumberInBlock=indexInMemory%4;
              instruction=getWord(indexInCache,instructionNumberInBlock);
         }
