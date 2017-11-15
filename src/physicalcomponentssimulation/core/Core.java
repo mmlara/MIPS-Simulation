@@ -546,15 +546,15 @@ public class Core implements Runnable {
         this.assignedSystemThread = systemThread;
     }
 
-    public Instruction getNextInstruction() {
+    public Pair<Instruction,Integer> getNextInstruction() {
 
         int actualPC = this.context[32];
         int initialInexThread = assignedSystemThread.getInitIndexInMemory();
 
         int instructionlocationInMemory = initialInexThread + actualPC;
 
-        Instruction nextInstruction = this.instructionCache.getInstruction(instructionlocationInMemory);
-        return nextInstruction;
+        Pair<Instruction,Integer> pairInstruction = this.instructionCache.getInstruction(instructionlocationInMemory);
+        return pairInstruction;
     }
 
     @Override
@@ -603,7 +603,8 @@ public class Core implements Runnable {
                     this.assignedSystemThread.setCurrentCyclesInProcessor(0);//init execution
                     Boolean systemThreadFinished = false;
                     this.loadContext();
-                    Instruction instruction = getNextInstruction();
+                    Pair<Instruction,Integer> instructionPair = getNextInstruction();
+                    Instruction instruction=instructionPair.getKey();
 
                     //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
                     //If the "hilillo" is done then stop working.
@@ -613,7 +614,9 @@ public class Core implements Runnable {
                         int cyclesWaitingInThisInstruction = 0;
                         //If the instruction finished and the quantum has not then fetch another instruction
                         if (instructionSucceeded) {
-                            instruction = getNextInstruction();
+                             instructionPair = getNextInstruction();
+                            instruction= instructionPair.getKey();
+
                             instructionSucceeded = false;
                         }
 

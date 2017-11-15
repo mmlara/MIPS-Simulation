@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/physicalcomponentssimulation/cache/InstructionCache.java" afterPath="$PROJECT_DIR$/src/physicalcomponentssimulation/cache/InstructionCache.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/physicalcomponentssimulation/core/Core.java" afterPath="$PROJECT_DIR$/src/physicalcomponentssimulation/core/Core.java" />
     </list>
     <ignored path="JavaFxApplication.iws" />
@@ -64,35 +65,48 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Core.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/core/Core.java">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-651">
-              <caret line="619" column="0" lean-forward="false" selection-start-line="619" selection-start-column="0" selection-end-line="619" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainGUI.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/simulationviewer/gui/MainGUI.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+            <state relative-caret-position="204">
+              <caret line="20" column="5" lean-forward="false" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <marker date="1510722600726" expanded="true" signature="873:879" ph="{...}" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Processor.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/processor/Processor.java">
+      <file leaf-file-name="Core.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/core/Core.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+            <state relative-caret-position="199">
+              <caret line="605" column="0" lean-forward="false" selection-start-line="605" selection-start-column="0" selection-end-line="605" selection-end-column="0" />
               <folding>
-                <marker date="1510452887976" expanded="true" signature="6647:6654" ph="{...}" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#1507#1508#0" expanded="true" />
+                <element signature="e#1545#1546#0" expanded="true" />
+                <element signature="e#1578#1579#0" expanded="true" />
+                <element signature="e#1613#1614#0" expanded="true" />
+                <element signature="e#2116#2117#0" expanded="true" />
+                <element signature="e#2153#2154#0" expanded="true" />
+                <element signature="e#2206#2207#0" expanded="true" />
+                <element signature="e#2248#2249#0" expanded="true" />
+                <element signature="e#2301#2302#0" expanded="true" />
+                <element signature="e#2345#2346#0" expanded="true" />
+                <element signature="e#2419#2420#0" expanded="true" />
+                <element signature="e#2475#2476#0" expanded="true" />
+                <element signature="e#2516#2517#0" expanded="true" />
+                <element signature="e#2550#2551#0" expanded="true" />
+                <element signature="e#2607#2608#0" expanded="true" />
+                <element signature="e#2653#2654#0" expanded="true" />
+                <element signature="e#2683#2684#0" expanded="true" />
+                <element signature="e#2712#2713#0" expanded="true" />
+                <element signature="e#2753#2754#0" expanded="true" />
+                <element signature="e#2789#2790#0" expanded="true" />
+                <element signature="e#29146#29147#0" expanded="true" />
+                <element signature="e#29202#29203#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -101,8 +115,20 @@
       <file leaf-file-name="Locks.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/blockinglogicalcomponents/Locks.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-85">
-              <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+            <state relative-caret-position="276">
+              <caret line="151" column="45" lean-forward="false" selection-start-line="151" selection-start-column="45" selection-end-line="151" selection-end-column="45" />
+              <folding>
+                <element signature="e#3827#3828#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BlockInstruction.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/cache/BlockInstruction.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="191">
+              <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -111,43 +137,111 @@
       <file leaf-file-name="SimulationController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/simulationcontroller/SimulationController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="40" column="36" lean-forward="false" selection-start-line="40" selection-start-column="36" selection-end-line="40" selection-end-column="36" />
+            <state relative-caret-position="248">
+              <caret line="49" column="12" lean-forward="true" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <marker date="1510698192346" expanded="true" signature="2222:2413" ph="/**...*/" />
-                <marker date="1510698192346" expanded="true" signature="2489:2931" ph="{...}" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Memory.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/memory/Memory.java">
+      <file leaf-file-name="Window.java" pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/javafx-src.zip!/javafx/stage/Window.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="5678">
+              <caret line="404" column="0" lean-forward="false" selection-start-line="404" selection-start-column="0" selection-end-line="404" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Directory.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/directory/Directory.java">
+      <file leaf-file-name="DoublePropertyBase.java" pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/javafx-src.zip!/javafx/beans/property/DoublePropertyBase.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
-              <caret line="56" column="44" lean-forward="false" selection-start-line="56" selection-start-column="44" selection-end-line="56" selection-end-column="44" />
+            <state relative-caret-position="1768">
+              <caret line="140" column="0" lean-forward="false" selection-start-line="140" selection-start-column="0" selection-end-line="140" selection-end-column="0" />
+              <folding>
+                <element signature="e#3956#3957#0" expanded="true" />
+                <element signature="e#3997#3998#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="InstructionCache.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/cache/InstructionCache.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="63" column="0" lean-forward="true" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DataCache.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/cache/DataCache.java">
+      <file leaf-file-name="LauncherHelper.class" pinned="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/jre/lib/rt.jar!/sun/launcher/LauncherHelper.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+            <state relative-caret-position="9163">
+              <caret line="576" column="0" lean-forward="false" selection-start-line="576" selection-start-column="0" selection-end-line="576" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Processor.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/processor/Processor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="952">
+              <caret line="72" column="0" lean-forward="false" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+              <folding>
+                <marker date="1510722600745" expanded="true" signature="3458:3476" ph="{...}" />
+                <marker date="1510722600745" expanded="true" signature="3482:3580" ph="/**...*/" />
+                <marker date="1510722600745" expanded="true" signature="3616:3992" ph="{...}" />
+                <marker date="1510722600745" expanded="true" signature="3998:4144" ph="/**...*/" />
+                <marker date="1510722600745" expanded="true" signature="4175:4796" ph="{...}" />
+                <marker date="1510722600745" expanded="false" signature="4840:4851" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="4875:4881" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="4946:4957" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="4998:5004" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="5037:5048" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="5072:5078" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="5127:5138" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="5169:5175" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="5205:5216" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="5237:5243" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="5286:5297" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="5322:5328" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="5358:5369" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="5387:5393" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="5433:5444" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="5463:5469" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="5520:5531" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="5558:5564" ph=" }" />
+                <marker date="1510722600745" expanded="true" signature="5602:5626" ph="{...}" />
+                <marker date="1510722600745" expanded="false" signature="5685:5696" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="5725:5731" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="5783:5794" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="5817:5823" ph=" }" />
+                <marker date="1510722600745" expanded="true" signature="5909:5976" ph="{...}" />
+                <marker date="1510722600745" expanded="false" signature="6005:6016" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="6029:6035" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="6074:6085" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="6104:6110" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="6149:6160" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="6179:6185" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="6214:6225" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="6238:6244" ph=" }" />
+                <marker date="1510722600745" expanded="true" signature="6275:6291" ph="{...}" />
+                <marker date="1510722600745" expanded="false" signature="6324:6335" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="6354:6360" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="6409:6420" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="6451:6457" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="6497:6508" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="6531:6537" ph=" }" />
+                <marker date="1510722600745" expanded="false" signature="6598:6609" ph=" { " />
+                <marker date="1510722600745" expanded="false" signature="6648:6654" ph=" }" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -176,6 +270,8 @@
       <find>direct</find>
       <find>execu</find>
       <find>handle</find>
+      <find>getNext</find>
+      <find>Termino</find>
     </findStrings>
   </component>
   <component name="FindManager">
@@ -228,7 +324,10 @@
         <option value="$PROJECT_DIR$/DatosHilillos/P1/hilillo1.txt" />
         <option value="$PROJECT_DIR$/src/physicalcomponentssimulation/cache/DataCache.java" />
         <option value="$PROJECT_DIR$/src/simulationcontroller/SimulationController.java" />
+        <option value="$PROJECT_DIR$/src/physicalcomponentssimulation/cache/BlockInstruction.java" />
+        <option value="$PROJECT_DIR$/src/blockinglogicalcomponents/Locks.java" />
         <option value="$PROJECT_DIR$/src/physicalcomponentssimulation/core/Core.java" />
+        <option value="$PROJECT_DIR$/src/physicalcomponentssimulation/cache/InstructionCache.java" />
       </list>
     </option>
   </component>
@@ -260,40 +359,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="MIPS-Simulation" type="58d84e3e:PackageViewProjectNode" />
-              <item name="MIPS-Simulation" type="616d4139:PackageViewModuleNode" />
-            </path>
-            <path>
-              <item name="MIPS-Simulation" type="58d84e3e:PackageViewProjectNode" />
-              <item name="MIPS-Simulation" type="616d4139:PackageViewModuleNode" />
-              <item name="sample" type="1f31426a:PackageElementNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
               <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-              <item name="DatosHilillos" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-              <item name="DatosHilillos" type="462c0819:PsiDirectoryNode" />
-              <item name="P0" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
@@ -331,35 +402,14 @@
               <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="physicalcomponentssimulation" type="462c0819:PsiDirectoryNode" />
-              <item name="directory" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="physicalcomponentssimulation" type="462c0819:PsiDirectoryNode" />
-              <item name="memory" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="physicalcomponentssimulation" type="462c0819:PsiDirectoryNode" />
-              <item name="processor" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="physicalcomponentssimulation" type="462c0819:PsiDirectoryNode" />
-              <item name="processorsparts" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="physicalcomponentssimulation" type="462c0819:PsiDirectoryNode" />
               <item name="systemthread" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="physicalcomponentssimulation" type="462c0819:PsiDirectoryNode" />
+              <item name="time" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
@@ -367,32 +417,29 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="simulationcontroller" type="462c0819:PsiDirectoryNode" />
             </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane">
+        <subPane>
+          <expand>
             <path>
-              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="simulationviewer" type="462c0819:PsiDirectoryNode" />
+              <item name="MIPS-Simulation" type="58d84e3e:PackageViewProjectNode" />
+              <item name="MIPS-Simulation" type="616d4139:PackageViewModuleNode" />
             </path>
             <path>
-              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="simulationviewer" type="462c0819:PsiDirectoryNode" />
-              <item name="gui" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MIPS-Simulation" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MIPS-Simulation" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="simulationviewer" type="462c0819:PsiDirectoryNode" />
-              <item name="guifiles" type="462c0819:PsiDirectoryNode" />
+              <item name="MIPS-Simulation" type="58d84e3e:PackageViewProjectNode" />
+              <item name="MIPS-Simulation" type="616d4139:PackageViewModuleNode" />
+              <item name="sample" type="1f31426a:PackageElementNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="AndroidView" />
       <pane id="Scratches" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -611,11 +658,25 @@
       <option name="project" value="LOCAL" />
       <updated>1510706125614</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="CAmbios pequeños">
+      <created>1510722754837</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1510722754837</updated>
+    </task>
+    <task id="LOCAL-00004" summary="add bus lock">
+      <created>1510722897879</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1510722897879</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67717000" />
+    <option name="totallyTimeSpent" value="69026000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -627,30 +688,29 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32991803" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899022" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32790446" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899022" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899022" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3267974" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4474836" sideWeight="0.6703755" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3257329" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21104388" sideWeight="0.6703755" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3995657" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39869282" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -696,7 +756,9 @@
     <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
     <MESSAGE value="Instrucciones del ALU menos load y store." />
     <MESSAGE value="Store v4" />
-    <option name="LAST_COMMIT_MESSAGE" value="Store v4" />
+    <MESSAGE value="CAmbios pequeños" />
+    <MESSAGE value="add bus lock" />
+    <option name="LAST_COMMIT_MESSAGE" value="add bus lock" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -707,8 +769,14 @@
           <properties />
           <option name="timeStamp" value="10" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/physicalcomponentssimulation/core/Core.java</url>
+          <line>605</line>
+          <properties />
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="11" />
+      <option name="time" value="12" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -722,13 +790,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/simulationviewer/gui/MainGUI.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
@@ -825,6 +886,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="935">
           <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -842,13 +904,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/cache/InstructionCache.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/memory/Memory.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -858,31 +913,19 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/simulationviewer/guifiles/initialgui.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="714">
           <caret line="42" column="52" lean-forward="false" selection-start-line="42" selection-start-column="39" selection-end-line="42" selection-end-column="52" />
-          <folding />
         </state>
-      </provider>
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/simulationviewer/gui/MainGUI.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/blockinglogicalcomponents/Locks.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-85">
-          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -897,10 +940,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="10" column="19" lean-forward="false" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+          <folding>
+            <element signature="e#114#115#0" expanded="true" />
+            <element signature="e#148#149#0" expanded="true" />
+            <element signature="e#182#183#0" expanded="true" />
+            <element signature="e#216#217#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/javafx-src.zip!/javafx/stage/Window.java" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/javafx-src.zip!/javafx/stage/Window.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5678">
+          <caret line="404" column="0" lean-forward="false" selection-start-line="404" selection-start-column="0" selection-end-line="404" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DatosHilillos/P1/hilillo1.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -910,24 +966,89 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="204">
+          <caret line="20" column="5" lean-forward="false" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <marker date="1510722600726" expanded="true" signature="873:879" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/processor/Processor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+        <state relative-caret-position="952">
+          <caret line="72" column="0" lean-forward="false" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
           <folding>
-            <marker date="1510452887976" expanded="true" signature="6647:6654" ph="{...}" />
+            <marker date="1510722600745" expanded="true" signature="3458:3476" ph="{...}" />
+            <marker date="1510722600745" expanded="true" signature="3482:3580" ph="/**...*/" />
+            <marker date="1510722600745" expanded="true" signature="3616:3992" ph="{...}" />
+            <marker date="1510722600745" expanded="true" signature="3998:4144" ph="/**...*/" />
+            <marker date="1510722600745" expanded="true" signature="4175:4796" ph="{...}" />
+            <marker date="1510722600745" expanded="false" signature="4840:4851" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="4875:4881" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="4946:4957" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="4998:5004" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="5037:5048" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="5072:5078" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="5127:5138" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="5169:5175" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="5205:5216" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="5237:5243" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="5286:5297" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="5322:5328" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="5358:5369" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="5387:5393" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="5433:5444" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="5463:5469" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="5520:5531" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="5558:5564" ph=" }" />
+            <marker date="1510722600745" expanded="true" signature="5602:5626" ph="{...}" />
+            <marker date="1510722600745" expanded="false" signature="5685:5696" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="5725:5731" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="5783:5794" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="5817:5823" ph=" }" />
+            <marker date="1510722600745" expanded="true" signature="5909:5976" ph="{...}" />
+            <marker date="1510722600745" expanded="false" signature="6005:6016" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="6029:6035" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="6074:6085" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="6104:6110" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="6149:6160" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="6179:6185" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="6214:6225" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="6238:6244" ph=" }" />
+            <marker date="1510722600745" expanded="true" signature="6275:6291" ph="{...}" />
+            <marker date="1510722600745" expanded="false" signature="6324:6335" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="6354:6360" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="6409:6420" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="6451:6457" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="6497:6508" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="6531:6537" ph=" }" />
+            <marker date="1510722600745" expanded="false" signature="6598:6609" ph=" { " />
+            <marker date="1510722600745" expanded="false" signature="6648:6654" ph=" }" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/javafx-src.zip!/javafx/beans/property/DoublePropertyBase.java" />
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/jre/lib/rt.jar!/sun/launcher/LauncherHelper.class" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/javafx-src.zip!/javafx/beans/property/DoublePropertyBase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1768">
+          <caret line="140" column="0" lean-forward="false" selection-start-line="140" selection-start-column="0" selection-end-line="140" selection-end-column="0" />
+          <folding>
+            <element signature="e#3956#3957#0" expanded="true" />
+            <element signature="e#3997#3998#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_131/jre/lib/rt.jar!/sun/launcher/LauncherHelper.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9163">
+          <caret line="576" column="0" lean-forward="false" selection-start-line="576" selection-start-column="0" selection-end-line="576" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/cache/DataCache.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
@@ -946,18 +1067,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/simulationcontroller/SimulationController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="40" column="36" lean-forward="false" selection-start-line="40" selection-start-column="36" selection-end-line="40" selection-end-column="36" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1510698192346" expanded="true" signature="2222:2413" ph="/**...*/" />
-            <marker date="1510698192346" expanded="true" signature="2489:2931" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/directory/Directory.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="561">
@@ -966,40 +1075,75 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Temp/kgh9f7av.bmp">
-      <provider selected="true" editor-type-id="images">
-        <state />
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/kgh9f7av.bmp" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/javafx-src.zip!/com/sun/glass/ui/InvokeLaterDispatcher.java" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/lang/Object.java" />
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/jre/lib/rt.jar!/sun/misc/Unsafe.class" />
+    <entry file="file://$PROJECT_DIR$/src/simulationcontroller/SimulationController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="49" column="12" lean-forward="true" selection-start-line="49" selection-start-column="12" selection-end-line="49" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/javafx-src.zip!/com/sun/glass/ui/InvokeLaterDispatcher.java">
+    <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/cache/BlockInstruction.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+        <state relative-caret-position="191">
+          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/lang/Object.java">
+    <entry file="file://$PROJECT_DIR$/src/blockinglogicalcomponents/Locks.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="381" column="29" lean-forward="false" selection-start-line="381" selection-start-column="29" selection-end-line="381" selection-end-column="29" />
-          <folding />
+        <state relative-caret-position="276">
+          <caret line="151" column="45" lean-forward="false" selection-start-line="151" selection-start-column="45" selection-end-line="151" selection-end-column="45" />
+          <folding>
+            <element signature="e#3827#3828#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/jre/lib/rt.jar!/sun/misc/Unsafe.class">
+    <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/cache/InstructionCache.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="353" column="23" lean-forward="false" selection-start-line="353" selection-start-column="23" selection-end-line="353" selection-end-column="23" />
+        <state relative-caret-position="306">
+          <caret line="63" column="0" lean-forward="true" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/physicalcomponentssimulation/core/Core.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-651">
-          <caret line="619" column="0" lean-forward="false" selection-start-line="619" selection-start-column="0" selection-end-line="619" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="199">
+          <caret line="605" column="0" lean-forward="false" selection-start-line="605" selection-start-column="0" selection-end-line="605" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1507#1508#0" expanded="true" />
+            <element signature="e#1545#1546#0" expanded="true" />
+            <element signature="e#1578#1579#0" expanded="true" />
+            <element signature="e#1613#1614#0" expanded="true" />
+            <element signature="e#2116#2117#0" expanded="true" />
+            <element signature="e#2153#2154#0" expanded="true" />
+            <element signature="e#2206#2207#0" expanded="true" />
+            <element signature="e#2248#2249#0" expanded="true" />
+            <element signature="e#2301#2302#0" expanded="true" />
+            <element signature="e#2345#2346#0" expanded="true" />
+            <element signature="e#2419#2420#0" expanded="true" />
+            <element signature="e#2475#2476#0" expanded="true" />
+            <element signature="e#2516#2517#0" expanded="true" />
+            <element signature="e#2550#2551#0" expanded="true" />
+            <element signature="e#2607#2608#0" expanded="true" />
+            <element signature="e#2653#2654#0" expanded="true" />
+            <element signature="e#2683#2684#0" expanded="true" />
+            <element signature="e#2712#2713#0" expanded="true" />
+            <element signature="e#2753#2754#0" expanded="true" />
+            <element signature="e#2789#2790#0" expanded="true" />
+            <element signature="e#29146#29147#0" expanded="true" />
+            <element signature="e#29202#29203#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
