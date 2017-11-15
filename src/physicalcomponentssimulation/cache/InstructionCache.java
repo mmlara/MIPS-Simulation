@@ -50,7 +50,7 @@ public class InstructionCache  {
     }
 
 
-    public Pair<Instruction, Integer> getInstruction(int indexInMemory){
+    public Instruction getInstruction(int indexInMemory){
         Instruction instruction=null;
         int cyclesWaiting=0;
         Pair pair=null;
@@ -58,16 +58,16 @@ public class InstructionCache  {
         int indexInCache =blockTag%4;
         if (blockTag == getTagOfBlock(indexInCache)){//hit case
               int instructionNumberInBlock=indexInMemory%4;
-              pair= new Pair(getWord(indexInCache,instructionNumberInBlock),1);
+               instruction= getWord(indexInCache,instructionNumberInBlock);
 
         }else {//miss case;
 
              this.cacheInstruction[indexInCache]=this.instructionMemory.getBlockInstruction(blockTag);
              this.tags[indexInCache]=blockTag;
              int instructionNumberInBlock=indexInMemory%4;
-              pair= new Pair(getWord(indexInCache,instructionNumberInBlock),16);
+              instruction=getWord(indexInCache,instructionNumberInBlock);
         }
-        return pair;
+        return instruction;
     }
 
     public BlockInstruction[] getCacheInstruction() {

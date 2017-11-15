@@ -546,14 +546,14 @@ public class Core implements Runnable {
         this.assignedSystemThread = systemThread;
     }
 
-    public Pair<Instruction,Integer> getNextInstruction() {
+    public Instruction getNextInstruction() {
 
         int actualPC = this.context[32];
         int initialInexThread = assignedSystemThread.getInitIndexInMemory();
 
         int instructionlocationInMemory = initialInexThread + actualPC;
 
-        Pair<Instruction,Integer> pairInstruction = this.instructionCache.getInstruction(instructionlocationInMemory);
+        Instruction pairInstruction = this.instructionCache.getInstruction(instructionlocationInMemory);
         return pairInstruction;
     }
 
@@ -634,14 +634,9 @@ public class Core implements Runnable {
                     this.assignedSystemThread.setCurrentCyclesInProcessor(0);//init execution
                     Boolean systemThreadFinished = false;
                     this.loadContext();
-                    Pair<Instruction,Integer> instructionPair = getNextInstruction();
-                    Instruction instruction=instructionPair.getKey();
-                    while (instruction==null){
-                        instruction= tryLoadNextInstruction();
-                        if (instruction==null){
-                            //TODO entra a barrier;
-                        }
-                    }
+                    Instruction instruction = getNextInstruction();
+
+
                         //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
                         //If the "hilillo" is done then stop working.
                         while (((assignedSystemThread.getCurrentCyclesInProcessor() < this.getMyProcessor().getQuantumSize()) || !instructionSucceeded) && !systemThreadFinished) {
@@ -650,15 +645,7 @@ public class Core implements Runnable {
                             int cyclesWaitingInThisInstruction = 0;
                             //If the instruction finished and the quantum has not then fetch another instruction
                             if (instructionSucceeded) {
-                                instructionPair = getNextInstruction();
-                                instruction=instructionPair.getKey();
-                                while (instruction==null){
-                                    instruction= tryLoadNextInstruction();
-                                    if (instruction==null){
-                                        //TODO entra a barrier;
-                                    }
-                                }
-
+                                instruction = getNextInstruction();
                                 instructionSucceeded = false;
                             }
 
