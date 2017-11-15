@@ -23,7 +23,7 @@ public class DataCache  {
         tags= new int[numBlocks];
         validInformation= new int[numBlocks];
         for (int i = 0; i <numBlocks ; i++) {
-            Block b= new Block();
+            Block b= new Block(0);
             cacheData[i]= b;
             tags[i]=-1;
             validInformation[i] = I;
