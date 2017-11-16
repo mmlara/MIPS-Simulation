@@ -279,13 +279,13 @@ public class Core implements Runnable {
      */
     public void executeStoreInstruction(Instruction instruction) {
         try {
-            int cyclesWaitingInThisInstruction = 0;
-            int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 4;
+            int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 16;
             int blockIndex = blockNumber % 4;
+
             //Got the cache lock
             if (this.getMyProcessor().getLocks().getCacheMutex()[getCoreID()].tryAcquire()) {
                 try {
-                    cyclesWaitingInThisInstruction++;
+                    updateBarrierCycle(1);
                     int tag = dataCache.getTagOfBlock(blockIndex);
                     //Check if data is in cache
                     if (tag == blockNumber) {
@@ -632,7 +632,7 @@ public class Core implements Runnable {
                             this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
                             this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                             if (instructionSucceeded)
-                                this.context[32] += 1;
+                                this.context[32] += 4;
                             //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
                         }
                         //Store
@@ -640,7 +640,7 @@ public class Core implements Runnable {
                             //Store Implementation
                             executeStoreInstruction(instruction);
                             if (instructionSucceeded)
-                                this.context[32] += 1;
+                                this.context[32] += 4;
                             //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
                         }
                         //Fin
