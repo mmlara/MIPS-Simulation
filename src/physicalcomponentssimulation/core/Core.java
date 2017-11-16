@@ -26,6 +26,8 @@ public class Core implements Runnable {
     private Queue<SystemThread> assignedSystemThreads;
     private Processor myProcessor;
     private boolean instructionSucceeded = false;
+    private boolean slowExecution;
+    private Scanner scanner;
 
     final private int I = 0;
     final private int C = 1;
@@ -94,29 +96,29 @@ public class Core implements Runnable {
     }
 
 
-    public Pair<Boolean, Integer> evictVictim(int blockNumber, int blockIndex) {
-        int cyclesWaitingInThisInstruction = 0;
-        //Try to get lock of victims directory
+    public Boolean evictVictim(int blockNumber, int blockIndex) {
 
-        Pair<Directory, Integer> gettingDirectory = getDirectoryOfBlockByIndex(blockIndex);
-        Directory dir = gettingDirectory.getKey();
-        cyclesWaitingInThisInstruction += gettingDirectory.getValue();
+        Directory dir = getDirectoryOfBlockByIndex(blockIndex);
+
         if (dataCache.getStatusBlock(blockIndex) == C) {
+
             //Change state of block in cache to invalid
             dataCache.setIndexStatus(blockIndex, I);
+
             //Update directory
             dir.changeInformation(blockNumber % 16, coreID, false);
             if (dir.countOfCachesThatContainBlock(blockNumber % 16) == 0)
                 dir.changeState(blockNumber % 16, 'U');
+
         } else {//It is modified
             if (getMyProcessor().getLocks().getBus()[(dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1].tryAcquire()) {
                 try {
                     Memory mem;
                     if (myProcessor.getProcessorId() == 0) {
-                        cyclesWaitingInThisInstruction += (dataCache.getTagOfBlock(blockIndex) <= 15) ? 16 : 40;
+                        updateBarrierCycle((dataCache.getTagOfBlock(blockIndex) <= 15) ? 16 : 40);
                         mem = (dataCache.getTagOfBlock(blockIndex) <= 15) ? getMyProcessor().getMemory() : getMyProcessor().getNeigborProcessor().getMemory();
                     } else {
-                        cyclesWaitingInThisInstruction += (dataCache.getTagOfBlock(blockIndex) > 15) ? 16 : 40;
+                        updateBarrierCycle((dataCache.getTagOfBlock(blockIndex) > 15) ? 16 : 40);
                         mem = (dataCache.getTagOfBlock(blockIndex) > 15) ? getMyProcessor().getMemory() : getMyProcessor().getNeigborProcessor().getMemory();
                     }
                     //Change block state in cache to invalid
@@ -130,28 +132,32 @@ public class Core implements Runnable {
                     getMyProcessor().getLocks().getBus()[(dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1].release();
                 }
             } else {//If you did not get the memory lock release everything and restart
-                return new Pair<>(false, cyclesWaitingInThisInstruction);
+                return false;
             }
         }
-
-        return new Pair<>(true, cyclesWaitingInThisInstruction);
+        return true;
     }
 
-
-    public int executeLoadInstruction(Instruction instruction) {
+    /**
+     * This method execute the load instruction:  Load into cache the requested block
+     *
+     * @param instruction: Current instruction to execute
+     */
+    public void executeLoadInstruction(Instruction instruction) {
         try {
-            int cyclesWaitingInThisInstruction = 0;
-            int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 4;
+
+            int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 16;
             int blockIndex = blockNumber % 4;
+
             //Got the cache lock
             if (this.getMyProcessor().getLocks().getCacheMutex()[getCoreID()].tryAcquire()) {
                 try {//TODO hacer barrier cada vez que se obtiene
-                    cyclesWaitingInThisInstruction++;
+                    updateBarrierCycle(1);
                     int tag = dataCache.getTagOfBlock(blockIndex);
                     //Check if data is in cache
                     if (tag == blockNumber) {
                         instructionSucceeded = true;
-                        return cyclesWaitingInThisInstruction;
+                        return;
                     } else {//If it is not then select victim
                         int state = dataCache.getStatusBlock(blockIndex);
                         //Check victims state
@@ -160,18 +166,15 @@ public class Core implements Runnable {
                             if (getMyProcessor().getLocks().getDirectoryMutex()[(dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1].tryAcquire()) {
                                 try {
 
-                                    Pair<Boolean, Integer> executionProperty = evictVictim(blockNumber, blockIndex);
-                                    cyclesWaitingInThisInstruction += executionProperty.getValue();
-
-                                    if (!executionProperty.getKey()) {
-                                        return executionProperty.getValue();
+                                    if (!evictVictim(blockNumber, blockIndex)) {
+                                        return;
                                     }
 
                                 } finally {
                                     getMyProcessor().getLocks().getDirectoryMutex()[(dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1].release();
                                 }
                             } else {//If you did not get the directory lock release everything and restart the instruction
-                                return cyclesWaitingInThisInstruction;
+                                return;
                             }
                         }
 
@@ -180,18 +183,16 @@ public class Core implements Runnable {
                         if (getMyProcessor().getLocks().getDirectoryMutex()[(blockNumber <= 15) ? 0 : 1].tryAcquire()) {
                             try {
 
-                                Pair<Directory,Integer> getDir = getDirectoryOfBlockByBlockNumber(blockNumber);
-                                Directory dir = getDir.getKey();
-                                cyclesWaitingInThisInstruction += getDir.getValue();
+                                Directory dir = getDirectoryOfBlockByBlockNumber(blockNumber);
 
                                 if (getMyProcessor().getLocks().getBus()[(blockNumber <= 15) ? 0 : 1].tryAcquire()) {
                                     try {
                                         Memory mem;
                                         if (getMyProcessor().getProcessorId() == 0) {
-                                            cyclesWaitingInThisInstruction += (blockNumber <= 15) ? 16 : 40;
+                                            updateBarrierCycle((blockNumber <= 15) ? 16 : 40);
                                             mem = (blockNumber <= 15) ? getMyProcessor().getMemory() : getMyProcessor().getNeigborProcessor().getMemory();
                                         } else {
-                                            cyclesWaitingInThisInstruction += (blockNumber > 15) ? 16 : 40;
+                                            updateBarrierCycle((blockNumber > 15) ? 16 : 40);
                                             mem = (blockNumber > 15) ? getMyProcessor().getMemory() : getMyProcessor().getNeigborProcessor().getMemory();
                                         }
                                         if (dir.getStateOfBlock(blockNumber % 16) == 'M') {
@@ -220,7 +221,7 @@ public class Core implements Runnable {
                                                     getMyProcessor().getLocks().getCacheMutex()[dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16)].release();
                                                 }
                                             } else {//If you did not get the cache lock release everything and restart
-                                                return cyclesWaitingInThisInstruction;
+                                                return;
                                             }
                                         } else {//Uncached or shared
                                             //Set state of block in directory to shared and add my cache to the ones that have it
@@ -231,9 +232,9 @@ public class Core implements Runnable {
                                         }
                                         //Cycles symbolize access to memory to fetch the block
                                         if (coreID < 2) {
-                                            cyclesWaitingInThisInstruction += (blockNumber <= 15) ? 16 : 40;
+                                            updateBarrierCycle((blockNumber <= 15) ? 16 : 40);
                                         } else {
-                                            cyclesWaitingInThisInstruction += (blockNumber > 15) ? 16 : 40;
+                                            updateBarrierCycle((blockNumber > 15) ? 16 : 40);
                                         }
                                         //Fetch the block from memory
                                         Block target = mem.getBlock(blockNumber % 16);
@@ -243,18 +244,18 @@ public class Core implements Runnable {
                                         //Load word to register from cache
                                         context[instruction.getSecondParameter()] = dataCache.getWord(blockIndex, wordIndex);
                                         instructionSucceeded = true;
-                                        return cyclesWaitingInThisInstruction;
+                                        return;
                                     } finally {
                                         getMyProcessor().getLocks().getBus()[(blockNumber <= 15) ? 0 : 1].release();
                                     }
                                 } else {//If you did not get the memory lock lock release everything and restart the instruction
-                                    return cyclesWaitingInThisInstruction;
+                                    return;
                                 }
                             } finally {
                                 getMyProcessor().getLocks().getDirectoryMutex()[(blockNumber <= 15) ? 0 : 1].release();
                             }
                         } else {//If you did not get the house directory lock release everything and restart the instruction
-                            return cyclesWaitingInThisInstruction;
+                            return;
                         }
                     }
                 } finally {
@@ -263,12 +264,12 @@ public class Core implements Runnable {
             }
             //Did not get the cache lock
             else {
-                cyclesWaitingInThisInstruction++;
-                return cyclesWaitingInThisInstruction;
+                updateBarrierCycle(1);
+                return;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return 1;
+            return;
         }
     }
 
@@ -276,7 +277,7 @@ public class Core implements Runnable {
      * @param instruction
      * @return
      */
-    public int executeStoreInstruction(Instruction instruction) {
+    public void executeStoreInstruction(Instruction instruction) {
         try {
             int cyclesWaitingInThisInstruction = 0;
             int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 4;
@@ -297,30 +298,20 @@ public class Core implements Runnable {
                             if (getMyProcessor().getLocks().getDirectoryMutex()[directoryID].tryAcquire()) {
                                 try {
 
-                                    Pair<Directory, Integer> gettingDirectory = getDirectoryOfBlockByBlockNumber(blockNumber);
-                                    Directory dir = gettingDirectory.getKey();
-                                    cyclesWaitingInThisInstruction += gettingDirectory.getValue();
+                                    Directory dir = getDirectoryOfBlockByBlockNumber(blockNumber);
 
                                     if (dir.countOfCachesThatContainBlock(blockNumber) > 1) {
-                                        Pair<Boolean, Integer> handleSharedResult = handleSharedBlock(dir, blockNumber, blockIndex);
-                                        cyclesWaitingInThisInstruction += handleSharedResult.getValue();
 
-                                        if (!handleSharedResult.getKey())
-                                            return cyclesWaitingInThisInstruction;
+                                        if (!handleSharedBlock(dir, blockNumber, blockIndex))
+                                            return;
 
                                         if (statusBlock == I) {
-                                            Pair<Boolean, Integer> handleModifiedResult = handleModifiedBlock(dir, blockNumber, blockIndex);
-                                            cyclesWaitingInThisInstruction += handleModifiedResult.getValue();
 
-                                            if (!handleModifiedResult.getKey())
-                                                return cyclesWaitingInThisInstruction;
+                                            if (!handleModifiedBlock(dir, blockNumber, blockIndex))
+                                                return;
 
-                                            Pair<Boolean, Integer> loadResult = loadBlockIntoCache(blockNumber, blockIndex, true);
-                                            cyclesWaitingInThisInstruction += loadResult.getValue();
-
-                                            if (!loadResult.getKey())
-                                                return cyclesWaitingInThisInstruction;
-
+                                            if (!loadBlockIntoCache(blockNumber, blockIndex, true))
+                                                return;
                                         }
 
                                     }
@@ -331,7 +322,7 @@ public class Core implements Runnable {
                                     getMyProcessor().getLocks().getDirectoryMutex()[directoryID].release();
                                 }
                             } else {
-                                return cyclesWaitingInThisInstruction;
+                                return;
                             }
                         }
                         int numWord = (instruction.getThirdParameter() + context[instruction.getFirsParameter()] / 4) % 4;
@@ -344,28 +335,18 @@ public class Core implements Runnable {
                         int directoryID = (dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1;
                         if (getMyProcessor().getLocks().getDirectoryMutex()[directoryID].tryAcquire()) {
                             try {
-                                Pair<Directory, Integer> gettingDirectory = getDirectoryOfBlockByBlockNumber(blockNumber);
-                                Directory dir = gettingDirectory.getKey();
-                                cyclesWaitingInThisInstruction += gettingDirectory.getValue();
 
-                                Pair<Boolean, Integer> handleSharedResult = handleSharedBlock(dir, blockNumber, blockIndex);
-                                cyclesWaitingInThisInstruction += handleSharedResult.getValue();
-                                if (!handleSharedResult.getKey())
-                                    return cyclesWaitingInThisInstruction;
+                                Directory dir = getDirectoryOfBlockByBlockNumber(blockNumber);
+
+                                if (!handleSharedBlock(dir, blockNumber, blockIndex))
+                                    return;
+
+                                if (!handleModifiedBlock(dir, blockNumber, blockIndex))
+                                    return;
 
 
-                                Pair<Boolean, Integer> handleModifiedResult = handleModifiedBlock(dir, blockNumber, blockIndex);
-                                cyclesWaitingInThisInstruction += handleModifiedResult.getValue();
-
-                                loadBlockIntoCache(blockNumber, blockIndex, false);
-                                Pair<Boolean, Integer> loadResult = loadBlockIntoCache(blockNumber, blockIndex, true);
-                                cyclesWaitingInThisInstruction += loadResult.getValue();
-
-                                if (!loadResult.getKey())
-                                    return cyclesWaitingInThisInstruction;
-
-                                if (!handleModifiedResult.getKey())
-                                    return cyclesWaitingInThisInstruction;
+                                if (!loadBlockIntoCache(blockNumber, blockIndex, false))
+                                    return;
 
                                 int numWord = (instruction.getThirdParameter() + context[instruction.getFirsParameter()] / 4) % 4;
                                 dataCache.setWord(blockIndex, numWord, context[instruction.getSecondParameter()]);
@@ -378,7 +359,7 @@ public class Core implements Runnable {
                                 getMyProcessor().getLocks().getDirectoryMutex()[directoryID].release();
                             }
                         } else {
-                            return cyclesWaitingInThisInstruction;
+                            return;
                         }
                     }
 
@@ -386,17 +367,16 @@ public class Core implements Runnable {
                     this.getMyProcessor().getLocks().getCacheMutex()[getCoreID()].release();
                 }
             }
-            return cyclesWaitingInThisInstruction;
+            return;
         } catch (Exception e) {
             e.getCause();
-            return 1;
+            return;
         }
     }
 
-    public Pair<Boolean, Integer> handleSharedBlock(Directory dir, int blockNumber, int blockIndex) {
-        int cyclesWaitingInThisInstruction = 0;
+    public boolean handleSharedBlock(Directory dir, int blockNumber, int blockIndex) {
         List<Integer> idCacheSharedBlock = dir.getCachesIdThatShareSomeBlock(coreID, blockNumber);
-        cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber)) ? 1 : 5;
+        updateBarrierCycle((isLocalMemory(blockNumber)) ? 1 : 5);
         for (Integer cacheWithSharedBlock : idCacheSharedBlock) {
 
             Processor processorCache = (cacheWithSharedBlock < 2) ? getProcessor(0) : getProcessor(1);
@@ -408,45 +388,37 @@ public class Core implements Runnable {
                     processorCache.getLocks().getCacheMutex()[cacheWithSharedBlock].release();
                 }
             } else {
-                return new Pair<>(false, cyclesWaitingInThisInstruction);
+                return false;
             }
         }
-        cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber)) ? 1 : 5;
-        return new Pair<>(true, cyclesWaitingInThisInstruction);
-
+        updateBarrierCycle((isLocalMemory(blockNumber)) ? 1 : 5);
+        return true;
     }
 
-    public Pair<Boolean, Integer> loadBlockIntoCache(int blockNumber, int blockIndex, boolean isLoaded) {
+    public boolean loadBlockIntoCache(int blockNumber, int blockIndex, boolean isLoaded) {
         int idMemoryOfBlock = (blockNumber < 16) ? 0 : 1;
-        int cyclesWaitingInThisInstruction = 0;
-
 
         if (!isLoaded) {
 
             boolean blocksInSameDirectory = (blockNumber <= 15 && dataCache.getTagOfBlock(blockIndex) <= 15) || (blockNumber > 15 && dataCache.getTagOfBlock(blockIndex) > 15);
 
             if (blocksInSameDirectory) {
-                Pair<Boolean, Integer> evictVictimResult = evictVictim(blockNumber, blockIndex);
-                if (evictVictimResult.getKey()) {
-                    cyclesWaitingInThisInstruction += evictVictimResult.getValue();
-                } else {
-                    return new Pair<>(false, cyclesWaitingInThisInstruction);
-                }
+
+                if (!evictVictim(blockNumber, blockIndex))
+                    return false;
+
             } else {
+
                 int victimBlock = dataCache.getTagOfBlock(blockIndex);
                 if (getMyProcessor().getLocks().getDirectoryMutex()[(victimBlock <= 15) ? 0 : 1].tryAcquire()) {
                     try {
-                        Pair<Boolean, Integer> evictVictimResult = evictVictim(blockNumber, blockIndex);
-                        if (evictVictimResult.getKey()) {
-                            cyclesWaitingInThisInstruction += evictVictimResult.getValue();
-                        } else {
-                            return new Pair<>(false, cyclesWaitingInThisInstruction);
-                        }
+                        if (!evictVictim(blockNumber, blockIndex))
+                            return false;
                     } finally {
                         getMyProcessor().getLocks().getDirectoryMutex()[(victimBlock <= 15) ? 0 : 1].release();
                     }
                 } else {
-                    return new Pair<>(false, cyclesWaitingInThisInstruction);
+                    return false;
                 }
             }
         }
@@ -456,19 +428,18 @@ public class Core implements Runnable {
                 Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
                 dataCache.loadBlock(blockIndex, memoryOfBlock.getBlock(blockNumber));
 
-                cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber)) ? 16 : 40;
+                updateBarrierCycle((isLocalMemory(blockNumber)) ? 16 : 40);
 
             } finally {
                 getMyProcessor().getLocks().getBus()[idMemoryOfBlock].release();
             }
         } else {
-            return new Pair<>(false, cyclesWaitingInThisInstruction);
+            return false;
         }
-        return new Pair<>(true, cyclesWaitingInThisInstruction);
+        return true;
     }
 
-    public Pair<Boolean, Integer> handleModifiedBlock(Directory dir, int blockNumber, int blockIndex) {
-        int cyclesWaitingInThisInstruction = 0;
+    public boolean handleModifiedBlock(Directory dir, int blockNumber, int blockIndex) {
         int cacheWithModifiedBlock = dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16);
 
         if (cacheWithModifiedBlock >= 0) {
@@ -481,52 +452,50 @@ public class Core implements Runnable {
                         try {
                             Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
                             memoryOfBlock.setBlock(blockNumber % 16, processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().getBlockAtIndex(blockIndex));
-                            cyclesWaitingInThisInstruction += isLocalMemory(blockNumber) ? 16 : 40;
+                            updateBarrierCycle(isLocalMemory(blockNumber) ? 16 : 40);
 
                         } finally {
                             getMyProcessor().getLocks().getBus()[idMemoryOfBlock].release();
                         }
                     } else {
-                        return new Pair<>(false, cyclesWaitingInThisInstruction);
+                        return false;
                     }
                     processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().setIndexStatus(blockIndex, I);
                     dir.changeInformation(blockNumber % 16, cacheWithModifiedBlock, false);
-                    cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber)) ? 1 : 5;
+                    updateBarrierCycle((isLocalMemory(blockNumber)) ? 1 : 5);
                 } finally {
                     processorCache.getLocks().getCacheMutex()[cacheWithModifiedBlock].release();
                 }
             } else {
-                return new Pair<>(false, cyclesWaitingInThisInstruction);
+                return false;
             }
         }
-        return new Pair<>(true, cyclesWaitingInThisInstruction);
+        return true;
     }
 
 
-    public Pair<Directory, Integer> getDirectoryOfBlockByIndex(int blockIndex) {
-        int cyclesWaitingInThisInstruction = 0;
+    public Directory getDirectoryOfBlockByIndex(int blockIndex) {
         Directory dir;
         if (myProcessor.getProcessorId() == 0) {
-            cyclesWaitingInThisInstruction += (dataCache.getTagOfBlock(blockIndex) <= 15) ? 1 : 5;
+            updateBarrierCycle((dataCache.getTagOfBlock(blockIndex) <= 15) ? 1 : 5);
             dir = (dataCache.getTagOfBlock(blockIndex) <= 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
         } else {
-            cyclesWaitingInThisInstruction += (dataCache.getTagOfBlock(blockIndex) > 15) ? 1 : 5;
+            updateBarrierCycle((dataCache.getTagOfBlock(blockIndex) > 15) ? 1 : 5);
             dir = (dataCache.getTagOfBlock(blockIndex) > 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
         }
-        return new Pair<>(dir, cyclesWaitingInThisInstruction);
+        return dir;
     }
 
-    public Pair<Directory, Integer> getDirectoryOfBlockByBlockNumber(int blockNumber) {
-        int cyclesWaitingInThisInstruction = 0;
+    public Directory getDirectoryOfBlockByBlockNumber(int blockNumber) {
         Directory dir;
         if (myProcessor.getProcessorId() == 0) {
-            cyclesWaitingInThisInstruction += (blockNumber <= 15) ? 1 : 5;
+            updateBarrierCycle((blockNumber <= 15) ? 1 : 5);
             dir = (blockNumber <= 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
         } else {
-            cyclesWaitingInThisInstruction += (blockNumber > 15) ? 1 : 5;
+            updateBarrierCycle((blockNumber > 15) ? 1 : 5);
             dir = (blockNumber > 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
         }
-        return new Pair<>(dir, cyclesWaitingInThisInstruction);
+        return dir;
     }
 
     public Processor getProcessor(int id) {
@@ -597,9 +566,9 @@ public class Core implements Runnable {
 
     @Override
     public void run() {
-        Scanner sc = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         ALU alu = new ALU(this.context);
-        boolean slowExecution = this.getMyProcessor().isInSlowExecution();
+        slowExecution = this.getMyProcessor().isInSlowExecution();
 
         //If there are still "hilillos" in the queue then keep working
         int cycleNumber = 0;
@@ -659,7 +628,7 @@ public class Core implements Runnable {
                         //Load
                         if (instruction.getOperationCode() == 35) {
                             //Load Implementation
-                            cyclesWaitingInThisInstruction = executeLoadInstruction(instruction);
+                            executeLoadInstruction(instruction);
                             this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
                             this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                             if (instructionSucceeded)
@@ -669,7 +638,7 @@ public class Core implements Runnable {
                         //Store
                         else if (instruction.getOperationCode() == 43) {
                             //Store Implementation
-                            cyclesWaitingInThisInstruction = executeStoreInstruction(instruction);
+                            executeStoreInstruction(instruction);
                             if (instructionSucceeded)
                                 this.context[32] += 1;
                             //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
@@ -689,28 +658,7 @@ public class Core implements Runnable {
                         }
                         System.out.println("ejecuta la instrucción hilillo " + this.assignedSystemThread.getIdHilillo() + " en el core " + getCoreID() + " del procesador " + getMyProcessor().getProcessorId());
 
-                        for (int i = 0; i < cyclesWaitingInThisInstruction; i++) {
-
-                            this.getMyProcessor().getLocks().getMutexBarrier().acquire();//get mutex
-                            if (this.getMyProcessor().getLocks().getNumCoresWaiting() == this.getMyProcessor().getLocks().getNumCores() - 1) { //the last core in execution
-
-                                this.getMyProcessor().getClock().increaseCurrentTime();//move on the clock when the third hilillo arrive
-                                //release mutex
-                                if (slowExecution) {
-                                    System.out.println("Ejecutando el ciclo número " + this.getMyProcessor().getClock().getCurrentTime());
-                                    sc.next();
-                                }
-                                this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
-                                this.getMyProcessor().getLocks().setNumCoresWaiting(0);
-                                this.getMyProcessor().getLocks().getMutexBarrier().release();
-                            } else {
-
-                                this.getMyProcessor().getLocks().setNumCoresWaiting(this.getMyProcessor().getLocks().getNumCoresWaiting() + 1);
-                                this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
-                                this.getMyProcessor().getLocks().getBarrierCycleClock().acquire();
-                            }
-
-                        }
+                        updateBarrierCycle(cyclesWaitingInThisInstruction);
 
                         System.out.println("Se desbloquea el hilillo " + assignedSystemThread.getIdHilillo());
                     }//while end of quantum or end of thread
@@ -735,5 +683,37 @@ public class Core implements Runnable {
 
         }
     }
+
+    private void updateBarrierCycle(int cyclesToWait) {
+        for (int i = 0; i < cyclesToWait; i++) {
+            try {
+                this.getMyProcessor().getLocks().getMutexBarrier().acquire();//get mutex
+                if (this.getMyProcessor().getLocks().getNumCoresWaiting() == this.getMyProcessor().getLocks().getNumCores() - 1) { //the last core in execution
+
+                    this.getMyProcessor().getClock().increaseCurrentTime();//move on the clock when the third hilillo arrive
+                    //release mutex
+                    if (slowExecution) {
+                        System.out.println("Ejecutando el ciclo número " + this.getMyProcessor().getClock().getCurrentTime());
+                        scanner.next();
+                    }
+                    this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
+                    this.getMyProcessor().getLocks().setNumCoresWaiting(0);
+                    this.getMyProcessor().getLocks().getMutexBarrier().release();
+                } else {
+
+                    this.getMyProcessor().getLocks().setNumCoresWaiting(this.getMyProcessor().getLocks().getNumCoresWaiting() + 1);
+                    this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
+                    this.getMyProcessor().getLocks().getBarrierCycleClock().acquire();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+    }
+
+
 }
 
