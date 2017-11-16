@@ -179,18 +179,15 @@ public class Core implements Runnable {
                         //Victim is evicted. Now fetch the block and load it to cache
                         if (getMyProcessor().getLocks().getDirectoryMutex()[(blockNumber <= 15) ? 0 : 1].tryAcquire()) {
                             try {
-                                Directory dir;
-                                if (coreID < 2) {
-                                    cyclesWaitingInThisInstruction += (blockNumber <= 15) ? 1 : 5;
-                                    dir = (blockNumber <= 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
-                                } else {
-                                    cyclesWaitingInThisInstruction += (blockNumber > 15) ? 1 : 5;
-                                    dir = (blockNumber > 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
-                                }
+
+                                Pair<Directory,Integer> getDir = getDirectoryOfBlockByBlockNumber(blockNumber);
+                                Directory dir = getDir.getKey();
+                                cyclesWaitingInThisInstruction += getDir.getValue();
+
                                 if (getMyProcessor().getLocks().getBus()[(blockNumber <= 15) ? 0 : 1].tryAcquire()) {
                                     try {
                                         Memory mem;
-                                        if (coreID < 2) {
+                                        if (getMyProcessor().getProcessorId() == 0) {
                                             cyclesWaitingInThisInstruction += (blockNumber <= 15) ? 16 : 40;
                                             mem = (blockNumber <= 15) ? getMyProcessor().getMemory() : getMyProcessor().getNeigborProcessor().getMemory();
                                         } else {
@@ -280,7 +277,7 @@ public class Core implements Runnable {
      * @return
      */
     public int executeStoreInstruction(Instruction instruction) {
-        //try {
+        try {
             int cyclesWaitingInThisInstruction = 0;
             int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 4;
             int blockIndex = blockNumber % 4;
@@ -318,18 +315,18 @@ public class Core implements Runnable {
                                             if (!handleModifiedResult.getKey())
                                                 return cyclesWaitingInThisInstruction;
 
-                                            Pair<Boolean,Integer> loadResult = loadBlockIntoCache(blockNumber, blockIndex, true);
+                                            Pair<Boolean, Integer> loadResult = loadBlockIntoCache(blockNumber, blockIndex, true);
                                             cyclesWaitingInThisInstruction += loadResult.getValue();
 
-                                            if(!loadResult.getKey())
+                                            if (!loadResult.getKey())
                                                 return cyclesWaitingInThisInstruction;
 
                                         }
 
                                     }
 
-                                    dir.changeInformation(blockNumber%16, getCoreID(), true);
-                                    dir.changeState(blockNumber%16, 'M');
+                                    dir.changeInformation(blockNumber % 16, getCoreID(), true);
+                                    dir.changeState(blockNumber % 16, 'M');
                                 } finally {
                                     getMyProcessor().getLocks().getDirectoryMutex()[directoryID].release();
                                 }
@@ -361,10 +358,10 @@ public class Core implements Runnable {
                                 cyclesWaitingInThisInstruction += handleModifiedResult.getValue();
 
                                 loadBlockIntoCache(blockNumber, blockIndex, false);
-                                Pair<Boolean,Integer> loadResult = loadBlockIntoCache(blockNumber, blockIndex, true);
+                                Pair<Boolean, Integer> loadResult = loadBlockIntoCache(blockNumber, blockIndex, true);
                                 cyclesWaitingInThisInstruction += loadResult.getValue();
 
-                                if(!loadResult.getKey())
+                                if (!loadResult.getKey())
                                     return cyclesWaitingInThisInstruction;
 
                                 if (!handleModifiedResult.getKey())
@@ -373,8 +370,8 @@ public class Core implements Runnable {
                                 int numWord = (instruction.getThirdParameter() + context[instruction.getFirsParameter()] / 4) % 4;
                                 dataCache.setWord(blockIndex, numWord, context[instruction.getSecondParameter()]);
                                 dataCache.setIndexStatus(blockIndex, M);
-                                dir.changeInformation(blockNumber %16, getCoreID(), true);
-                                dir.changeState(blockNumber%16, 'M');
+                                dir.changeInformation(blockNumber % 16, getCoreID(), true);
+                                dir.changeState(blockNumber % 16, 'M');
                                 instructionSucceeded = true;
 
                             } finally {
@@ -390,23 +387,23 @@ public class Core implements Runnable {
                 }
             }
             return cyclesWaitingInThisInstruction;
-        /*} catch (Exception e) {
+        } catch (Exception e) {
             e.getCause();
             return 1;
-        }*/
+        }
     }
 
     public Pair<Boolean, Integer> handleSharedBlock(Directory dir, int blockNumber, int blockIndex) {
         int cyclesWaitingInThisInstruction = 0;
         List<Integer> idCacheSharedBlock = dir.getCachesIdThatShareSomeBlock(coreID, blockNumber);
-        cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber))?1:5;
+        cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber)) ? 1 : 5;
         for (Integer cacheWithSharedBlock : idCacheSharedBlock) {
 
             Processor processorCache = (cacheWithSharedBlock < 2) ? getProcessor(0) : getProcessor(1);
             if (processorCache.getLocks().getCacheMutex()[cacheWithSharedBlock].tryAcquire()) {
                 try {
                     processorCache.getCores()[cacheWithSharedBlock % 2].getDataCache().setIndexStatus(blockIndex, I);
-                    dir.changeInformation(blockNumber%16, cacheWithSharedBlock, false);
+                    dir.changeInformation(blockNumber % 16, cacheWithSharedBlock, false);
                 } finally {
                     processorCache.getLocks().getCacheMutex()[cacheWithSharedBlock].release();
                 }
@@ -414,7 +411,7 @@ public class Core implements Runnable {
                 return new Pair<>(false, cyclesWaitingInThisInstruction);
             }
         }
-        cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber))?1:5;
+        cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber)) ? 1 : 5;
         return new Pair<>(true, cyclesWaitingInThisInstruction);
 
     }
@@ -437,7 +434,7 @@ public class Core implements Runnable {
                 }
             } else {
                 int victimBlock = dataCache.getTagOfBlock(blockIndex);
-                if (getMyProcessor().getLocks().getDirectoryMutex()[ (victimBlock <= 15) ? 0 : 1].tryAcquire()) {
+                if (getMyProcessor().getLocks().getDirectoryMutex()[(victimBlock <= 15) ? 0 : 1].tryAcquire()) {
                     try {
                         Pair<Boolean, Integer> evictVictimResult = evictVictim(blockNumber, blockIndex);
                         if (evictVictimResult.getKey()) {
@@ -446,7 +443,7 @@ public class Core implements Runnable {
                             return new Pair<>(false, cyclesWaitingInThisInstruction);
                         }
                     } finally {
-                        getMyProcessor().getLocks().getDirectoryMutex()[ (victimBlock <= 15) ? 0 : 1].release();
+                        getMyProcessor().getLocks().getDirectoryMutex()[(victimBlock <= 15) ? 0 : 1].release();
                     }
                 } else {
                     return new Pair<>(false, cyclesWaitingInThisInstruction);
@@ -458,8 +455,8 @@ public class Core implements Runnable {
             try {
                 Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
                 dataCache.loadBlock(blockIndex, memoryOfBlock.getBlock(blockNumber));
-                
-                cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber))?16:40;
+
+                cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber)) ? 16 : 40;
 
             } finally {
                 getMyProcessor().getLocks().getBus()[idMemoryOfBlock].release();
@@ -493,8 +490,8 @@ public class Core implements Runnable {
                         return new Pair<>(false, cyclesWaitingInThisInstruction);
                     }
                     processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().setIndexStatus(blockIndex, I);
-                    dir.changeInformation(blockNumber%16, cacheWithModifiedBlock, false);
-                    cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber))?1:5;
+                    dir.changeInformation(blockNumber % 16, cacheWithModifiedBlock, false);
+                    cyclesWaitingInThisInstruction += (isLocalMemory(blockNumber)) ? 1 : 5;
                 } finally {
                     processorCache.getLocks().getCacheMutex()[cacheWithModifiedBlock].release();
                 }
@@ -561,7 +558,7 @@ public class Core implements Runnable {
 
     public Instruction getNextInstruction() {
 
-        int actualPC = this.context[32];
+        int actualPC = this.context[32] * 4;
         int initialInexThread = assignedSystemThread.getInitIndexInMemory();
 
         int instructionlocationInMemory = initialInexThread + actualPC;
@@ -570,30 +567,30 @@ public class Core implements Runnable {
         return pairInstruction;
     }
 
-    public Instruction tryLoadNextInstruction(){
-        Instruction instruction=null;
+    public Instruction tryLoadNextInstruction() {
+        Instruction instruction = null;
         int actualPC = this.context[32];
         int initialIndexThread = assignedSystemThread.getInitIndexInMemory();
         int indexInMemory = initialIndexThread + actualPC;
-        int blockTag = indexInMemory/4;
-        int indexInCache =blockTag%4;
-        if (myProcessor.getLocks().getBusInstructions()[getMyProcessor().getProcessorId()+getCoreID()].tryAcquire()){
+        int blockTag = indexInMemory / 4;
+        int indexInCache = blockTag % 4;
+        if (myProcessor.getLocks().getBusInstructions()[getMyProcessor().getProcessorId() + getCoreID()].tryAcquire()) {
             try {
-                if(blockTag<16) {
+                if (blockTag < 16) {
 
                     this.getInstructionCache().getCacheInstruction()[indexInCache] = this.getMyProcessor().getInstructionMemory().getBlockInstruction(blockTag);
                     this.getInstructionCache().getTags()[indexInCache] = blockTag;
                     int instructionNumberInBlock = indexInMemory % 4;
-                    instruction= this.getInstructionCache().getWord(indexInCache, instructionNumberInBlock);
-                }else {
-                    this.getInstructionCache().getCacheInstruction()[indexInCache] = this.getMyProcessor().getInstructionMemory().getBlockInstruction(blockTag-16);
+                    instruction = this.getInstructionCache().getWord(indexInCache, instructionNumberInBlock);
+                } else {
+                    this.getInstructionCache().getCacheInstruction()[indexInCache] = this.getMyProcessor().getInstructionMemory().getBlockInstruction(blockTag - 16);
                     this.getInstructionCache().getTags()[indexInCache] = blockTag;
                     int instructionNumberInBlock = indexInMemory % 4;
-                    instruction= this.getInstructionCache().getWord(indexInCache, instructionNumberInBlock);
+                    instruction = this.getInstructionCache().getWord(indexInCache, instructionNumberInBlock);
                 }
 
-            }finally {
-                myProcessor.getLocks().getBusInstructions()[getMyProcessor().getProcessorId()+getCoreID()].release();
+            } finally {
+                myProcessor.getLocks().getBusInstructions()[getMyProcessor().getProcessorId() + getCoreID()].release();
             }
 
 
@@ -651,76 +648,76 @@ public class Core implements Runnable {
                     Instruction instruction = getNextInstruction();
 
 
-                        //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
-                        //If the "hilillo" is done then stop working.
-                        while (((assignedSystemThread.getCurrentCyclesInProcessor() < this.getMyProcessor().getQuantumSize()) || !instructionSucceeded) && !systemThreadFinished) {
-                            System.out.println("número de ciclo" + cycleNumber + "del hilillo " + assignedSystemThread.getIdHilillo() + " estaba ejecutando "+instruction.getOperationCode() );
-                            cycleNumber++;
-                            int cyclesWaitingInThisInstruction = 0;
-                            //If the instruction finished and the quantum has not then fetch another instruction
-                            if (instructionSucceeded) {
-                                instruction = getNextInstruction();
-                                instructionSucceeded = false;
-                            }
+                    //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
+                    //If the "hilillo" is done then stop working.
+                    while (((assignedSystemThread.getCurrentCyclesInProcessor() < this.getMyProcessor().getQuantumSize()) || !instructionSucceeded) && !systemThreadFinished) {
+                        System.out.println("número de ciclo" + cycleNumber + "del hilillo " + assignedSystemThread.getIdHilillo() + " estaba ejecutando " + instruction.getOperationCode());
+                        cycleNumber++;
+                        int cyclesWaitingInThisInstruction = 0;
+                        //If the instruction finished and the quantum has not then fetch another instruction
+                        if (instructionSucceeded) {
+                            instruction = getNextInstruction();
+                            instructionSucceeded = false;
+                        }
 
-                            //Load
-                            if (instruction.getOperationCode() == 35) {
-                                //Load Implementation
-                                cyclesWaitingInThisInstruction = executeLoadInstruction(instruction);
-                                this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
-                                this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
-                                if (instructionSucceeded)
-                                    this.context[32] += 1;
-                                //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
-                            }
-                            //Store
-                            else if (instruction.getOperationCode() == 43) {
-                                //Store Implementation
-                                cyclesWaitingInThisInstruction = executeStoreInstruction(instruction);
-                                if (instructionSucceeded)
-                                    this.context[32] += 1;
-                                //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
-                            }
-                            //Fin
-                            else if (instruction.getOperationCode() == 63) {
-                                systemThreadFinished = true;
-                                instructionSucceeded = true;
-                                System.out.println("Terminó el hilillo " + this.assignedSystemThread.getIdHilillo());
-                                cyclesWaitingInThisInstruction = 1;
-                            } else {
-                                alu.executionOperation(instruction);
-                                instructionSucceeded = true;
-                                this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 1);//suma un ciclo en procesador;
-                                this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 1);//add the total time in execution using the processor
-                                cyclesWaitingInThisInstruction = 1;
-                            }
-                            System.out.println("ejecuta la instrucción hilillo " + this.assignedSystemThread.getIdHilillo()+" en el core "+ getCoreID() +" del procesador "+getMyProcessor().getProcessorId());
+                        //Load
+                        if (instruction.getOperationCode() == 35) {
+                            //Load Implementation
+                            cyclesWaitingInThisInstruction = executeLoadInstruction(instruction);
+                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
+                            if (instructionSucceeded)
+                                this.context[32] += 1;
+                            //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
+                        }
+                        //Store
+                        else if (instruction.getOperationCode() == 43) {
+                            //Store Implementation
+                            cyclesWaitingInThisInstruction = executeStoreInstruction(instruction);
+                            if (instructionSucceeded)
+                                this.context[32] += 1;
+                            //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
+                        }
+                        //Fin
+                        else if (instruction.getOperationCode() == 63) {
+                            systemThreadFinished = true;
+                            instructionSucceeded = true;
+                            System.out.println("Terminó el hilillo " + this.assignedSystemThread.getIdHilillo());
+                            cyclesWaitingInThisInstruction = 1;
+                        } else {
+                            alu.executionOperation(instruction);
+                            instructionSucceeded = true;
+                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 1);//suma un ciclo en procesador;
+                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 1);//add the total time in execution using the processor
+                            cyclesWaitingInThisInstruction = 1;
+                        }
+                        System.out.println("ejecuta la instrucción hilillo " + this.assignedSystemThread.getIdHilillo() + " en el core " + getCoreID() + " del procesador " + getMyProcessor().getProcessorId());
 
-                            for (int i = 0; i < cyclesWaitingInThisInstruction; i++) {
+                        for (int i = 0; i < cyclesWaitingInThisInstruction; i++) {
 
-                                this.getMyProcessor().getLocks().getMutexBarrier().acquire();//get mutex
-                                if (this.getMyProcessor().getLocks().getNumCoresWaiting() == this.getMyProcessor().getLocks().getNumCores() - 1) { //the last core in execution
+                            this.getMyProcessor().getLocks().getMutexBarrier().acquire();//get mutex
+                            if (this.getMyProcessor().getLocks().getNumCoresWaiting() == this.getMyProcessor().getLocks().getNumCores() - 1) { //the last core in execution
 
-                                    this.getMyProcessor().getClock().increaseCurrentTime();//move on the clock when the third hilillo arrive
-                                    //release mutex
-                                    if (slowExecution) {
-                                        System.out.println("Ejecutando el ciclo número " + this.getMyProcessor().getClock().getCurrentTime());
-                                        sc.next();
-                                    }
-                                    this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
-                                    this.getMyProcessor().getLocks().setNumCoresWaiting(0);
-                                    this.getMyProcessor().getLocks().getMutexBarrier().release();
-                                } else {
-
-                                    this.getMyProcessor().getLocks().setNumCoresWaiting(this.getMyProcessor().getLocks().getNumCoresWaiting() + 1);
-                                    this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
-                                    this.getMyProcessor().getLocks().getBarrierCycleClock().acquire();
+                                this.getMyProcessor().getClock().increaseCurrentTime();//move on the clock when the third hilillo arrive
+                                //release mutex
+                                if (slowExecution) {
+                                    System.out.println("Ejecutando el ciclo número " + this.getMyProcessor().getClock().getCurrentTime());
+                                    sc.next();
                                 }
+                                this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
+                                this.getMyProcessor().getLocks().setNumCoresWaiting(0);
+                                this.getMyProcessor().getLocks().getMutexBarrier().release();
+                            } else {
 
+                                this.getMyProcessor().getLocks().setNumCoresWaiting(this.getMyProcessor().getLocks().getNumCoresWaiting() + 1);
+                                this.getMyProcessor().getLocks().getMutexBarrier().release(); //release mutex
+                                this.getMyProcessor().getLocks().getBarrierCycleClock().acquire();
                             }
 
-                            System.out.println("Se desbloquea el hilillo " + assignedSystemThread.getIdHilillo());
-                        }//while end of quantum or end of thread
+                        }
+
+                        System.out.println("Se desbloquea el hilillo " + assignedSystemThread.getIdHilillo());
+                    }//while end of quantum or end of thread
 
                     if (!systemThreadFinished) {
                         this.assignedSystemThreads.add(assignedSystemThread);
@@ -735,7 +732,12 @@ public class Core implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("TERMINO EL CORE " + this.getCoreID() + "y tardó el último hilillo" + this.assignedSystemThread.getNumCyclesInExecution() + "Del procesador " + getMyProcessor().getProcessorId());
-        System.out.println();
+
+        System.out.println("TERMINO EL CORE " + this.getCoreID() + "\n a continuación la información de sus hilillos");
+        for (int i = 0; i < this.getMyProcessor().getFinishedThreads().size(); i++) {
+            System.out.println(this.getMyProcessor().getFinishedThreads().get(i));
+
+        }
     }
 }
+

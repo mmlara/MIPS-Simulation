@@ -145,8 +145,8 @@ public class SystemThread {
                 "Su ejecución tardó : "+(lastClock-initialClock)+"\n"+
                 "El estado de sus registros es el siguiente\n";
 
-        for (int i = 0; i < contextSize-1; i++) {
-            infoHilillo+="R"+i+" : "+context[i];
+        for (int i = 0; i < contextSize; i++) {
+            infoHilillo+="R"+i+" : "+context[i] + "\n";
         }
         return infoHilillo;
     }
