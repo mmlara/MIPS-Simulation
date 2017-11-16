@@ -50,14 +50,14 @@ public class SimulationController {
         for (int i = 0; i < numCoresP0; i++) {
             processorP0.getCores()[i].setMyProcessor(processorP0);
             processorP0.getCores()[i].setCoreID(i);
-            new Thread(processorP0.getCores()[i]).start();
+            new Thread(processorP0.getCores()[i],"Thread "+ i+ " P0").start();
         }
 
         for (int i = 0; i < numCoresP1; i++) {
 
             processorP1.getCores()[i].setMyProcessor(processorP1);
             processorP1.getCores()[i].setCoreID(i);
-            new Thread(processorP1.getCores()[i]).start();
+            new Thread(processorP1.getCores()[i],"Thread "+ i+ " P1").start();
         }
     }
     /**
