@@ -1,5 +1,6 @@
 package physicalcomponentssimulation.cache;
 
+import javafx.util.Pair;
 import physicalcomponentssimulation.memory.InstructionMemory;
 import physicalcomponentssimulation.processorsparts.Instruction;
 
@@ -50,20 +51,32 @@ public class InstructionCache  {
 
 
     public Instruction getInstruction(int indexInMemory){
+        //index conversion
+        indexInMemory=(indexInMemory-this.instructionMemory.getInitialMemmory())/4;
         Instruction instruction=null;
-
-        int blockTag = indexInMemory/4;
-
-
+        int cyclesWaiting=0;
+        Pair pair=null;
+        int blockTag = (indexInMemory)/4;
         int indexInCache =blockTag%4;
         if (blockTag == getTagOfBlock(indexInCache)){//hit case
               int instructionNumberInBlock=indexInMemory%4;
-              instruction=getWord(indexInCache,instructionNumberInBlock);
+               instruction= getWord(indexInCache,instructionNumberInBlock);
+
         }else {//miss case;
+
              this.cacheInstruction[indexInCache]=this.instructionMemory.getBlockInstruction(blockTag);
+             this.tags[indexInCache]=blockTag;
              int instructionNumberInBlock=indexInMemory%4;
-             instruction=getWord(indexInCache,instructionNumberInBlock);
+              instruction=getWord(indexInCache,instructionNumberInBlock);
         }
         return instruction;
+    }
+
+    public BlockInstruction[] getCacheInstruction() {
+        return cacheInstruction;
+    }
+
+    public int[] getTags() {
+        return tags;
     }
 }

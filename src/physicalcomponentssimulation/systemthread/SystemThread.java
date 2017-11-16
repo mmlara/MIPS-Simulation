@@ -5,6 +5,7 @@ import physicalcomponentssimulation.processorsparts.Instruction;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SystemThread {
@@ -14,6 +15,7 @@ public class SystemThread {
     private final int contextSize=32;//32 registros ;
     private List<Instruction> myInstructions;
     private int idHilillo; //necesario para identificar al hilillo para presentar luego la información.
+    private int idProcessorAsigned=0;
     private int numCyclesInExecution;//total de ciclos que tardo en ejecutarse (tiempo de CPU)
     private int initialClock;//default -1 para saber cuando se ejecuta por primera vez.
     private int lastClock;
@@ -124,6 +126,30 @@ public class SystemThread {
 
     public void setLastClock(int lastClock) {
         this.lastClock = lastClock;
+    }
+
+    public int getIdProcessorAsigned() {
+        return idProcessorAsigned;
+    }
+
+    public void setIdProcessorAsigned(int idProcessorAsigned) {
+        this.idProcessorAsigned = idProcessorAsigned;
+    }
+
+
+
+    @Override
+    public String toString() {
+
+        String infoHilillo= "Hilillo"+idHilillo+" ejecutado en el Procedador : " +idProcessorAsigned +"\n"+
+                "Su ejecución inició en el ciclo de reloj número : "+initialClock+"\n"+
+                "Su ejecución tardó : "+(lastClock-initialClock)+"\n"+
+                "El estado de sus registros es el siguiente\n";
+
+        for (int i = 0; i < contextSize; i++) {
+            infoHilillo+="R"+i+" : "+context[i]+"\n";
+        }
+        return infoHilillo;
     }
 }
 

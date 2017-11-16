@@ -14,6 +14,7 @@ import java.util.Queue;
 public class InstructionMemory {
 
     private int instructionMemorySize;
+    private int initialMemmory;
     private BlockInstruction[] instructionMemory;
 
     public BlockInstruction[] getInstructionMemory() {
@@ -24,11 +25,16 @@ public class InstructionMemory {
         this.instructionMemory = instructionMemory;
     }
 
+    public int getInitialMemmory() {
+        return initialMemmory;
+    }
+
     public int getInstructionMemorySize() {
         return instructionMemorySize;
     }
 
-    public InstructionMemory(int instructionMemorySize) {
+    public InstructionMemory(int instructionMemorySize, int initialMemmory) {
+        this.initialMemmory=initialMemmory;
         this.instructionMemorySize = instructionMemorySize;
         instructionMemory= new BlockInstruction[instructionMemorySize];
         for (int i = 0; i <instructionMemorySize ; i++) {
@@ -51,7 +57,8 @@ public class InstructionMemory {
 
         List<Instruction> totalInstructions = new ArrayList<>();
         for (SystemThread systemThread : systemThreads) {
-            systemThread.setInitIndexInMemory(totalInstructions.size());
+            systemThread.setInitIndexInMemory(this.initialMemmory+(totalInstructions.size()*4));
+            systemThread.setPc(this.initialMemmory+(totalInstructions.size()*4));
             List<Instruction> instructions= systemThread.getMyInstructions();
             totalInstructions.addAll(instructions);
             systemThread.setLastIndexInMemory(totalInstructions.size());//este demarca donde empieza el siguiente

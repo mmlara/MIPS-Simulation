@@ -19,6 +19,7 @@ public class Memory {
     }
 
     public Block getBlock(int blockIndex ){
+        blockIndex = blockIndex%shareMemorySize;
         return shareMemory[blockIndex];
     }
 

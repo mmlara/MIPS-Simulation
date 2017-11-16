@@ -10,9 +10,9 @@ public class DataCache  {
     private int[] tags;
     private int[] validInformation;
 
-    final private int I = 0;
-    final private int C = 1;
-    final private int M = 2;
+    final private int I = 0; //invalid
+    final private int C = 1; //shared
+    final private int M = 2; //modified
 
 
     /**
@@ -23,7 +23,7 @@ public class DataCache  {
         tags= new int[numBlocks];
         validInformation= new int[numBlocks];
         for (int i = 0; i <numBlocks ; i++) {
-            Block b= new Block();
+            Block b= new Block(0);
             cacheData[i]= b;
             tags[i]=-1;
             validInformation[i] = I;
@@ -47,6 +47,16 @@ public class DataCache  {
         Block block= cacheData[index];
         int word = block.getDataBlock()[numWord];
         return word;
+    }
+
+    /**
+     *
+     * @param index índice de la caché que se desea acceder
+     * @param numWord número de palabra respecto a un índice que se desea acceder
+     * @param word palabra que se quiere escribir
+     */
+    public void setWord(int index, int numWord, int word) {
+        this.getCacheData()[index].setWord(numWord,word);
     }
 
     /**

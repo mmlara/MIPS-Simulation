@@ -15,6 +15,7 @@ public class Locks {
     private int numDirectories;
 
     private Semaphore[] bus;
+    private Semaphore[] busInstructions;
     private boolean[] busState;
     private int numBuses;
 
@@ -50,9 +51,11 @@ public class Locks {
         }
 
         bus=new Semaphore[numBuses];
+        busInstructions= new Semaphore[numBuses];
         busState= new boolean[numBuses];
         for (int i = 0; i <bus.length ; i++) {
             bus[i]= new Semaphore(1);
+            busInstructions[i]= new Semaphore(1);
             busState[i]=false;
         }
 
@@ -144,5 +147,9 @@ public class Locks {
 
     public Semaphore getQueueMutex() {
         return queueMutex;
+    }
+
+    public Semaphore[] getBusInstructions() {
+        return busInstructions;
     }
 }
