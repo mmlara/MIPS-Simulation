@@ -51,10 +51,12 @@ public class InstructionCache  {
 
 
     public Instruction getInstruction(int indexInMemory){
+        //index conversion
+        indexInMemory=(indexInMemory-this.instructionMemory.getInitialMemmory())/4;
         Instruction instruction=null;
         int cyclesWaiting=0;
         Pair pair=null;
-        int blockTag = indexInMemory/4;
+        int blockTag = (indexInMemory)/4;
         int indexInCache =blockTag%4;
         if (blockTag == getTagOfBlock(indexInCache)){//hit case
               int instructionNumberInBlock=indexInMemory%4;

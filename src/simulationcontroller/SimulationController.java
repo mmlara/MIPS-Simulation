@@ -12,6 +12,9 @@ public class SimulationController {
 
     private final int INSTRUCTION_MEMORY_SIZE_P0 = 24;
     private final int INSTRUCTION_MEMORY_SIZE_P1 = 16;
+    private final int INITIAL_MEMORY_P0=256;
+    private final int INITIAL_MEMORY_P1=128;
+
 
     public SimulationController() {
 
@@ -64,9 +67,9 @@ public class SimulationController {
     private InstructionMemory initializeInstructionMemory(int processorId) {
         InstructionMemory instructionMemory = null;
         if (processorId == 0) {
-            instructionMemory = new InstructionMemory(INSTRUCTION_MEMORY_SIZE_P0);
+            instructionMemory = new InstructionMemory(INSTRUCTION_MEMORY_SIZE_P0,INITIAL_MEMORY_P0);
         } else if (processorId == 1) {
-            instructionMemory = new InstructionMemory(INSTRUCTION_MEMORY_SIZE_P1);
+            instructionMemory = new InstructionMemory(INSTRUCTION_MEMORY_SIZE_P1,INITIAL_MEMORY_P1);
         } else {
             System.out.println("Invalid physicalcomponentssimulation.processor id");
         }
