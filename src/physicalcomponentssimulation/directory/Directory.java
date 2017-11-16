@@ -53,11 +53,11 @@ public class Directory {
         return x;
     }
 
-    public int getNumberOfCacheWithModifiedBlock(int blockNumber){
+    public int getNumberOfCacheWithModifiedBlock(int blockNumber, int whois){
         if(blockStates[blockNumber] == 'M'){
             int x = 0;
             for (Boolean state : blockInformation[blockNumber]){
-                if(state)
+                if(state && x != whois)
                     return x;
                 x++;
             }

@@ -1,6 +1,5 @@
 package physicalcomponentssimulation.core;
 
-import javafx.util.Pair;
 import physicalcomponentssimulation.cache.Block;
 import physicalcomponentssimulation.cache.DataCache;
 import physicalcomponentssimulation.cache.InstructionCache;
@@ -196,11 +195,11 @@ public class Core implements Runnable {
                                             mem = (blockNumber > 15) ? getMyProcessor().getMemory() : getMyProcessor().getNeigborProcessor().getMemory();
                                         }
                                         if (dir.getStateOfBlock(blockNumber % 16) == 'M') {
-                                            if (getMyProcessor().getLocks().getCacheMutex()[dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16)].tryAcquire()) {
+                                            if (getMyProcessor().getLocks().getCacheMutex()[dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16, getCacheNumber())].tryAcquire()) {
                                                 try {
                                                     //TODO add proper delay for accessing cache?
                                                     //Get modified block from cache and write to memory
-                                                    int numberOfCache = dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16);
+                                                    int numberOfCache = dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16, getCacheNumber());
                                                     DataCache cache;
                                                     if (numberOfCache < 2) {//If block is in caches of first processor
                                                         //If I am on the first processor get that data cache of my processor else get that one of my neighbor processor
@@ -218,7 +217,7 @@ public class Core implements Runnable {
                                                     dir.changeState(blockNumber % 16, 'C');
                                                     dir.changeInformation(blockNumber % 16, coreID, true);
                                                 } finally {
-                                                    getMyProcessor().getLocks().getCacheMutex()[dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16)].release();
+                                                    getMyProcessor().getLocks().getCacheMutex()[dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16,getCacheNumber())].release();
                                                 }
                                             } else {//If you did not get the cache lock release everything and restart
                                                 return;
@@ -440,7 +439,7 @@ public class Core implements Runnable {
     }
 
     public boolean handleModifiedBlock(Directory dir, int blockNumber, int blockIndex) {
-        int cacheWithModifiedBlock = dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16);
+        int cacheWithModifiedBlock = dir.getNumberOfCacheWithModifiedBlock(blockNumber % 16, getCacheNumber());
 
         if (cacheWithModifiedBlock >= 0) {
             Processor processorCache = (cacheWithModifiedBlock < 2) ? getProcessor(0) : getProcessor(1);
@@ -518,6 +517,12 @@ public class Core implements Runnable {
             return false;
     }
 
+    private int getCacheNumber() {
+        if (getMyProcessor().getProcessorId() == 0)
+            return coreID;
+        else
+            return 2;
+    }
 
     //TODO cuando se tenga acceso al reloj, preguntar que si es -1 el valor de hilillo.initialClock, en caso de ser así, asignarle el reloj actual.
 
