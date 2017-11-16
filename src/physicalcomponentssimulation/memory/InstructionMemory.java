@@ -58,6 +58,7 @@ public class InstructionMemory {
         List<Instruction> totalInstructions = new ArrayList<>();
         for (SystemThread systemThread : systemThreads) {
             systemThread.setInitIndexInMemory(this.initialMemmory+(totalInstructions.size()*4));
+            systemThread.setPc(this.initialMemmory+(totalInstructions.size()*4));
             List<Instruction> instructions= systemThread.getMyInstructions();
             totalInstructions.addAll(instructions);
             systemThread.setLastIndexInMemory(totalInstructions.size());//este demarca donde empieza el siguiente

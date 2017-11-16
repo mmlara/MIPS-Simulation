@@ -42,24 +42,24 @@ public class ALU {
         switch (instruction.getOperationCode()){
             case JR:
                 //Set PC to the value of the first parameter
-                registers[PC] = registers[instruction.getFirsParameter()];
+                registers[PC] = (registers[instruction.getFirsParameter()])+4;
                 successOperation = true;
                 break;
 
             case JAL:
                 //Set register 31 to PC and then set PC = PC + n, where n is the third parameter of instruction.
-                registers[31] = registers[PC];
-                registers[PC] += instruction.getThirdParameter();
+                registers[31] = registers[PC] ;
+                registers[PC] += (instruction.getThirdParameter())+4;
                 successOperation = true;
                 break;
 
             case BEQZ:
                 //If source register is 0 then PC is equal PC + immediate value * 4
                 if(registers[instruction.getFirsParameter()] == 0) {
-                    registers[PC] +=  instruction.getThirdParameter()+1;
+                    registers[PC] +=  (instruction.getThirdParameter()*4)+4;
                 }
                 else{
-                    registers[PC] += 1;
+                    registers[PC] += 4;
                 }
                 successOperation = true;
                 break;
@@ -67,10 +67,10 @@ public class ALU {
             case BNEZ:
                 //If source register is not 0 then PC is equal PC + immediate value * 4
                 if(registers[instruction.getFirsParameter()] != 0) {
-                    registers[PC] +=  instruction.getThirdParameter()+1;
+                    registers[PC] +=  (instruction.getThirdParameter()*4)+4;
                 }
                 else{
-                    registers[PC] += 1;
+                    registers[PC] += 4;
                 }
                 successOperation = true;
                 break;
@@ -79,35 +79,35 @@ public class ALU {
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
                 registers[instruction.getSecondParameter()] = registers[instruction.getFirsParameter()] + instruction.getThirdParameter();
                 successOperation = true;
-                registers[PC] += 1;
+                registers[PC] += 4;
                 break;
 
             case DMUL:
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
                 registers[instruction.getThirdParameter()] = registers[instruction.getSecondParameter()] * registers[instruction.getFirsParameter()];
                 successOperation = true;
-                registers[PC] += 1;
+                registers[PC] += 4;
                 break;
 
             case DDIV:
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
                 registers[instruction.getThirdParameter()] = registers[instruction.getFirsParameter()] / registers[instruction.getSecondParameter()];
                 successOperation = true;
-                registers[PC] += 1;
+                registers[PC] += 4;
                 break;
 
             case DADD:
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
                 registers[instruction.getThirdParameter()] = registers[instruction.getSecondParameter()] + registers[instruction.getFirsParameter()];
                 successOperation = true;
-                registers[PC] += 1;
+                registers[PC] += 4;
                 break;
 
             case DSUB:
                 //Store the sum of the contents of the source register and the immediate value(third parameter) in the destiny register.
                 registers[instruction.getThirdParameter()] = registers[instruction.getFirsParameter()] - registers[instruction.getSecondParameter()];
                 successOperation = true;
-                registers[PC] += 1;
+                registers[PC] += 4;
                 break;
 
         }

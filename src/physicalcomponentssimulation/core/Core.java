@@ -145,7 +145,7 @@ public class Core implements Runnable {
             int blockIndex = blockNumber % 4;
             //Got the cache lock
             if (this.getMyProcessor().getLocks().getCacheMutex()[getCoreID()].tryAcquire()) {
-                try {
+                try {//TODO hacer barrier cada vez que se obtiene
                     cyclesWaitingInThisInstruction++;
                     int tag = dataCache.getTagOfBlock(blockIndex);
                     //Check if data is in cache
@@ -558,12 +558,8 @@ public class Core implements Runnable {
 
     public Instruction getNextInstruction() {
 
-        int actualPC = this.context[32] * 4;
-        int initialInexThread = assignedSystemThread.getInitIndexInMemory();
-
-        int instructionlocationInMemory = initialInexThread + actualPC;
-
-        Instruction pairInstruction = this.instructionCache.getInstruction(instructionlocationInMemory);
+        int actualPC = this.context[32];
+        Instruction pairInstruction = this.instructionCache.getInstruction(actualPC);
         return pairInstruction;
     }
 

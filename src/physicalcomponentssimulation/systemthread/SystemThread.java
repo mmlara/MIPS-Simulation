@@ -137,16 +137,17 @@ public class SystemThread {
     }
 
 
+
     @Override
     public String toString() {
 
-        String infoHilillo= "Hilillo ejecutado en el Procedador : " +idProcessorAsigned +"\n"+
+        String infoHilillo= "Hilillo"+idHilillo+" ejecutado en el Procedador : " +idProcessorAsigned +"\n"+
                 "Su ejecución inició en el ciclo de reloj número : "+initialClock+"\n"+
                 "Su ejecución tardó : "+(lastClock-initialClock)+"\n"+
                 "El estado de sus registros es el siguiente\n";
 
         for (int i = 0; i < contextSize; i++) {
-            infoHilillo+="R"+i+" : "+context[i] + "\n";
+            infoHilillo+="R"+i+" : "+context[i]+"\n";
         }
         return infoHilillo;
     }
