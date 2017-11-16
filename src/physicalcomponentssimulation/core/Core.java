@@ -145,7 +145,7 @@ public class Core implements Runnable {
             int blockIndex = blockNumber % 4;
             //Got the cache lock
             if (this.getMyProcessor().getLocks().getCacheMutex()[getCoreID()].tryAcquire()) {
-                try {
+                try {//TODO hacer barrier cada vez que se obtiene
                     cyclesWaitingInThisInstruction++;
                     int tag = dataCache.getTagOfBlock(blockIndex);
                     //Check if data is in cache
@@ -549,11 +549,7 @@ public class Core implements Runnable {
     public Instruction getNextInstruction() {
 
         int actualPC = this.context[32];
-        int initialInexThread = assignedSystemThread.getInitIndexInMemory();
-
-        int instructionlocationInMemory = initialInexThread + actualPC;
-
-        Instruction pairInstruction = this.instructionCache.getInstruction(instructionlocationInMemory);
+        Instruction pairInstruction = this.instructionCache.getInstruction(actualPC);
         return pairInstruction;
     }
 
@@ -722,7 +718,11 @@ public class Core implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("TERMINO EL CORE " + this.getCoreID() + "y tardó el último hilillo" + this.assignedSystemThread.getNumCyclesInExecution() + "Del procesador " + getMyProcessor().getProcessorId());
+        System.out.println("TERMINO EL CORE " + this.getCoreID()+ "\n a continuación la información de sus hilillos" );
+        for (int i = 0; i <this.getMyProcessor().getFinishedThreads().size() ; i++) {
+            System.out.println(this.getMyProcessor().getFinishedThreads().get(i));
+
+        }
         System.out.println();
     }
 }
