@@ -13,7 +13,7 @@ public class Memory {
         this.shareMemorySize=memorySize;
         this.shareMemory = new Block[shareMemorySize];
         for (int i = 0; i <shareMemorySize ; i++) {
-            Block block = new Block(1);
+            Block block = new Block(0);
             shareMemory[i]=block;
         }
     }
@@ -25,6 +25,6 @@ public class Memory {
 
     //este método recibe la ubicación real en memoria y no el tag del bloque.
     public void setBlock(int blockIndex, Block block){
-        shareMemory[blockIndex]=block;
+        shareMemory[blockIndex % shareMemorySize]=block;
     }
 }
