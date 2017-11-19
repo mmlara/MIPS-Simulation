@@ -17,7 +17,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         viewer = new MainGUI("/simulationviewer/guifiles/initialgui.fxml",primaryStage);
         SimulationController simullation = new SimulationController();
-        simullation.run(2,2,1,1);
+        //simullation.run(2,2,1,1);
     }
 
     public static void main(String[] args) {

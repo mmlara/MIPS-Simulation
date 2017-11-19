@@ -15,12 +15,22 @@ public class SimulationController {
     private final int INITIAL_MEMORY_P0=256;
     private final int INITIAL_MEMORY_P1=128;
 
+    Processor processorP0;
+    Processor processorP1;
+
 
     public SimulationController() {
 
     }
 
-    public void run(int numCoresP0, int numCachesP0, int numCoresP1, int numCachesP1) {
+    public void run(int numCoresP0,
+                    int numCachesP0,
+                    int numCoresP1,
+                    int numCachesP1,
+                    String pathP0,
+                    String pathP1,
+                    boolean slowMode,
+                    int quantumSize) {
 
         Directory directory0 = new Directory(16, numCachesP0+numCachesP1);
         Memory memory0 = new Memory(16);
@@ -28,10 +38,10 @@ public class SimulationController {
         Directory directory1 = new Directory(8, numCachesP0+numCachesP1);
         Memory memory1 = new Memory(8);
 
-        boolean slowMode = false;
 
-        Processor processorP0 = new Processor(0, numCoresP0, numCachesP0, 200, slowMode, "DatosHilillos/P0", memory0, initializeInstructionMemory(0));
-        Processor processorP1 = new Processor(1, numCoresP1, numCachesP1, 200, slowMode, "DatosHilillos/P1", memory1, initializeInstructionMemory(1));
+
+        this.processorP0 = new Processor(0, numCoresP0, numCachesP0, quantumSize, slowMode, pathP0, memory0, initializeInstructionMemory(0));
+        this.processorP1 = new Processor(1, numCoresP1, numCachesP1, quantumSize, slowMode, pathP1, memory1, initializeInstructionMemory(1));
 
         processorP0.setDirectory(directory0);
         processorP1.setDirectory(directory1);
