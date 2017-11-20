@@ -28,15 +28,15 @@ public class Directory {
 
     public void changeInformation(int numBlock, int numCache, boolean newState){
 
-        blockInformation[numBlock][numCache]=newState;
+        blockInformation[numBlock%numBlocks][numCache]=newState;
     }
 
     public void changeState(int numBlock, char newState){
-        blockStates[numBlock] = newState;
+        blockStates[numBlock%numBlocks] = newState;
     }
 
     public Boolean getStateOfBlockInOneCache(int numBlock, int numCache){
-        return blockInformation[numBlock][numCache];
+        return blockInformation[numBlock%numBlocks][numCache];
     }
 
     public char getStateOfBlock(int numBlock){
