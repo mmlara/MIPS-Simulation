@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 
+import static java.lang.System.exit;
+
 public class Core implements Runnable {
 
     private int[] context;
@@ -100,17 +102,20 @@ public class Core implements Runnable {
         Directory dir = getDirectoryOfBlockByIndex(blockIndex);
 
         if (dataCache.getStatusBlock(blockIndex) == C) {
+
             //Change state of block in cache to invalid
+            handleSharedBlock(dir,dataCache.getTagOfBlock(blockIndex),blockIndex);
             dataCache.setIndexStatus(blockIndex, I);
 
             //Update directory
             dir.changeInformation(dataCache.getTagOfBlock(blockIndex) % 16, getCacheNumber(), false);
-            if (dir.countOfCachesThatContainBlock(blockNumber % 16) == 0)
+            if (dir.countOfCachesThatContainBlock(dataCache.getTagOfBlock(blockIndex) % 16) == 0)
                 dir.changeState(dataCache.getTagOfBlock(blockIndex) % 16, 'U');
 
         } else {//It is modified
             if (getMyProcessor().getLocks().getBus()[(dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1].tryAcquire()) {
                 try {
+                    //handleModifiedBlock(dir,dataCache.getTagOfBlock(blockIndex),blockIndex);
                     Memory mem;
                     int cycleTime = 0;
                     if (myProcessor.getProcessorId() == 0) {
@@ -144,7 +149,7 @@ public class Core implements Runnable {
      * @param instruction: Current instruction to execute
      */
     public void executeLoadInstruction(Instruction instruction) {
-//        try {
+        try {
 
             int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 16;
             int blockIndex = blockNumber % 4;
@@ -268,10 +273,12 @@ public class Core implements Runnable {
                 updateBarrierCycle(1);
                 return;
             }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return;
-//        }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(instruction.toString());
+            exit(1);
+            return;
+        }
     }
 
     /**
@@ -311,12 +318,10 @@ public class Core implements Runnable {
                                         if (!handleSharedBlock(dir, blockNumber, blockIndex))
                                             return;
 
-
                                         if (statusBlock == I) {
 
                                             if (!handleModifiedBlock(dir, blockNumber, blockIndex))
                                                 return;
-
 
                                             if (!loadBlockIntoCache(blockNumber, blockIndex, true))
                                                 return;
@@ -485,7 +490,7 @@ public class Core implements Runnable {
 
                     processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().setIndexStatus(blockIndex, I);
                     dir.changeInformation(blockNumber % 16, cacheWithModifiedBlock, false);
-                    dir.changeState(blockNumber%16,'I');
+                    dir.changeState(blockNumber%16,'U');
                     updateBarrierCycle((isLocalMemory(blockNumber)) ? 1 : 5);
                 } finally {
                     System.out.println("**********************handleModifiedBlock**********************************");
