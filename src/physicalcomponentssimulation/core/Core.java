@@ -115,8 +115,8 @@ public class Core implements Runnable {
         } else {//It is modified
             if (getMyProcessor().getLocks().getBus()[(dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1].tryAcquire()) {
                 try {
-                    //handleModifiedBlock(dir,dataCache.getTagOfBlock(blockIndex),blockIndex);
-                    Memory mem;
+                    handleModifiedBlock(dir,dataCache.getTagOfBlock(blockIndex),blockIndex);
+                    /*Memory mem;
                     int cycleTime = 0;
                     if (myProcessor.getProcessorId() == 0) {
                         cycleTime = ((dataCache.getTagOfBlock(blockIndex) <= 15) ? 16 : 40);
@@ -133,7 +133,7 @@ public class Core implements Runnable {
                     //Write modified block to memory
                     mem.setBlock(dataCache.getTagOfBlock(blockIndex), dataCache.getBlockAtIndex(blockIndex));
                     updateBarrierCycle(cycleTime);
-                } finally {
+*/                } finally {
                     getMyProcessor().getLocks().getBus()[(dataCache.getTagOfBlock(blockIndex) <= 15) ? 0 : 1].release();
                 }
             } else {//If you did not get the memory lock release everything and restart
