@@ -167,7 +167,7 @@ public class Core implements Runnable {
                     int tag = dataCache.getTagOfBlock(blockIndex);
 
                     //Check if data is in cache
-                    if (tag == blockNumber) {
+                    if (tag == blockNumber && dataCache.getStatusBlock(blockIndex) != 'I') {
                         int wordIndex = ((instruction.getThirdParameter() + context[instruction.getFirsParameter()]) % 16) / 4;
                         context[instruction.getSecondParameter()] = dataCache.getWord(blockIndex, wordIndex);
                         instructionSucceeded = true;
@@ -249,7 +249,7 @@ public class Core implements Runnable {
 
                                         }
                                         //Cycles symbolize access to memory to fetch the block
-                                        if (coreID < 2) {
+                                        if (getMyProcessor().getProcessorId() == 0) {
                                             updateBarrierCycle((blockNumber <= 15) ? 16 : 40);
                                         } else {
                                             updateBarrierCycle((blockNumber > 15) ? 16 : 40);
@@ -376,6 +376,7 @@ public class Core implements Runnable {
                             dataCache.setWord(blockIndex, numWord, context[instruction.getSecondParameter()]);
                             dataCache.setIndexStatus(blockIndex, M);
                             dir.changeToModifiedBlock(blockNumber,getCacheNumber());
+                            dir.changeState(blockNumber, 'M');
 
                             instructionSucceeded = true;
 

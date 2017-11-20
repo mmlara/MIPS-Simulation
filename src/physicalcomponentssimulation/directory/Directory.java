@@ -74,4 +74,15 @@ public class Directory {
         }
         return idCaches;
     }
+
+    public void changeToModifiedBlock( int numBlock,int numCache){
+        for (int i = 0; i <numCaches ; i++) {
+            if (i==numCache){
+                blockInformation[numBlock%16][i]=true;
+            }else{
+                blockInformation[numBlock%16][i]=false;
+            }
+        }
+
+    }
 }
