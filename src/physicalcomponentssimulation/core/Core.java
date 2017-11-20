@@ -114,35 +114,34 @@ public class Core implements Runnable {
                 dir.changeState(currentTag, 'U');
 
         } else {//It is modified
-            if (dataCache.getStatusBlock(blockIndex) == M) {
-                if (getMyProcessor().getLocks().getBus()[(currentTag <= 15) ? 0 : 1].tryAcquire()) {
-                    try {
-                        Memory memoryOfBlock;
+            if (getMyProcessor().getLocks().getBus()[(currentTag <= 15) ? 0 : 1].tryAcquire()) {
+                try {
+                    Memory memoryOfBlock;
 
-                        if (currentTag <= 15)
-                            memoryOfBlock = getProcessor(0).getMemory();
-                        else
-                            memoryOfBlock = getProcessor(1).getMemory();
+                    if (currentTag <= 15)
+                        memoryOfBlock = getProcessor(0).getMemory();
+                    else
+                        memoryOfBlock = getProcessor(1).getMemory();
 
-                        updateBarrierCycle((isLocalMemory(currentTag) ? 16 : 40));
+                    updateBarrierCycle((isLocalMemory(currentTag) ? 16 : 40));
 
-                        //Change block state in cache to invalid
-                        dataCache.setIndexStatus(blockIndex, I);
+                    //Change block state in cache to invalid
+                    dataCache.setIndexStatus(blockIndex, I);
 
-                        //Update directory
-                        dir.changeInformation(currentTag, getCacheNumber(), false);
-                        dir.changeState(currentTag, 'U');
+                    //Update directory
+                    dir.changeInformation(currentTag, getCacheNumber(), false);
+                    dir.changeState(currentTag, 'U');
 
-                        //Write modified block to memory
-                        memoryOfBlock.setBlock(currentTag, dataCache.getBlockAtIndex(blockIndex));
-                    } finally {
-                        getMyProcessor().getLocks().getBus()[(currentTag <= 15) ? 0 : 1].release();
-                    }
-
-                } else {//If you did not get the memory lock release everything and restart
-                    return false;
+                    //Write modified block to memory
+                    memoryOfBlock.setBlock(currentTag, dataCache.getBlockAtIndex(blockIndex));
+                } finally {
+                    getMyProcessor().getLocks().getBus()[(currentTag <= 15) ? 0 : 1].release();
                 }
+
+            } else {//If you did not get the memory lock release everything and restart
+                return false;
             }
+
         }
 
         //handleSharedBlock(dir, dataCache.getTagOfBlock(blockIndex), blockIndex);
@@ -157,7 +156,7 @@ public class Core implements Runnable {
      */
 
     public void executeLoadInstruction(Instruction instruction) {
-        try {
+//        try {
             int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 16;
             int blockIndex = blockNumber % 4;
 
@@ -286,12 +285,12 @@ public class Core implements Runnable {
                 updateBarrierCycle(1);
                 return;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(instruction.toString());
-            exit(1);
-            return;
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println(instruction.toString());
+//            exit(1);
+//            return;
+//        }
     }
 
     /**
@@ -336,9 +335,14 @@ public class Core implements Runnable {
                                             return;
                                     }
                                 }
+
+                                dir.changeInformation(blockNumber, getCacheNumber(), true);
                                 dir.changeState(blockNumber, 'M');
+                                dir.changeToModifiedBlock(blockNumber,getCacheNumber());
+
                             } finally {
                                 getMyProcessor().getLocks().getDirectoryMutex()[directoryID].release();
+
                             }
                         } else {
                             return;
@@ -347,6 +351,7 @@ public class Core implements Runnable {
                     int numWord = (((instruction.getThirdParameter() + context[instruction.getFirsParameter()]) % 16) / 4);
                     dataCache.setWord(blockIndex, numWord, context[instruction.getSecondParameter()]);
                     dataCache.setIndexStatus(blockIndex, M);
+
                     instructionSucceeded = true;
 
                 } else {
@@ -370,6 +375,8 @@ public class Core implements Runnable {
                             int numWord = (((instruction.getThirdParameter() + context[instruction.getFirsParameter()]) % 16) / 4);
                             dataCache.setWord(blockIndex, numWord, context[instruction.getSecondParameter()]);
                             dataCache.setIndexStatus(blockIndex, M);
+                            dir.changeToModifiedBlock(blockNumber,getCacheNumber());
+
                             instructionSucceeded = true;
 
                         } finally {
@@ -455,6 +462,7 @@ public class Core implements Runnable {
                 updateBarrierCycle((isLocalMemory(blockNumber)) ? 16 : 40);
                 dir.changeInformation(blockNumber, getCacheNumber(), true);
                 dir.changeState(blockNumber, 'M');
+                dir.changeToModifiedBlock(blockNumber,getCacheNumber());
 
 
             } finally {
@@ -663,6 +671,8 @@ public class Core implements Runnable {
                             this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                             if (instructionSucceeded)
                                 this.context[32] += 4;
+                            else
+                                cyclesWaitingInThisInstruction = 1;
                             //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
                         }
                         //Store
@@ -672,7 +682,7 @@ public class Core implements Runnable {
                             if (instructionSucceeded)
                                 this.context[32] += 4;
                             else
-                                cyclesWaitingInThisInstruction += 1;
+                                cyclesWaitingInThisInstruction = 1;
                             //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
                         }
                         //Fin
