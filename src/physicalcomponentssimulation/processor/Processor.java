@@ -37,7 +37,6 @@ public class Processor {
     private InstructionMemory instructionMemory;
     private String threadDirectoryPath;
     private Queue<SystemThread> assignedSystemThreads;//para que sea más eficiente seleccionar al siguiente hilillo en el procesador.
-    private List<SystemThread> finishedThreads;
     private Clock clock;
     private Locks locks;// Contains all lock objects
 
@@ -60,7 +59,7 @@ public class Processor {
         this.inSlowExecution=inSlowExecution;
         this.threadDirectoryPath = threadDirectoryPath;
         this.assignedSystemThreads = new ArrayDeque<>();
-        this.finishedThreads = new ArrayList<>();
+
         this.memory = memory;
         this.instructionMemory = instructionMemory;
         this.initializeCores();
@@ -100,6 +99,7 @@ public class Processor {
             if (file.isFile()) {
                 String threadFileFile = this.threadDirectoryPath + "/" + file.getName();
                 SystemThread systemThread = new SystemThread(threadFileFile);
+                systemThread.setMyName(file.getName());
                 systemThread.setIdHilillo(i);
                 i++;
                 this.assignedSystemThreads.add(systemThread);
@@ -155,9 +155,7 @@ public class Processor {
         return assignedSystemThreads;
     }
 
-    public List<SystemThread> getFinishedThreads() {
-        return finishedThreads;
-    }
+
 
     public void setAssignedSystemThreads(Queue<SystemThread> assignedSystemThreads) {
         this.assignedSystemThreads = assignedSystemThreads;
