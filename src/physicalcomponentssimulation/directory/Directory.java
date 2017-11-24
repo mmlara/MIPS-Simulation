@@ -28,24 +28,24 @@ public class Directory {
 
     public void changeInformation(int numBlock, int numCache, boolean newState){
 
-        blockInformation[numBlock][numCache]=newState;
+        blockInformation[numBlock%numBlocks][numCache]=newState;
     }
 
     public void changeState(int numBlock, char newState){
-        blockStates[numBlock] = newState;
+        blockStates[numBlock%numBlocks] = newState;
     }
 
     public Boolean getStateOfBlockInOneCache(int numBlock, int numCache){
-        return blockInformation[numBlock][numCache];
+        return blockInformation[numBlock%numBlocks][numCache];
     }
 
     public char getStateOfBlock(int numBlock){
-        return blockStates[numBlock];
+        return blockStates[numBlock %numBlocks];
     }
 
     public int countOfCachesThatContainBlock(int numBlock){
         int x = 0;
-        for (Boolean contains : blockInformation[numBlock]) {
+        for (Boolean contains : blockInformation[numBlock % numBlocks]) {
             if (contains) {
                 x++;
             }
@@ -53,11 +53,11 @@ public class Directory {
         return x;
     }
 
-    public int getNumberOfCacheWithModifiedBlock(int blockNumber){
-        if(blockStates[blockNumber] == 'M'){
+    public int getNumberOfCacheWithModifiedBlock(int blockNumber, int whois){
+        if(blockStates[blockNumber %numBlocks] == 'M'){
             int x = 0;
-            for (Boolean state : blockInformation[blockNumber]){
-                if(state)
+            for (Boolean state : blockInformation[blockNumber % numBlocks]){
+                if(state && x != whois)
                     return x;
                 x++;
             }
@@ -68,10 +68,21 @@ public class Directory {
     public List<Integer> getCachesIdThatShareSomeBlock(int block, int cacheMakeQuestion){
         List<Integer> idCaches= new LinkedList<>();
         for (int i = 0; i <this.numCaches ; i++) {
-            if(blockInformation[block][i]==true && i!= cacheMakeQuestion) {
+            if(blockInformation[block%numBlocks][i]==true && i!= cacheMakeQuestion) {
                 idCaches.add(i);
             }
         }
         return idCaches;
+    }
+
+    public void changeToModifiedBlock( int numBlock,int numCache){
+        for (int i = 0; i <numCaches ; i++) {
+            if (i==numCache){
+                blockInformation[numBlock%16][i]=true;
+            }else{
+                blockInformation[numBlock%16][i]=false;
+            }
+        }
+
     }
 }
