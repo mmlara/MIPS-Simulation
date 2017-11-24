@@ -12,7 +12,7 @@ import javafx.beans.value.ObservableValue;
 import java.io.IOException;
 
 public class MainGUI {
-    private Parent root;
+    static Parent root;
     private Stage primaryStage;
 
     public MainGUI(String rootPath,Stage primaryStage) throws IOException {
