@@ -18,7 +18,7 @@ public class Block {
     public Block(int x) {
         this.dataBlock =new int[blockSize] ;
         for (int i = 0; i <blockSize ; i++) {
-            dataBlock[i]=1;
+            dataBlock[i]=x;
         }
 
     }
