@@ -40,8 +40,9 @@ public class SimulationController {
 
 
 
-        this.processorP0 = new Processor(0, numCoresP0, numCachesP0, quantumSize, slowMode, pathP0, memory0, initializeInstructionMemory(0));
-        this.processorP1 = new Processor(1, numCoresP1, numCachesP1, quantumSize, slowMode, pathP1, memory1, initializeInstructionMemory(1));
+        Processor processorP0 = new Processor(0, numCoresP0, numCachesP0, 30, slowMode, "DatosHilillos/P0", memory0, initializeInstructionMemory(0));
+        Processor processorP1 = new Processor(1, numCoresP1, numCachesP1, 30, slowMode, "DatosHilillos/P1", memory1, initializeInstructionMemory(1));
+
 
         processorP0.setDirectory(directory0);
         processorP1.setDirectory(directory1);

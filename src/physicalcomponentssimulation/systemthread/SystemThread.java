@@ -23,6 +23,7 @@ public class SystemThread {
     private int lastIndexInMemory;
     private int currentCyclesInProcessor;//para saber cuantos ciclos lleva del quantum
     private boolean inMemory;//por si está en memoria y se acaba el quantum para no sacarlo hasta que termine.
+    private String myName;
 
     public SystemThread(String path){
         this.numCyclesInExecution=0;
@@ -141,15 +142,19 @@ public class SystemThread {
     @Override
     public String toString() {
 
-        String infoHilillo= "Hilillo"+idHilillo+" ejecutado en el Procedador : " +idProcessorAsigned +"\n"+
+        String infoHilillo= "Hilillo "+myName+" con id"+idHilillo+" ejecutado en el Procedador : " +idProcessorAsigned +"\n"+
                 "Su ejecución inició en el ciclo de reloj número : "+initialClock+"\n"+
-                "Su ejecución tardó : "+(lastClock-initialClock)+"\n"+
+                "Su ejecución tardó : "+numCyclesInExecution+"\n"+
                 "El estado de sus registros es el siguiente\n";
 
         for (int i = 0; i < contextSize; i++) {
             infoHilillo+="R"+i+" : "+context[i]+"\n";
         }
         return infoHilillo;
+    }
+
+    public void setMyName(String myName) {
+        this.myName = myName;
     }
 }
 

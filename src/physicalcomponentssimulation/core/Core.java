@@ -10,6 +10,7 @@ import physicalcomponentssimulation.processorsparts.ALU;
 import physicalcomponentssimulation.processorsparts.Instruction;
 import physicalcomponentssimulation.systemthread.SystemThread;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
@@ -29,12 +30,16 @@ public class Core implements Runnable {
     private boolean instructionSucceeded = false;
     private boolean slowExecution;
     private Scanner scanner;
+    private List<SystemThread> finishedThreads;
+
 
     final private int I = 0;
     final private int C = 1;
     final private int M = 2;
 
+
     public Core(Queue<SystemThread> assignedSystemThreads) {
+        finishedThreads= new ArrayList<>();
         this.context = new int[contextSize];
         for (int i = 0; i < contextSize; i++) {
             this.context[i] = 0;
@@ -711,7 +716,7 @@ public class Core implements Runnable {
                         this.saveContext();
                     } else {// spend the quantum in processor
                         this.saveContext();
-                        this.getMyProcessor().getFinishedThreads().add(assignedSystemThread);
+                        finishedThreads.add(assignedSystemThread);
                         this.assignedSystemThread.setLastClock(this.myProcessor.getClock().getCurrentTime());
                     }
                 }
@@ -722,8 +727,8 @@ public class Core implements Runnable {
 
         System.out.println("*************TERMINO DE EJECUTAR EL CORE " + this.getCoreID() + "*************");
         System.out.println("Información de sus hilillos: ");
-        for (int i = 0; i < this.getMyProcessor().getFinishedThreads().size(); i++) {
-            System.out.println(this.getMyProcessor().getFinishedThreads().get(i));
+        for (int i = 0; i < this.finishedThreads.size(); i++) {
+            System.out.println(this.finishedThreads.get(i));
 
         }
     }
