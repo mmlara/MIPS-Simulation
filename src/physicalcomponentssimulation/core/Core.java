@@ -106,6 +106,7 @@ public class Core implements Runnable {
 
         int currentTag = dataCache.getTagOfBlock(blockIndex);
         Directory dir = getDirectoryOfBlockByBlockNumber(currentTag);
+        int cyclesWaitingInThisInstruction;
 
         if (dataCache.getStatusBlock(blockIndex) == C) {
 
@@ -128,7 +129,10 @@ public class Core implements Runnable {
                     else
                         memoryOfBlock = getProcessor(1).getMemory();
 
-                    updateBarrierCycle((isLocalMemory(currentTag) ? 16 : 40));
+                    cyclesWaitingInThisInstruction = (isLocalMemory(currentTag) ? 16 : 40);
+                    updateBarrierCycle(cyclesWaitingInThisInstruction);
+                    this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                    this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
 
                     //Change block state in cache to invalid
                     dataCache.setIndexStatus(blockIndex, I);
@@ -164,11 +168,15 @@ public class Core implements Runnable {
 //        try {
             int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 16;
             int blockIndex = blockNumber % 4;
+            int cyclesWaitingInThisInstruction;
 
             //Got the cache lock
             if (this.getMyProcessor().getLocks().getCacheMutex()[getCacheNumber()].tryAcquire()) {
                 try {//TODO hacer barrier cada vez que se obtiene
-                    updateBarrierCycle(1);
+                    cyclesWaitingInThisInstruction = 1;
+                    updateBarrierCycle(cyclesWaitingInThisInstruction);
+                    this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                    this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                     int tag = dataCache.getTagOfBlock(blockIndex);
 
                     //Check if data is in cache
@@ -209,10 +217,16 @@ public class Core implements Runnable {
                                     try {
                                         Memory mem;
                                         if (getMyProcessor().getProcessorId() == 0) {
-                                            updateBarrierCycle((blockNumber <= 15) ? 16 : 40);
+                                            cyclesWaitingInThisInstruction = (blockNumber <= 15) ? 16 : 40;
+                                            updateBarrierCycle(cyclesWaitingInThisInstruction);
+                                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                                             mem = (blockNumber <= 15) ? getMyProcessor().getMemory() : getMyProcessor().getNeigborProcessor().getMemory();
                                         } else {
-                                            updateBarrierCycle((blockNumber > 15) ? 16 : 40);
+                                            cyclesWaitingInThisInstruction = (blockNumber > 15) ? 16 : 40;
+                                            updateBarrierCycle(cyclesWaitingInThisInstruction);
+                                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                                             mem = (blockNumber > 15) ? getMyProcessor().getMemory() : getMyProcessor().getNeigborProcessor().getMemory();
                                         }
                                         if (dir.getStateOfBlock(blockNumber) == 'M') {
@@ -255,9 +269,16 @@ public class Core implements Runnable {
                                         }
                                         //Cycles symbolize access to memory to fetch the block
                                         if (getMyProcessor().getProcessorId() == 0) {
-                                            updateBarrierCycle((blockNumber <= 15) ? 16 : 40);
+                                            cyclesWaitingInThisInstruction = (blockNumber <= 15) ? 16 : 40;
+                                            updateBarrierCycle(cyclesWaitingInThisInstruction);
+                                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
+
                                         } else {
-                                            updateBarrierCycle((blockNumber > 15) ? 16 : 40);
+                                            cyclesWaitingInThisInstruction = (blockNumber > 15) ? 16 : 40;
+                                            updateBarrierCycle(cyclesWaitingInThisInstruction);
+                                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                                         }
                                         //Fetch the block from memory
                                         Block target = mem.getBlock(blockNumber);
@@ -287,7 +308,10 @@ public class Core implements Runnable {
             }
             //Did not get the cache lock
             else {
-                updateBarrierCycle(1);
+                cyclesWaitingInThisInstruction = 1;
+                updateBarrierCycle(cyclesWaitingInThisInstruction);
+                this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                 return;
             }
 //        } catch (Exception e) {
@@ -306,11 +330,15 @@ public class Core implements Runnable {
         //       try {
         int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 16;
         int blockIndex = blockNumber % 4;
+        int cyclesWaitingInThisInstruction;
 
         //Got the cache lock
         if (this.getMyProcessor().getLocks().getCacheMutex()[getCacheNumber()].tryAcquire()) {
             try {
-                updateBarrierCycle(1);
+                cyclesWaitingInThisInstruction = 1;
+                updateBarrierCycle(cyclesWaitingInThisInstruction);
+                this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                 int tag = dataCache.getTagOfBlock(blockIndex);
 
                 //Check if data is in cache
@@ -365,15 +393,14 @@ public class Core implements Runnable {
                         try {
                             Directory dir = getDirectoryOfBlockByBlockNumber(blockNumber);
 
+                            if (!loadBlockIntoCache(blockNumber, blockIndex, false, dir))
+                                return;
+
                             if (!handleSharedBlock(dir, blockNumber, blockIndex))
                                 return;
 
 
                             if (!handleModifiedBlock(dir, blockNumber, blockIndex))
-                                return;
-
-
-                            if (!loadBlockIntoCache(blockNumber, blockIndex, false, dir))
                                 return;
 
 
@@ -404,7 +431,10 @@ public class Core implements Runnable {
 
     public boolean handleSharedBlock(Directory dir, int blockNumber, int blockIndex) {
         List<Integer> idCacheSharedBlock = dir.getCachesIdThatShareSomeBlock(coreID, getCacheNumber());
-        updateBarrierCycle((isLocalMemory(blockNumber)) ? 1 : 5);
+        int cyclesWaitingInThisInstruction = (isLocalMemory(blockNumber)) ? 1 : 5;
+        updateBarrierCycle(cyclesWaitingInThisInstruction);
+        this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+        this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
         for (Integer cacheWithSharedBlock : idCacheSharedBlock) {
 
             Processor processorCache = (cacheWithSharedBlock < 2) ? getProcessor(0) : getProcessor(1);
@@ -422,7 +452,10 @@ public class Core implements Runnable {
         if (dir.countOfCachesThatContainBlock(blockNumber) == 0)
             dir.changeState(blockNumber, 'U');
 
-        updateBarrierCycle((isLocalMemory(blockNumber)) ? 1 : 5);
+        cyclesWaitingInThisInstruction = (isLocalMemory(blockNumber)) ? 1 : 5;
+        updateBarrierCycle(cyclesWaitingInThisInstruction);
+        this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+        this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
 
         return true;
     }
@@ -465,7 +498,10 @@ public class Core implements Runnable {
             try {
                 Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
                 dataCache.loadBlock(blockIndex, blockNumber, memoryOfBlock.getBlock(blockNumber));
-                updateBarrierCycle((isLocalMemory(blockNumber)) ? 16 : 40);
+                int cyclesWaitingInThisInstruction = (isLocalMemory(blockNumber)) ? 16 : 40;
+                updateBarrierCycle(cyclesWaitingInThisInstruction);
+                this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                 dir.changeInformation(blockNumber, getCacheNumber(), true);
                 dir.changeState(blockNumber, 'M');
                 dir.changeToModifiedBlock(blockNumber,getCacheNumber());
@@ -493,7 +529,10 @@ public class Core implements Runnable {
                         try {
                             Memory memoryOfBlock = getProcessor(idMemoryOfBlock).getMemory();
                             memoryOfBlock.setBlock(blockNumber, processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().getBlockAtIndex(blockIndex));
-                            updateBarrierCycle(isLocalMemory(blockNumber) ? 16 : 40);
+                            int cyclesWaitingInThisInstruction = isLocalMemory(blockNumber) ? 16 : 40;
+                            updateBarrierCycle(cyclesWaitingInThisInstruction);
+                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
 
                         } finally {
                             getMyProcessor().getLocks().getBus()[idMemoryOfBlock].release();
@@ -504,7 +543,10 @@ public class Core implements Runnable {
                     processorCache.getCores()[cacheWithModifiedBlock % 2].getDataCache().setIndexStatus(blockIndex, I);
                     dir.changeInformation(blockNumber, cacheWithModifiedBlock, false);
                     dir.changeState(blockNumber, 'U');
-                    updateBarrierCycle((isLocalMemory(blockNumber)) ? 1 : 5);
+                    int cyclesWaitingInThisInstruction = (isLocalMemory(blockNumber)) ? 1 : 5;
+                    updateBarrierCycle(cyclesWaitingInThisInstruction);
+                    this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                    this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                 } finally {
                     processorCache.getLocks().getCacheMutex()[cacheWithModifiedBlock].release();
                 }
@@ -518,11 +560,18 @@ public class Core implements Runnable {
 
     public Directory getDirectoryOfBlockByIndex(int blockIndex) {
         Directory dir;
+        int cyclesWaitingInThisInstruction;
         if (myProcessor.getProcessorId() == 0) {
-            updateBarrierCycle((dataCache.getTagOfBlock(blockIndex) <= 15) ? 1 : 5);
+            cyclesWaitingInThisInstruction = (dataCache.getTagOfBlock(blockIndex) <= 15) ? 1 : 5;
+            updateBarrierCycle(cyclesWaitingInThisInstruction);
+            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
             dir = (dataCache.getTagOfBlock(blockIndex) <= 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
         } else {
-            updateBarrierCycle((dataCache.getTagOfBlock(blockIndex) > 15) ? 1 : 5);
+            cyclesWaitingInThisInstruction = (dataCache.getTagOfBlock(blockIndex) > 15) ? 1 : 5;
+            updateBarrierCycle(cyclesWaitingInThisInstruction);
+            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
             dir = (dataCache.getTagOfBlock(blockIndex) > 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
         }
         return dir;
@@ -530,11 +579,18 @@ public class Core implements Runnable {
 
     public Directory getDirectoryOfBlockByBlockNumber(int blockNumber) {
         Directory dir;
+        int cyclesWaitingInThisInstruction;
         if (myProcessor.getProcessorId() == 0) {
-            updateBarrierCycle((blockNumber <= 15) ? 1 : 5);
+            cyclesWaitingInThisInstruction = (blockNumber <= 15) ? 1 : 5;
+            updateBarrierCycle(cyclesWaitingInThisInstruction);
+            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
             dir = (blockNumber <= 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
         } else {
-            updateBarrierCycle((blockNumber > 15) ? 1 : 5);
+            cyclesWaitingInThisInstruction = (blockNumber > 15) ? 1 : 5;
+            updateBarrierCycle(cyclesWaitingInThisInstruction);
+            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
             dir = (blockNumber > 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
         }
         return dir;
@@ -673,12 +729,13 @@ public class Core implements Runnable {
                         if (instruction.getOperationCode() == 35) {
                             //Load Implementation
                             executeLoadInstruction(instruction);
-                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
-                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                             if (instructionSucceeded)
                                 this.context[32] += 4;
-                            else
+                            else {
+                                this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 1);//suma un ciclo en procesador;
+                                this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 1);
                                 cyclesWaitingInThisInstruction = 1;
+                            }
                             //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
                         }
                         //Store
@@ -687,8 +744,11 @@ public class Core implements Runnable {
                             executeStoreInstruction(instruction);
                             if (instructionSucceeded)
                                 this.context[32] += 4;
-                            else
+                            else{
+                                this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 1);//suma un ciclo en procesador;
+                                this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 1);
                                 cyclesWaitingInThisInstruction = 1;
+                            }
                             //cyclesWaitingInThisInstruction; poner acá lo que acumulemde ciclos tratando de ejecutar esta instrucción
                         }
                         //Fin
@@ -707,6 +767,8 @@ public class Core implements Runnable {
                         //System.out.println("ejecuta la instrucción hilillo " + this.assignedSystemThread.getIdHilillo() + " en el core " + getCoreID() + " del procesador " + getMyProcessor().getProcessorId());
 
                         updateBarrierCycle(cyclesWaitingInThisInstruction);
+                        this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
+                        this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
 
                         //System.out.println("Se desbloquea el hilillo " + assignedSystemThread.getIdHilillo());
                     }//while end of quantum or end of thread
