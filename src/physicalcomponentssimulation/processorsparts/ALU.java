@@ -1,16 +1,35 @@
+/**
+ *  ALU
+ *
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
+ * @version 1.0
+ * @since 25/11/2017
+ */
+
 package physicalcomponentssimulation.processorsparts;
 
 
 
 public class ALU {
 
+    /**
+     * Instruction to work with
+     */
     Instruction instruction;
+
+    /**
+     * Register set for operation execution
+     */
     private int[] registers;
 
-    //Register that contains the PC
+    /**
+     * Register that contains PC
+     */
     private int PC = 32;
 
-    //tabla de instrucciones.
+    /**
+     * Instruction table
+     */
     private final int JR    = 2;
     private final int JAL   = 3;
     private final int BEQZ  = 4;
@@ -20,22 +39,20 @@ public class ALU {
     private final int DDIV  = 14;
     private final int DADD  = 32;
     private final int DSUB  = 34;
-    private final int LW    = 35;
-    private final int SW    = 43;
-    private final int FIN   = 63;
 
+    /**
+     * Sets the registers to the current context of the "hilillo"
+    * @param context the current "hilillo" context
+     */
     public ALU(int[] context){
         this.registers = context;
     }
 
-    public Instruction getInstruction() {
-        return instruction;
-    }
-
-    public void setInstruction(Instruction instruction) {
-        this.instruction = instruction;
-    }
-
+    /**
+     * Method that executes the operation in the ALU. It executes every operation except for Loads and Stores.
+     * @param instruction the instruction to execute
+     * @return True if the instruction ended successfully otherwise false
+     */
     public boolean executionOperation(Instruction instruction){
         boolean successOperation=false;
 

@@ -11,16 +11,11 @@ import simulationviewer.gui.MainGUI;
 
 import java.util.Scanner;
 
-public class Main extends Application {
+public class Main {
 
-    MainGUI viewer;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        viewer = new MainGUI("/simulationviewer/guifiles/initialgui.fxml",primaryStage);
-        SimulationController simullation = new SimulationController();
-        //simullation.run(2,2,1,1);
-    }
+
+
 
     public static void main(String[] args)
     {
@@ -107,6 +102,6 @@ public class Main extends Application {
         }while (opcion!=4);
 
 
-        launch(args);
+
     }
 }

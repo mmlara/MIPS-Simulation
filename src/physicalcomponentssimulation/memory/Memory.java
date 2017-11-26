@@ -1,14 +1,33 @@
+/**
+ *  Representation Data Memory of Processor
+ *
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
+ * @version 1.0
+ * @since 25/11/2017
+ */
+
 package physicalcomponentssimulation.memory;
 import physicalcomponentssimulation.cache.Block;
 
 
-//mapea toda la memoria compartida, los dos núcleos deberian tener un puntero a la misma.
-//los primeros 16 bloques estan en P0 y los otros 8 en P1
+
 public class Memory {
 
+
+    /**
+     * Size of the share memory
+     */
     public int shareMemorySize;
+
+    /**
+     * Representation of the distributed share memory in the simulation
+     */
     private Block[] shareMemory;
-//TODO Cambiar por el constructor default, este se usó para ver los datos si los ponía en caché
+
+    /**
+     * Constructor
+     * @param memorySize Size of the distributed share memory
+     */
     public Memory(int memorySize) {
         this.shareMemorySize=memorySize;
         this.shareMemory = new Block[shareMemorySize];
@@ -18,12 +37,22 @@ public class Memory {
         }
     }
 
+
+    /**
+     * Get the block instruction in the specific index
+     * @param blockIndex Index to get from the instruction memory
+     * @return  A Block of the memory
+     */
     public Block getBlock(int blockIndex ){
         blockIndex = blockIndex%shareMemorySize;
         return shareMemory[blockIndex];
     }
 
-    //este método recibe la ubicación real en memoria y no el tag del bloque.
+    /**
+     * Set a block of the memory
+     * @param blockIndex Index to set from the instruction memory
+     * @param block Block to set in the memory
+     */
     public void setBlock(int blockIndex, Block block){
         shareMemory[blockIndex % shareMemorySize]=block;
     }
