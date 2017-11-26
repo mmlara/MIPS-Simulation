@@ -146,4 +146,13 @@ public class DataCache  {
      */
     public Block getBlockAtIndex(int index){return cacheData[index];}
 
+    /**
+     * Method that prints caches content
+     */
+    public void printCache(){
+        for(int i=0;i<numBlocks; i++){
+            System.out.println("Indice " + i + " Tag: " + tags[i] + " State: " + validInformation[i] + " Content: " + cacheData[i].toString());
+        }
+    }
+
 }

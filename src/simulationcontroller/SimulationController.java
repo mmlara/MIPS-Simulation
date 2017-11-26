@@ -114,6 +114,15 @@ public class SimulationController {
         processorP0.getDirectory().printDirectory();
         processorP1.getDirectory().printDirectory();
         System.out.println("");
+        System.out.println("Cache 0:");
+        processorP0.getCores()[0].getDataCache().printCache();
+        System.out.println("");
+        System.out.println("Cache 1:");
+        processorP0.getCores()[1].getDataCache().printCache();
+        System.out.println("");
+        System.out.println("Cache 2:");
+        processorP1.getCores()[0].getDataCache().printCache();
+        System.out.println("");
     }
 
     /**
