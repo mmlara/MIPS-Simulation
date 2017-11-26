@@ -33,7 +33,9 @@ public class Main {
                     "3- Ejecutar Simulación\n" +
                     "4- Salir";
             SimulationController simullation = new SimulationController();
-            System.out.println(" \t\t Simulación MIPS \n\n");
+            System.out.println("******************************************");
+            System.out.println(" \t\t Simulación MIPS");
+            System.out.println("******************************************\n");
             System.out.println(opciones);
             opcion = sc.nextInt();
             switch (opcion) {
@@ -86,16 +88,6 @@ public class Main {
 
                 case 3:
                     simullation.run(2, 2, 1, 1, pathHililloP0, pathHililloP1, slowMode, quantum);
-                    if (!slowMode) {
-                        List<Thread> currentThreads = simullation.getThreads();
-                        for (int i = 0; i < currentThreads.size(); i++) {
-                            try {
-                                currentThreads.get(i).join();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
                     break;
                 default:
                     break;
