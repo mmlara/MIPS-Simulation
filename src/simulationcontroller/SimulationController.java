@@ -8,6 +8,9 @@ import physicalcomponentssimulation.processor.Processor;
 import physicalcomponentssimulation.processorsparts.Instruction;
 import physicalcomponentssimulation.time.Clock;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SimulationController {
 
     /**
@@ -23,6 +26,7 @@ public class SimulationController {
      */
     Processor processorP0;
     Processor processorP1;
+    List<Thread> threads;
 
 
     public SimulationController() {}
@@ -80,11 +84,14 @@ public class SimulationController {
             new Thread(processorP0.getCores()[i],"Thread "+ i+ " P0").start();
         }
 
+        threads = new ArrayList<>();
         for (int i = 0; i < numCoresP1; i++) {
 
             processorP1.getCores()[i].setMyProcessor(processorP1);
             processorP1.getCores()[i].setCoreID(i);
-            new Thread(processorP1.getCores()[i],"Thread "+ i+ " P1").start();
+            Thread newCore = new Thread(processorP1.getCores()[i],"Thread "+ i+ " P1");
+            threads.add(newCore);
+            newCore.start();
         }
     }
 
@@ -102,5 +109,13 @@ public class SimulationController {
             System.out.println("Invalid physicalcomponentssimulation.processor id");
         }
         return instructionMemory;
+    }
+
+    /***
+     * Get all threads running
+     * @return An Array with all thread current runing
+     */
+    public List<Thread> getThreads() {
+        return threads;
     }
 }
