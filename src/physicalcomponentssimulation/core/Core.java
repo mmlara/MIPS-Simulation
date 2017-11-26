@@ -907,7 +907,7 @@ public class Core implements Runnable {
                     this.getMyProcessor().getClock().increaseCurrentTime();//move on the clock when the third hilillo arrive
                     //release mutex
                     if (slowExecution) {
-                        System.out.println("**Ejecutando el ciclo número \n Presione una tecla para continuar" + this.getMyProcessor().getClock().getCurrentTime());
+                        System.out.println("**Ejecutando el ciclo número "+ this.getMyProcessor().getClock().getCurrentTime()+ "\nPresione una tecla para continuar");
                         scanner.next();
                     }
                     this.getMyProcessor().getLocks().getBarrierCycleClock().release(this.getMyProcessor().getLocks().getNumCoresWaiting());
