@@ -1,10 +1,3 @@
-/**
- * Processor
- *
- * @author Gómez Brayan, Lara Milton, Quirós Esteban
- * @version 1.0
- * @since 25/11/2017
- */
 package physicalcomponentssimulation.processor;
 
 import blockinglogicalcomponents.Locks;
@@ -26,83 +19,81 @@ import java.util.List;
 import java.util.Queue;
 
 public class Processor {
+
     /**
-     * Static size of the memory instruction in the processor 0
+     * Static sizes of memory
      */
     private final int INSTRUCTION_MEMORY_SIZE_P0 = 24;
-
-    /**
-     * Static size of the memory instruction in the processor 1
-     */
     private final int INSTRUCTION_MEMORY_SIZE_P1 = 16;
 
-
     /**
-     * Reference to the other processor in the simulation
+     * Represents the other processor in the simulation
      */
     private Processor neigborProcessor;
 
     /**
-     * Mode to execute the simulation
+     * Flag representing if simulation is in slow mode or not
      */
-    private boolean inSlowExecution;
+    private boolean inSlowExecution;//Flag to check if execution is in slow mode
 
     /**
-     * Identification of the processor
+     * Processor ID
      */
     private int processorId;
 
     /**
-     * Size of quantum from a system thread in the core
+     * Size of the quantum for the processor
      */
-    private int quantumSize;//cambiar este valor y chequear si se escribe así
+    private int quantumSize;
 
     /**
-     * Number of cores that  this processor has
+     * Number of cores in this processor
      */
     private int numCores;
 
     /**
-     * Number of caches that  this processor has
+     * Number of caches in this processor
      */
     private int numOfCaches;
 
     /**
-     * References to the cores that  this processor has
+     * Array that contains cores of this processor
      */
     private Core[] cores;
 
     /**
-     * Reference to the data memory
+     * This processors memory
      */
     private Memory memory;
 
     /**
-     * Reference to the Instruction Memory
+     * This processors instruction memory
      */
     private InstructionMemory instructionMemory;
 
     /**
-     * Path of the directory where the files are located with the instructions that will be executed
+     * String with the Path for the directory
      */
     private String threadDirectoryPath;
 
     /**
-     * Queue with the system threads that will be executed in this processor
+     * Queue that controls "hilillos" to execute
      */
-    private Queue<SystemThread> assignedSystemThreads;//para que sea más eficiente seleccionar al siguiente hilillo en el procesador.
+    private Queue<SystemThread> assignedSystemThreads;
 
     /**
-     * Reference of the clock to create a logical synchronization
+     * Processors clock
      */
     private Clock clock;
 
     /**
-     *
+     * Reference to object that contains all the locks necessary for execution control
      */
-    private Locks locks;// Contains all lock objects
+    private Locks locks;
 
-
+    /**
+     * Directory of this processor
+     */
     Directory directory;
 
     /**
@@ -134,10 +125,8 @@ public class Processor {
         }
     }
 
-
-
     /**
-     *  This method initialize the cores of the physicalcomponentssimulation.processor
+     *  This method initializes the cores of the physicalcomponentssimulation.processor
      */
     private void initializeCores() {
 
@@ -173,58 +162,107 @@ public class Processor {
         }
     }
 
-
+    /**
+     * Get the neighbor processor(not the one where you are located)
+     */
     public Processor getNeigborProcessor() {
         return neigborProcessor;
     }
 
+    /**
+     * Set the neighbor Processor
+     * @param neigborProcessor Processor to set as neighbor processor
+     */
     public void setNeigborProcessor(Processor neigborProcessor) {
         this.neigborProcessor = neigborProcessor;
     }
 
+    /**
+     * Get the quantum size
+     * @return quantum size
+     */
     public int getQuantumSize() {
         return this.quantumSize;
     }
 
+    /**
+     * Get the array that contains the processors cores
+     * @return the array of cores in the processor
+     */
     public Core[] getCores() {
         return this.cores;
     }
 
+    /**
+     * Set this processors directory
+     * @param directory directory to use as processors directory
+     */
     public void setDirectory(Directory directory) {
         this.directory = directory;
     }
 
+    /**
+     * Get the directory
+     * @return this processors directory
+     */
     public Directory getDirectory() {return this.directory;}
 
+    /**
+     * Get the queue of "hilillos"
+     * @return queue of "hilillos"
+     */
     public Queue<SystemThread> getAssignedSystemThreads() {
         return assignedSystemThreads;
     }
+
 
     public Clock getClock() {
         return clock;
     }
 
+    /**
+     * Set the clock of this processor
+     * @param clock clock
+     */
     public void setClock(Clock clock) {
         this.clock = clock;
     }
 
+    /**
+     * Set the processors lock object
+     * @param locks new set of locks
+     */
     public void setLocks(Locks locks) {
         this.locks = locks;
     }
 
+    /**
+     * Get the clock
+     * @return processors clock
+     */
     public Locks getLocks() {
         return locks;
     }
 
+    /**
+     * Get the data memory
+     * @return data memory
+     */
     public Memory getMemory(){return memory;}
 
+    /**
+     * Get the processors ID
+     * @return processors ID
+     */
     public int getProcessorId() {
         return processorId;
     }
 
-
+    /**
+     * Get the slow execution flag
+     * @return slow execution flag
+     */
     public boolean isInSlowExecution() {
         return inSlowExecution;
     }
-
 }
