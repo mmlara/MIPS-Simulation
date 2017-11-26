@@ -27,6 +27,9 @@ public class SimulationController {
     Processor processorP0;
     Processor processorP1;
 
+    /**
+     * List of thread that are running
+     */
     List<Thread> threadArray = new LinkedList<>();
 
 

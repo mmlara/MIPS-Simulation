@@ -57,6 +57,9 @@ public class Memory {
         shareMemory[blockIndex % shareMemorySize]=block;
     }
 
+    /**
+     * Method that prints all the content of the memory
+     */
     public void printMemory(){
         int x=0;
         for(Block b : shareMemory){
