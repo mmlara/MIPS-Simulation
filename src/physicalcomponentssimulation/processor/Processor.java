@@ -72,6 +72,17 @@ public class Processor {
         }
     }
 
+    public List<String> getNameHilillos(){
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i <numCores ; i++) {
+            for (int j = 0; j <getCores()[i].getFinishedThreads().size() ; j++) {
+               String name= getCores()[i].getFinishedThreads().get(i).getMyName();
+                names.add(name);
+            }
+        }
+        return names;
+    }
+
     /**
      *  This method initialize the cores of the physicalcomponentssimulation.processor
      */

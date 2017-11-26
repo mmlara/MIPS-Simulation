@@ -69,6 +69,10 @@ public class Core implements Runnable {
         this.context[32] = this.assignedSystemThread.getPc();
     }
 
+    public List<SystemThread> getFinishedThreads() {
+        return finishedThreads;
+    }
+
     public DataCache getDataCache() {
         return this.dataCache;
     }

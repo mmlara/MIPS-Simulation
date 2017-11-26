@@ -23,6 +23,14 @@ public class SimulationController {
 
     }
 
+    public Processor getProcessorP0() {
+        return processorP0;
+    }
+
+    public Processor getProcessorP1() {
+        return processorP1;
+    }
+
     public void run(int numCoresP0,
                     int numCachesP0,
                     int numCoresP1,

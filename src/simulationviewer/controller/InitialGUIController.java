@@ -1,5 +1,6 @@
 package simulationviewer.controller;
 
+import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -9,10 +10,11 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import simulationcontroller.SimulationController;
+import simulationviewer.gui.MainGUI;
 
 import java.io.IOException;
 
-public class InitialGUIController {
+public final class InitialGUIController extends Application {
     private Stage infoSimulation;
 
     public Button initExecution;
@@ -21,8 +23,12 @@ public class InitialGUIController {
     public TextField pathP1;
     public TextField quantumSize;
     public CheckBox modeExecution;
+    MainGUI viewer;
 
-    SimulationController simulationController;
+
+
+
+     static SimulationController simulationController;
 
     String valuePathP0;
     String valuePathP1;
@@ -43,9 +49,10 @@ public class InitialGUIController {
     }
 
     public void displayResults(javafx.event.ActionEvent event) throws IOException {
-        Parent blah = FXMLLoader.load(getClass().getResource("displayinformation.fxml"));
+        Parent blah = FXMLLoader.load(getClass().getResource("/simulationviewer/guifiles/displayinformation.fxml"));
         Scene scene = new Scene(blah);
         Stage appStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        appStage.hide();
         appStage.setScene(scene);
         appStage.show();
 
@@ -56,4 +63,8 @@ public class InitialGUIController {
 
     }
 
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        viewer = new MainGUI("/simulationviewer/guifiles/initialgui.fxml",primaryStage);
+    }
 }
