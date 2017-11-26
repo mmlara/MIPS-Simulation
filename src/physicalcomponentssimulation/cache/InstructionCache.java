@@ -79,7 +79,7 @@ public class InstructionCache  {
     public Instruction getInstruction(int indexInMemory){
         //index conversion
         indexInMemory=(indexInMemory-this.instructionMemory.getInitialMemmory())/4;
-        Instruction instruction;
+        Instruction instruction=null;
         int blockTag = (indexInMemory)/4;
         int indexInCache =blockTag%4;
         if (blockTag == getTagOfBlock(indexInCache)){//hit case
@@ -92,6 +92,25 @@ public class InstructionCache  {
             int instructionNumberInBlock=indexInMemory%4;
             instruction=getWord(indexInCache,instructionNumberInBlock);
         }
+        return instruction;
+    }
+
+    /**
+     * Get one instruction from the cache after miss in cache
+     * @param indexInMemory logical memory address of the instruction
+     * @return instruction from memory or cache(miss and hit case)
+     */
+    public Instruction getInstructionAfterMiss(int indexInMemory){
+        //index conversion
+        indexInMemory=(indexInMemory-this.instructionMemory.getInitialMemmory())/4;
+        Instruction instruction=null;
+        int blockTag = (indexInMemory)/4;
+        int indexInCache =blockTag%4;
+        this.cacheInstruction[indexInCache]=this.instructionMemory.getBlockInstruction(blockTag);
+        this.tags[indexInCache]=blockTag;
+        int instructionNumberInBlock=indexInMemory%4;
+        instruction=getWord(indexInCache,instructionNumberInBlock);
+
         return instruction;
     }
 

@@ -150,8 +150,8 @@ public class SystemThread {
                 "Su ejecución tardó : "+numCyclesInExecution+"\n"+
                 "El estado de sus registros es el siguiente\n";
 
-        for (int i = 0; i < contextSize; i++) {
-            infoHilillo+="R"+i+" : "+context[i]+"\n";
+        for (int i = 0; i < contextSize; i+=2) {
+            infoHilillo+="R"+i+" : "+context[i]+"\t \tR"+(i+1)+" : "+context[i+1]+"\n";
         }
         return infoHilillo;
     }
