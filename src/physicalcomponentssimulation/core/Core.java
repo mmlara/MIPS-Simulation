@@ -736,21 +736,36 @@ public class Core implements Runnable {
      * Try to load the next instruction to be execute
      * @return The next instruction
      */
+
+
     public Instruction tryLoadNextInstruction() {
+        //TODO aqui primero se pide la cache de insrucciones respectivas
         if (getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].tryAcquire()) {
             try {
+                updateBarrierCycle(1);
+                this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 1);//suma un ciclo en procesador;
+                this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 1);
                 int actualPC = this.context[32];
                 int initialIndexThread = assignedSystemThread.getInitIndexInMemory();
                 int indexInMemory = initialIndexThread + actualPC;
                 int blockTag = indexInMemory / 4;
-                int indexInCache = blockTag % 4;
-                if (blockTag < 16) {
-                    updateBarrierCycle(16);
-                    return this.instructionCache.getInstruction(actualPC);
-                } else {
-                    updateBarrierCycle(16);
-                    return this.instructionCache.getInstruction(actualPC);
-                }
+                     Instruction  instruction= this.instructionCache.getInstruction(actualPC);
+                     if (instruction!=null){
+                      //   if (getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].tryAcquire()) {
+                             try {
+                                 instruction =this.instructionCache.getInstructionAfterMiss(actualPC);
+                                 updateBarrierCycle(16);
+                                 this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 16);
+                                 this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 16);
+                             }finally {
+                          //       getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].release();
+                             }
+                            // }else{
+                             //TODO soltar la cache
+                         //}
+
+                     }
+                     return instruction;
 
             } finally {
                 getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].release();
@@ -812,6 +827,8 @@ public class Core implements Runnable {
                     while(instruction == null){
                         instruction = tryLoadNextInstruction();
                         updateBarrierCycle(1);
+                        this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 1);//suma un ciclo en procesador;
+                        this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 1);
                     }
 
                     //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
@@ -826,6 +843,8 @@ public class Core implements Runnable {
                             while(instruction == null){
                                 instruction = tryLoadNextInstruction();
                                 updateBarrierCycle(1);
+                                this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 1);//suma un ciclo en procesador;
+                                this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 1);
                             }
                             instructionSucceeded = false;
                         }
