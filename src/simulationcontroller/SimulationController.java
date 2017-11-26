@@ -8,6 +8,9 @@ import physicalcomponentssimulation.processor.Processor;
 import physicalcomponentssimulation.processorsparts.Instruction;
 import physicalcomponentssimulation.time.Clock;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class SimulationController {
 
     /**
@@ -23,6 +26,8 @@ public class SimulationController {
      */
     Processor processorP0;
     Processor processorP1;
+
+    List<Thread> threadArray = new LinkedList<>();
 
 
     public SimulationController() {}
@@ -77,15 +82,29 @@ public class SimulationController {
         for (int i = 0; i < numCoresP0; i++) {
             processorP0.getCores()[i].setMyProcessor(processorP0);
             processorP0.getCores()[i].setCoreID(i);
-            new Thread(processorP0.getCores()[i],"Thread "+ i+ " P0").start();
+            Thread t = new Thread(processorP0.getCores()[i],"Thread "+ i+ " P0");
+            t.start();
+            threadArray.add(t);
         }
 
         for (int i = 0; i < numCoresP1; i++) {
 
             processorP1.getCores()[i].setMyProcessor(processorP1);
             processorP1.getCores()[i].setCoreID(i);
-            new Thread(processorP1.getCores()[i],"Thread "+ i+ " P1").start();
+            Thread t = new Thread(processorP1.getCores()[i],"Thread "+ i+ " P1");
+            t.start();
+            threadArray.add(t);
         }
+
+        for(Thread t : threadArray) {
+            try {
+                t.join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        processorP0.getMemory().printMemory();
+        processorP1.getMemory().printMemory();
     }
 
     /**
