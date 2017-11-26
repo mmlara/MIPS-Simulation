@@ -1,7 +1,7 @@
 /**
- *  Representation of locks to control concurrency and parallelism
+ *  Representation memory block
  *
- * @author Gomez Bryan, Lara Milton, Quirós Esteban
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
  * @version 1.0
  * @since 25/11/2017
  */
@@ -10,6 +10,9 @@ package blockinglogicalcomponents;
 
 import java.util.concurrent.Semaphore;
 
+/**
+ * Class Locks
+ */
 public class Locks {
 
     private int numCores;
