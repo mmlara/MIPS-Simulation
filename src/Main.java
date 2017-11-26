@@ -7,6 +7,7 @@ import physicalcomponentssimulation.processor.Processor;
 import physicalcomponentssimulation.systemthread.SystemThread;
 import physicalcomponentssimulation.time.Clock;
 import simulationcontroller.SimulationController;
+import simulationviewer.controller.Controller;
 import simulationviewer.gui.MainGUI;
 
 public class Main extends Application {

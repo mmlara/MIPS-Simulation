@@ -76,7 +76,7 @@ public class Processor {
         List<String> names = new ArrayList<>();
         for (int i = 0; i <numCores ; i++) {
             for (int j = 0; j <getCores()[i].getFinishedThreads().size() ; j++) {
-               String name= getCores()[i].getFinishedThreads().get(i).getMyName();
+               String name= getCores()[i].getFinishedThreads().get(j).getMyName();
                 names.add(name);
             }
         }

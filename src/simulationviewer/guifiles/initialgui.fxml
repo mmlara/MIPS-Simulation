@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane id="parentFrame" maxHeight="500.0" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simulationviewer.controller.InitialGUIController">
+<AnchorPane id="parentFrame" maxHeight="500.0" maxWidth="500.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simulationviewer.controller.Controller">
     <children>
         <Pane layoutY="-3.0" prefHeight="506.0" prefWidth="508.0" AnchorPane.bottomAnchor="-3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="-3.0">
             <children>
@@ -23,10 +21,11 @@
                         <Font name="Arial" size="15.0" />
                     </font>
                 </Label>
-                <GridPane layoutX="21.0" layoutY="166.0" prefHeight="130.0" prefWidth="459.0">
+                <GridPane layoutX="21.0" layoutY="159.0" prefHeight="137.0" prefWidth="451.0">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="225.0" minWidth="10.0" prefWidth="163.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="344.0" minWidth="10.0" prefWidth="296.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="225.0" minWidth="10.0" prefWidth="170.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="344.0" minWidth="10.0" prefWidth="199.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="344.0" minWidth="10.0" prefWidth="115.0" />
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints maxHeight="87.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
@@ -40,31 +39,33 @@
                             </font>
                         </Label>
                         <TextField fx:id="pathP0" editable="true" text="DatosHilillos/P0" GridPane.columnIndex="1" />
-                  <Label prefHeight="35.0" prefWidth="131.0" text="Path Procesador 0" wrapText="true" GridPane.rowIndex="1">
-                     <font>
-                        <Font name="Arial" size="15.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="pathP1" editable="true" text="DatosHilillos/P1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label prefHeight="35.0" prefWidth="131.0" text="Path Procesador 0" wrapText="true">
-                     <font>
-                        <Font name="Arial" size="15.0" />
-                     </font>
-                  </Label>
-                  <Label prefHeight="32.0" prefWidth="151.0" text="Tamaño de Quantum" wrapText="true" GridPane.rowIndex="2">
-                     <font>
-                        <Font name="Arial" size="15.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="quantumSize" editable="true" prefHeight="19.0" prefWidth="295.0" text="200" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label prefHeight="35.0" prefWidth="131.0" text="Path Procesador 0" wrapText="true" GridPane.rowIndex="1">
+                            <font>
+                                <Font name="Arial" size="15.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="pathP1" editable="true" text="DatosHilillos/P1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label prefHeight="35.0" prefWidth="131.0" text="Path Procesador 0" wrapText="true">
+                            <font>
+                                <Font name="Arial" size="15.0" />
+                            </font>
+                        </Label>
+                        <Label prefHeight="32.0" prefWidth="151.0" text="Tamaño de Quantum" wrapText="true" GridPane.rowIndex="2">
+                            <font>
+                                <Font name="Arial" size="15.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="quantumSize" editable="true" prefHeight="19.0" prefWidth="295.0" text="200" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Button fx:id="openDir1" mnemonicParsing="false" onAction="#openPathP0" text="Seleccionar ruta" GridPane.columnIndex="2" />
+                  <Button fx:id="openDir2" mnemonicParsing="false" onAction="#openPathP1" text="Seleccionar ruta" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                     </children>
-               <padding>
-                  <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-               </padding>
+                    <padding>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                    </padding>
                 </GridPane>
-            <CheckBox fx:id="modeExecution" layoutX="21.0" layoutY="333.0" mnemonicParsing="false" text="Modo Lento" />
-            <Button fx:id="initExecution" layoutX="210.0" layoutY="418.0" mnemonicParsing="false" onAction="#initSimulation" text="Iniciar Simulación" />
-            <Button fx:id="seeResults" layoutX="217.0" layoutY="418.0" mnemonicParsing="false" text="Ver Resultados"  visible="false" onAction="#displayResults"/>
+                <CheckBox fx:id="modeExecution" layoutX="21.0" layoutY="333.0" mnemonicParsing="false" text="Modo Lento" />
+                <Button fx:id="initExecution" layoutX="210.0" layoutY="418.0" mnemonicParsing="false" onAction="#initSimulation" text="Iniciar Simulación" />
+                <Button fx:id="seeResults" layoutX="217.0" layoutY="418.0" mnemonicParsing="false" onAction="#displayResults" text="Ver Resultados" visible="false" />
             </children>
         </Pane>
     </children>

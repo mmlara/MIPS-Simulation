@@ -28,3 +28,8 @@ out
 
 .idea/artifacts/
 .idea/inspectionProfiles/
+
+#Workspace
+workspace.xml
+DatosHilillos/P0/Testing/
+DatosHilillos/P1/Testing/
