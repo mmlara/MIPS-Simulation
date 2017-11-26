@@ -1,22 +1,19 @@
-import blockinglogicalcomponents.Locks;
-import javafx.application.Application;
-import javafx.stage.Stage;
-import physicalcomponentssimulation.directory.Directory;
-import physicalcomponentssimulation.memory.Memory;
-import physicalcomponentssimulation.processor.Processor;
-import physicalcomponentssimulation.systemthread.SystemThread;
-import physicalcomponentssimulation.time.Clock;
+/**
+ * Main class
+ * @description Main class
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
+ * @version 1.0
+ * @since 25/11/2017
+ */
 import simulationcontroller.SimulationController;
-
-
 import java.util.Scanner;
 
 public class Main {
 
-
-
-
-
+    /**
+     * Main method to run the simulation
+     * @param args
+     */
     public static void main(String[] args)
     {
         SimulationController simullation = new SimulationController();
@@ -96,7 +93,6 @@ public class Main {
 
                  default:
                     break;
-
             }
 
         }while (opcion!=4);
