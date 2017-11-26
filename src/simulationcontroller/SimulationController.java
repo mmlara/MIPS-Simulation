@@ -10,27 +10,35 @@ import physicalcomponentssimulation.time.Clock;
 
 public class SimulationController {
 
+    /**
+     * Static sizes of memory
+     */
     private final int INSTRUCTION_MEMORY_SIZE_P0 = 24;
     private final int INSTRUCTION_MEMORY_SIZE_P1 = 16;
     private final int INITIAL_MEMORY_P0=256;
     private final int INITIAL_MEMORY_P1=128;
 
+    /**
+     * Definition of both processors in the simulation
+     */
     Processor processorP0;
     Processor processorP1;
 
 
-    public SimulationController() {
+    public SimulationController() {}
 
-    }
-
-    public Processor getProcessorP0() {
-        return processorP0;
-    }
-
-    public Processor getProcessorP1() {
-        return processorP1;
-    }
-
+    /**
+     * Method in charge of executing the simulation. It starts the execution of the threads simulating the cores.
+     * Also creates every object necessary for the simulation(Processors, Directories, Memories).
+     * @param numCoresP0 number of cores in P0
+     * @param numCachesP0 number of caches in P0
+     * @param numCoresP1 number of cores in P1
+     * @param numCachesP1 number of caches in P1
+     * @param pathP0 path to directory containing P0 "hilillos"
+     * @param pathP1 path to directory containing P1 "hilillos"
+     * @param slowMode flag to allow slow mode
+     * @param quantumSize quantum size for processors
+     */
     public void run(int numCoresP0,
                     int numCachesP0,
                     int numCoresP1,
@@ -79,6 +87,7 @@ public class SimulationController {
             new Thread(processorP1.getCores()[i],"Thread "+ i+ " P1").start();
         }
     }
+
     /**
      * This method initialize the instruction physicalcomponentssimulation.memory, setting a custom size that depends on the
      * local physicalcomponentssimulation.processor id

@@ -1,7 +1,10 @@
 package physicalcomponentssimulation.processorsparts;
 
 public class Instruction {
-    //Set of values that define an operation
+
+    /**
+     * Set of values that define an operation
+     */
     private int operationCode;
     private int firsParameter;
     private int secondParameter;

@@ -4,14 +4,24 @@ package physicalcomponentssimulation.processorsparts;
 
 public class ALU {
 
-    //Instruction in execution and set of registers to work with
+    /**
+     * Instruction to work with
+     */
     Instruction instruction;
+
+    /**
+     * Register set for operation execution
+     */
     private int[] registers;
 
-    //Register that contains the PC
+    /**
+     * Register that contains PC
+     */
     private int PC = 32;
 
-    //Instruction table for easier reading
+    /**
+     * Instruction table
+     */
     private final int JR    = 2;
     private final int JAL   = 3;
     private final int BEQZ  = 4;

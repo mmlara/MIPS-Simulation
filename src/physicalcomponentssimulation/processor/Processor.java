@@ -19,28 +19,81 @@ import java.util.List;
 import java.util.Queue;
 
 public class Processor {
-    
+
+    /**
+     * Static sizes of memory
+     */
     private final int INSTRUCTION_MEMORY_SIZE_P0 = 24;
     private final int INSTRUCTION_MEMORY_SIZE_P1 = 16;
 
-
-    // Local variables which represents physical parts inside a our physicalcomponentssimulation.processor
+    /**
+     * Represents the other processor in the simulation
+     */
     private Processor neigborProcessor;
-    private boolean inSlowExecution;
+
+    /**
+     * Flag representing if simulation is in slow mode or not
+     */
+    private boolean inSlowExecution;//Flag to check if execution is in slow mode
+
+    /**
+     * Processor ID
+     */
     private int processorId;
-    private int quantumSize;//cambiar este valor y chequear si se escribe así
+
+    /**
+     * Size of the quantum for the processor
+     */
+    private int quantumSize;
+
+    /**
+     * Number of cores in this processor
+     */
     private int numCores;
+
+    /**
+     * Number of caches in this processor
+     */
     private int numOfCaches;
-    private int numOfThreads;
+
+    /**
+     * Array that contains cores of this processor
+     */
     private Core[] cores;
+
+    /**
+     * This processors memory
+     */
     private Memory memory;
+
+    /**
+     * This processors instruction memory
+     */
     private InstructionMemory instructionMemory;
+
+    /**
+     * String with the Path for the directory
+     */
     private String threadDirectoryPath;
-    private Queue<SystemThread> assignedSystemThreads;//para que sea más eficiente seleccionar al siguiente hilillo en el procesador.
+
+    /**
+     * Queue that controls "hilillos" to execute
+     */
+    private Queue<SystemThread> assignedSystemThreads;
+
+    /**
+     * Processors clock
+     */
     private Clock clock;
-    private Locks locks;// Contains all lock objects
 
+    /**
+     * Reference to object that contains all the locks necessary for execution control
+     */
+    private Locks locks;
 
+    /**
+     * Directory of this processor
+     */
     Directory directory;
 
     /**
