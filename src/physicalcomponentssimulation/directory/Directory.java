@@ -148,4 +148,18 @@ public class Directory {
         }
 
     }
+
+    /**
+     * Method to print directory contents
+     */
+    public void printDirectory(){
+        for(int i=0; i<blockStates.length; i++){
+            if(blockStates.length == 16){
+                System.out.println("Block " + i + " State: " + blockStates[i] + " Contained: " + blockInformation[i][0] + " " + blockInformation[i][1] + " " + blockInformation[i][2]);
+            }
+            else{
+                System.out.println("Block " + (i+16) + " State: " + blockStates[i] + " Contained: " + blockInformation[i][0] + " " + blockInformation[i][1] + " " + blockInformation[i][2]);
+            }
+        }
+    }
 }

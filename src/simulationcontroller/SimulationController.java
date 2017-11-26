@@ -106,8 +106,14 @@ public class SimulationController {
                 e.printStackTrace();
             }
         }
+        System.out.println("Memory:");
         processorP0.getMemory().printMemory();
         processorP1.getMemory().printMemory();
+        System.out.println("");
+        System.out.println("Directories:");
+        processorP0.getDirectory().printDirectory();
+        processorP1.getDirectory().printDirectory();
+        System.out.println("");
     }
 
     /**
