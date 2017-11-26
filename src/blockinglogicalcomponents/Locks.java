@@ -83,6 +83,7 @@ public class Locks {
      */
     private void createCacheLocks() {
         cacheMutex = new Semaphore[numCaches];
+        instructionCacheMutex=new Semaphore[numCaches];
         cacheState = new boolean[numCaches];
         for (int i = 0; i < cacheMutex.length; i++) {
             cacheMutex[i] = new Semaphore(1);
