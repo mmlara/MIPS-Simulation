@@ -1,3 +1,11 @@
+/**
+ * Processor
+ *
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
+ * @version 1.0
+ * @since 25/11/2017
+ */
+
 package physicalcomponentssimulation.processor;
 
 import blockinglogicalcomponents.Locks;
