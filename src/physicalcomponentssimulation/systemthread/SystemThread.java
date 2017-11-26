@@ -142,7 +142,7 @@ public class SystemThread {
     @Override
     public String toString() {
 
-        String infoHilillo= "Hilillo "+myName+" con id"+idHilillo+" ejecutado en el Procedador : " +idProcessorAsigned +"\n"+
+        String infoHilillo= "Hilillo "+myName+" con id"+idHilillo+" ejecutado en el Procesador : " +idProcessorAsigned +"\n"+
                 "Su ejecución inició en el ciclo de reloj número : "+initialClock+"\n"+
                 "Su ejecución tardó : "+numCyclesInExecution+"\n"+
                 "El estado de sus registros es el siguiente\n";
