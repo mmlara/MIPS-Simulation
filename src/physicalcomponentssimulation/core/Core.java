@@ -736,11 +736,8 @@ public class Core implements Runnable {
      * Try to load the next instruction to be execute
      * @return The next instruction
      */
-
-
     public Instruction tryLoadNextInstruction() {
-        //TODO aqui primero se pide la cache de insrucciones respectivas
-        if (getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].tryAcquire()) {
+        if (getMyProcessor().getLocks().getInstructionCacheMutex()[getCacheNumber()].tryAcquire()) {
             try {
                 updateBarrierCycle(1);
                 this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 1);//suma un ciclo en procesador;
@@ -749,26 +746,24 @@ public class Core implements Runnable {
                 int initialIndexThread = assignedSystemThread.getInitIndexInMemory();
                 int indexInMemory = initialIndexThread + actualPC;
                 int blockTag = indexInMemory / 4;
-                     Instruction  instruction= this.instructionCache.getInstruction(actualPC);
-                     if (instruction!=null){
-                      //   if (getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].tryAcquire()) {
-                             try {
-                                 instruction =this.instructionCache.getInstructionAfterMiss(actualPC);
-                                 updateBarrierCycle(16);
-                                 this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 16);
-                                 this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 16);
-                             }finally {
-                          //       getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].release();
-                             }
-                            // }else{
-                             //TODO soltar la cache
-                         //}
-
-                     }
-                     return instruction;
-
+                Instruction  instruction= this.instructionCache.getInstruction(actualPC);
+                if (instruction!=null){
+                    if (getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].tryAcquire()) {
+                        try {
+                            instruction = this.instructionCache.getInstructionAfterMiss(actualPC);
+                            updateBarrierCycle(16);
+                            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + 16);
+                            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + 16);
+                        }finally {
+                            getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].release();
+                        }
+                    }else{
+                        return instruction;
+                    }
+                }
+                return instruction;
             } finally {
-                getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].release();
+                getMyProcessor().getLocks().getInstructionCacheMutex()[getCacheNumber()].release();
             }
         }
         return null;
