@@ -56,4 +56,15 @@ public class Memory {
     public void setBlock(int blockIndex, Block block){
         shareMemory[blockIndex % shareMemorySize]=block;
     }
+
+    public void printMemory(){
+        int x=0;
+        for(Block b : shareMemory){
+            if(shareMemory.length == 8)
+                System.out.print("Block " + (x+16) + ": " + b.toString());
+            else
+                System.out.print("Block " + (x) + ": " + b.toString());
+            x++;
+        }
+    }
 }
