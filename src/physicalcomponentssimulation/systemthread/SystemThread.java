@@ -48,6 +48,9 @@ public class SystemThread {
         System.out.println(myInstructions.toString());
     }
 
+    public String getMyName() {
+        return myName;
+    }
 
     public int[] getContext() {
         return context;
