@@ -175,7 +175,7 @@ public class Core implements Runnable {
     }
 
     /**
-     *
+     * Handle the victim block when the index in cache it is not empty
      * @param blockNumber
      * @param blockIndex address of the victim to be evict
      * @return the result of the evict Victim
@@ -649,26 +649,6 @@ public class Core implements Runnable {
             }
         }
         return true;
-    }
-
-
-    public Directory getDirectoryOfBlockByIndex(int blockIndex) {
-        Directory dir;
-        int cyclesWaitingInThisInstruction;
-        if (myProcessor.getProcessorId() == 0) {
-            cyclesWaitingInThisInstruction = (dataCache.getTagOfBlock(blockIndex) <= 15) ? 1 : 5;
-            updateBarrierCycle(cyclesWaitingInThisInstruction);
-            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
-            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
-            dir = (dataCache.getTagOfBlock(blockIndex) <= 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
-        } else {
-            cyclesWaitingInThisInstruction = (dataCache.getTagOfBlock(blockIndex) > 15) ? 1 : 5;
-            updateBarrierCycle(cyclesWaitingInThisInstruction);
-            this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
-            this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
-            dir = (dataCache.getTagOfBlock(blockIndex) > 15) ? getMyProcessor().getDirectory() : getMyProcessor().getNeigborProcessor().getDirectory();
-        }
-        return dir;
     }
 
     /**
