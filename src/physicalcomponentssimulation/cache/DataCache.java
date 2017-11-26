@@ -1,3 +1,10 @@
+/**
+ *  Data Cache
+ *
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
+ * @version 1.0
+ * @since 25/11/2017
+ */
 package physicalcomponentssimulation.cache;
 
 import physicalcomponentssimulation.memory.Memory;
@@ -5,11 +12,29 @@ import physicalcomponentssimulation.memory.Memory;
 public class DataCache  {
 
 
+    /**
+     * block's size of cache
+     */
     final int numBlocks=4;
+
+    /**
+     * array of Blocks to represent the cache
+     */
     private Block[] cacheData;
+
+    /**
+     * array to save the current tag in some index of the cache
+     */
     private int[] tags;
+
+    /**
+     * array to save the state of some block in the cache
+     */
     private int[] validInformation;
 
+    /**
+     * tags of the state from some current block in the cache
+     */
     final private int I = 0; //invalid
     final private int C = 1; //shared
     final private int M = 2; //modified
@@ -82,20 +107,43 @@ public class DataCache  {
         tags[blockIndex] = blockNumber;
     }
 
+
+    /**
+     *  Get number of cache´s block
+     * @return int with the number of blocks
+     */
     public int getnumBlocks() {
         return numBlocks;
     }
 
+    /**
+     *  Get array of blocks
+     * @return Array of blocks
+     */
     public Block[] getCacheData() {
         return cacheData;
     }
 
+    /**
+     * set the Array of block
+     * @param cacheData array of Block to set
+     */
     public void setCacheData(Block[] cacheData) {
         this.cacheData = cacheData;
     }
 
+    /**
+     * set state in some index
+     * @param index to be modified
+     * @param status the new state in the index send by param
+     */
     public void setIndexStatus(int index, int status){ this.validInformation[index] = status; }
 
+    /**
+     * get some block by index
+     * @param index in array of block
+     * @return the block referenced by the index
+     */
     public Block getBlockAtIndex(int index){return cacheData[index];}
 
 }

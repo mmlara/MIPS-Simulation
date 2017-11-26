@@ -1,13 +1,16 @@
 /**
  *  Representation memory block
  *
- * @author Gomez Bryan, Lara Milton, Quirós Esteban
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
  * @version 1.0
  * @since 25/11/2017
  */
 
 package physicalcomponentssimulation.cache;
 
+/**
+ * Class Block
+ */
 public class Block {
 
     final int blockSize =4;

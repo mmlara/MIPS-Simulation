@@ -1,3 +1,11 @@
+/**
+ *  Representation Core of Processor
+ *
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
+ * @version 1.0
+ * @since 25/11/2017
+ */
+
 package physicalcomponentssimulation.core;
 
 import physicalcomponentssimulation.cache.Block;
@@ -19,25 +27,79 @@ import static java.lang.System.exit;
 
 public class Core implements Runnable {
 
+    /**
+     * Array of integer values that represent the 32 register [0-31] and the program counter [32] of that have some context from one system thread
+     */
     private int[] context;
+
+    /**
+     * Core identification
+     */
     private int coreID;
-    private final int contextSize = 33;//32 registros + pc;
+
+    /**
+     * size of the context
+     */
+    private final int contextSize = 33;//32 registers + pc;
+
+    /**
+     *  @DataCache object that represent a real cache from some core
+     */
     private DataCache dataCache;
+
+    /**
+     * @InstructionCache object that represent a real cache instruction from some core
+     */
     private InstructionCache instructionCache;
-    private SystemThread assignedSystemThread;//para saber a quien estoy ejecutando
+
+    /**
+     * Contains the current SystemThread in the core
+     */
+    private SystemThread assignedSystemThread;
+
+    /**
+     * Queue that allow execute all threads with round robin algorithm
+     */
     private Queue<SystemThread> assignedSystemThreads;
+
+    /**
+     * Reference to the processor that controls this core
+     */
     private Processor myProcessor;
+
+    /**
+     * Represents if some instruction was execute with success
+     */
     private boolean instructionSucceeded = false;
+
+    /**
+     * Execution mode to wait for some character in the last core to arrive to the barrier
+     */
     private boolean slowExecution;
+
+    /**
+     * To request a key from the user
+     */
     private Scanner scanner;
+
+
+    /**
+     * List to save all system threads that this core execute
+     */
     private List<SystemThread> finishedThreads;
 
-
+    /**
+     * tags of values to be set in the Directory
+     */
     final private int I = 0;
     final private int C = 1;
     final private int M = 2;
 
 
+    /**
+     * Constructor
+     * @param assignedSystemThreads all system threads to execute in this core
+     */
     public Core(Queue<SystemThread> assignedSystemThreads) {
         finishedThreads= new ArrayList<>();
         this.context = new int[contextSize];
@@ -47,14 +109,10 @@ public class Core implements Runnable {
         this.assignedSystemThreads = assignedSystemThreads;
     }
 
-    public void setContext(int[] context) {
-        this.context = context;
-    }
 
-    public int[] getContext() {
-        return this.context;
-    }
-
+    /**
+     * Saves the current context in the thread assigned to the core currently
+     */
     public void saveContext() {
         for (int i = 0; i < contextSize - 1; i++) {
             this.assignedSystemThread.getContext()[i] = context[i];
@@ -62,6 +120,9 @@ public class Core implements Runnable {
         this.assignedSystemThread.setPc(this.context[32]);
     }
 
+    /**
+     * Load some context to the current context from the thread assigned to the core currently
+     */
     public void loadContext() {
         for (int i = 0; i < contextSize - 1; i++) {
             this.context[i] = this.assignedSystemThread.getContext()[i];
@@ -69,10 +130,18 @@ public class Core implements Runnable {
         this.context[32] = this.assignedSystemThread.getPc();
     }
 
+    /**
+     * get all finished system threads
+     * @return List with all finished system threads
+     */
     public List<SystemThread> getFinishedThreads() {
         return finishedThreads;
     }
 
+    /**
+     * get Data Cache
+     * @return Data Cache
+     */
     public DataCache getDataCache() {
         return this.dataCache;
     }
@@ -105,7 +174,12 @@ public class Core implements Runnable {
         this.coreID = coreID;
     }
 
-
+    /**
+     *
+     * @param blockNumber
+     * @param blockIndex address of the victim to be evict
+     * @return the result of the evict Victim
+     */
     public Boolean evictVictim(int blockNumber, int blockIndex) {
 
         int currentTag = dataCache.getTagOfBlock(blockIndex);
@@ -168,8 +242,11 @@ public class Core implements Runnable {
      * @param instruction: Current instruction to execute
      */
 
+    /**
+     * Core instruction  that load some data from memory or data cache
+     * @param instruction that contains all params from execute the load
+     */
     public void executeLoadInstruction(Instruction instruction) {
-//        try {
             int blockNumber = (instruction.getThirdParameter() + context[instruction.getFirsParameter()]) / 16;
             int blockIndex = blockNumber % 4;
             int cyclesWaitingInThisInstruction;
@@ -318,17 +395,11 @@ public class Core implements Runnable {
                 this.assignedSystemThread.setNumCyclesInExecution(this.assignedSystemThread.getNumCyclesInExecution() + cyclesWaitingInThisInstruction);
                 return;
             }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println(instruction.toString());
-//            exit(1);
-//            return;
-//        }
     }
 
     /**
-     * @param instruction
-     * @return
+     * Core instruction  that Store some data to memory
+     * @param instruction that contains all params from execute the store
      */
     public void executeStoreInstruction(Instruction instruction) {
         //       try {
@@ -427,12 +498,16 @@ public class Core implements Runnable {
             }
         }
         return;
-//        } catch (Exception e) {
-//            System.out.println(e.getCause());
-//            return;
-//        }
+
     }
 
+    /**
+     *  Method that manage some shared block
+     * @param dir Directory that contain the information of the block
+     * @param blockNumber number of block that want manage
+     * @param blockIndex index of the cache that calls this method
+     * @return result of the success of the method
+     */
     public boolean handleSharedBlock(Directory dir, int blockNumber, int blockIndex) {
         List<Integer> idCacheSharedBlock = dir.getCachesIdThatShareSomeBlock(coreID, getCacheNumber());
         int cyclesWaitingInThisInstruction = (isLocalMemory(blockNumber)) ? 1 : 5;
@@ -464,6 +539,14 @@ public class Core implements Runnable {
         return true;
     }
 
+    /**
+     * Method that load some data from memory to the data cache
+     * @param blockNumber number of block to be load into cache
+     * @param blockIndex index in the cache
+     * @param isLoaded  state of the load
+     * @param dir directory of the block
+     * @return state of the success of the load
+     */
     public boolean loadBlockIntoCache(int blockNumber, int blockIndex, boolean isLoaded, Directory dir) {
         int idMemoryOfBlock = (blockNumber < 16) ? 0 : 1;
 
@@ -520,6 +603,13 @@ public class Core implements Runnable {
         return true;
     }
 
+    /**
+     * Method that manage some modified block in the cache
+     * @param dir directory if the modified block
+     * @param blockNumber number of the modified block
+     * @param blockIndex index of the block in the cache
+     * @return the handling status of the modified block
+     */
     public boolean handleModifiedBlock(Directory dir, int blockNumber, int blockIndex) {
         int cacheWithModifiedBlock = dir.getNumberOfCacheWithModifiedBlock(blockNumber, getCacheNumber());
 
@@ -581,6 +671,11 @@ public class Core implements Runnable {
         return dir;
     }
 
+    /**
+     * Get the directory of some block
+     * @param blockNumber Number of the block
+     * @return The directory of the block send by param
+     */
     public Directory getDirectoryOfBlockByBlockNumber(int blockNumber) {
         Directory dir;
         int cyclesWaitingInThisInstruction;
@@ -600,10 +695,20 @@ public class Core implements Runnable {
         return dir;
     }
 
+    /**
+     * Get some processor identify by some id
+     * @param id of the processor
+     * @return Processor with the id send by param
+     */
     public Processor getProcessor(int id) {
         return (this.getMyProcessor().getProcessorId() == id) ? getMyProcessor() : getMyProcessor().getNeigborProcessor();
     }
 
+    /**
+     * Compute if some block is from local memory
+     * @param blockNumber number of block
+     * @return status of the question, is this block from local memory?
+     */
     public boolean isLocalMemory(int blockNumber) {
         if (getMyProcessor().getProcessorId() == 0) {
             if (blockNumber < 16)
@@ -616,6 +721,10 @@ public class Core implements Runnable {
             return false;
     }
 
+    /**
+     *Get the general id from some cache in the simulation
+     * @return id of the cache
+     */
     private int getCacheNumber() {
         if (getMyProcessor().getProcessorId() == 0)
             return coreID;
@@ -623,19 +732,10 @@ public class Core implements Runnable {
             return 2;
     }
 
-//TODO cuando se tenga acceso al reloj, preguntar que si es -1 el valor de hilillo.initialClock, en caso de ser así, asignarle el reloj actual.
-
-    public void setAsignedSystemThread(SystemThread systemThread) {
-        this.assignedSystemThread = systemThread;
-    }
-
-    public Instruction getNextInstruction() {
-
-        int actualPC = this.context[32];
-        Instruction pairInstruction = this.instructionCache.getInstruction(actualPC);
-        return pairInstruction;
-    }
-
+    /**
+     * Try to load the next instruction to be execute
+     * @return The next instruction
+     */
     public Instruction tryLoadNextInstruction() {
         if (getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].tryAcquire()) {
             try {
@@ -659,6 +759,9 @@ public class Core implements Runnable {
         return null;
     }
 
+    /**
+     * Method that contains the Simulation's logic
+     */
     @Override
     public void run() {
         scanner = new Scanner(System.in);
@@ -797,6 +900,10 @@ public class Core implements Runnable {
         }
     }
 
+    /**
+     * Barrier to simulate some clock's cycle
+     * @param cyclesToWait number of clock's cycles that a core have to wait in the barrier
+     */
     private void updateBarrierCycle(int cyclesToWait) {
         for (int i = 0; i < cyclesToWait; i++) {
             try {
