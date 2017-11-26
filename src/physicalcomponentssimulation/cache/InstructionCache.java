@@ -53,21 +53,18 @@ public class InstructionCache  {
     public Instruction getInstruction(int indexInMemory){
         //index conversion
         indexInMemory=(indexInMemory-this.instructionMemory.getInitialMemmory())/4;
-        Instruction instruction=null;
-        int cyclesWaiting=0;
-        Pair pair=null;
+        Instruction instruction;
         int blockTag = (indexInMemory)/4;
         int indexInCache =blockTag%4;
         if (blockTag == getTagOfBlock(indexInCache)){//hit case
-              int instructionNumberInBlock=indexInMemory%4;
-               instruction= getWord(indexInCache,instructionNumberInBlock);
+            int instructionNumberInBlock=indexInMemory%4;
+            instruction= getWord(indexInCache,instructionNumberInBlock);
 
         }else {//miss case;
-
-             this.cacheInstruction[indexInCache]=this.instructionMemory.getBlockInstruction(blockTag);
-             this.tags[indexInCache]=blockTag;
-             int instructionNumberInBlock=indexInMemory%4;
-              instruction=getWord(indexInCache,instructionNumberInBlock);
+            this.cacheInstruction[indexInCache]=this.instructionMemory.getBlockInstruction(blockTag);
+            this.tags[indexInCache]=blockTag;
+            int instructionNumberInBlock=indexInMemory%4;
+            instruction=getWord(indexInCache,instructionNumberInBlock);
         }
         return instruction;
     }

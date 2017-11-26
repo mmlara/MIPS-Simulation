@@ -633,35 +633,26 @@ public class Core implements Runnable {
     }
 
     public Instruction tryLoadNextInstruction() {
-        Instruction instruction = null;
-        int actualPC = this.context[32];
-        int initialIndexThread = assignedSystemThread.getInitIndexInMemory();
-        int indexInMemory = initialIndexThread + actualPC;
-        int blockTag = indexInMemory / 4;
-        int indexInCache = blockTag % 4;
-        if (myProcessor.getLocks().getBusInstructions()[getMyProcessor().getProcessorId() + getCoreID()].tryAcquire()) {
+        if (getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].tryAcquire()) {
             try {
+                int actualPC = this.context[32];
+                int initialIndexThread = assignedSystemThread.getInitIndexInMemory();
+                int indexInMemory = initialIndexThread + actualPC;
+                int blockTag = indexInMemory / 4;
+                int indexInCache = blockTag % 4;
                 if (blockTag < 16) {
-
-                    this.getInstructionCache().getCacheInstruction()[indexInCache] = this.getMyProcessor().getInstructionMemory().getBlockInstruction(blockTag);
-                    this.getInstructionCache().getTags()[indexInCache] = blockTag;
-                    int instructionNumberInBlock = indexInMemory % 4;
-                    instruction = this.getInstructionCache().getWord(indexInCache, instructionNumberInBlock);
+                    updateBarrierCycle(16);
+                    return this.instructionCache.getInstruction(actualPC);
                 } else {
-                    this.getInstructionCache().getCacheInstruction()[indexInCache] = this.getMyProcessor().getInstructionMemory().getBlockInstruction(blockTag - 16);
-                    this.getInstructionCache().getTags()[indexInCache] = blockTag;
-                    int instructionNumberInBlock = indexInMemory % 4;
-                    instruction = this.getInstructionCache().getWord(indexInCache, instructionNumberInBlock);
+                    updateBarrierCycle(16);
+                    return this.instructionCache.getInstruction(actualPC);
                 }
 
             } finally {
-                myProcessor.getLocks().getBusInstructions()[getMyProcessor().getProcessorId() + getCoreID()].release();
+                getMyProcessor().getLocks().getBusInstructions()[getMyProcessor().getProcessorId()].release();
             }
-
-
         }
-
-        return instruction;
+        return null;
     }
 
     @Override
@@ -710,8 +701,11 @@ public class Core implements Runnable {
                     this.assignedSystemThread.setCurrentCyclesInProcessor(0);//init execution
                     Boolean systemThreadFinished = false;
                     this.loadContext();
-                    Instruction instruction = getNextInstruction();
-
+                    Instruction instruction = tryLoadNextInstruction();
+                    while(instruction == null){
+                        instruction = tryLoadNextInstruction();
+                        updateBarrierCycle(1);
+                    }
 
                     //If the quantum has not finished or the instruction has not succeeded then keep executing instructions.
                     //If the "hilillo" is done then stop working.
@@ -721,7 +715,11 @@ public class Core implements Runnable {
                         int cyclesWaitingInThisInstruction = 0;
                         //If the instruction finished and the quantum has not then fetch another instruction
                         if (instructionSucceeded) {
-                            instruction = getNextInstruction();
+                            instruction = tryLoadNextInstruction();
+                            while(instruction == null){
+                                instruction = tryLoadNextInstruction();
+                                updateBarrierCycle(1);
+                            }
                             instructionSucceeded = false;
                         }
 
