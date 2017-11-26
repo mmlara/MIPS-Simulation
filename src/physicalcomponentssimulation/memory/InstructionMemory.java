@@ -1,3 +1,11 @@
+/**
+ *  Representation Instruction Memory of Processor
+ *
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
+ * @version 1.0
+ * @since 25/11/2017
+ */
+
 package physicalcomponentssimulation.memory;
 
 
@@ -9,30 +17,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-//mapea la memoria para instrucciones, cada procesador debe tener una instancia de esta
-//y recibe el tamaño por parámetro porque cambia según el procesador
-public class InstructionMemory {
 
+public class InstructionMemory {
+    /**
+     * Size of the instruction memory
+     */
     private int instructionMemorySize;
+
+    /**
+     * Logical initial address in the simulation
+     */
     private int initialMemmory;
+
+    /**
+     * Representation of the instruction memory in the simulation
+     */
     private BlockInstruction[] instructionMemory;
 
-    public BlockInstruction[] getInstructionMemory() {
-        return instructionMemory;
-    }
-
-    public void setInstructionMemory(BlockInstruction[] instructionMemory) {
-        this.instructionMemory = instructionMemory;
-    }
-
+    /**
+     * Get the initial address of the memory
+     * @return int value that represent the logical initial position in the global memory instruction
+     */
     public int getInitialMemmory() {
         return initialMemmory;
     }
 
-    public int getInstructionMemorySize() {
-        return instructionMemorySize;
-    }
 
+    /**
+     * Constructor
+     * @param instructionMemorySize Size of the memory
+     * @param initialMemmory Logical initial position in the global memory instruction
+     */
     public InstructionMemory(int instructionMemorySize, int initialMemmory) {
         this.initialMemmory=initialMemmory;
         this.instructionMemorySize = instructionMemorySize;
@@ -44,15 +59,19 @@ public class InstructionMemory {
     }
 
 
+    /**
+     * Get the block instruction in the specific index
+     * @param blockInstructionIndex Index to get from the instruction memory
+     * @return  A BlockInstruction
+     */
     public BlockInstruction getBlockInstruction(int blockInstructionIndex ){
         return instructionMemory[blockInstructionIndex];
     }
 
-    //este método recibe la ubicación real en memoria y no el tag del bloque.
-    public void setBlockInstruction(int blockInstructionIndex, BlockInstruction blockInstruction){
-        instructionMemory[blockInstructionIndex]=blockInstruction;
-    }
-
+    /**
+     * Load all the instructions in the logical memory structure
+     * @param systemThreads Queue with all instructions from the files send by parameter to the processor
+     */
     public void loadInstructionsInMemory(Queue<SystemThread> systemThreads){
 
         List<Instruction> totalInstructions = new ArrayList<>();

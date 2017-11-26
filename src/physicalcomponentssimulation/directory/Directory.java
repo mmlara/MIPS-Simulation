@@ -1,5 +1,5 @@
 /**
- *  Representation Core of Processor
+ *  Representation Directory of Processor
  *
  * @author Gómez Brayan, Lara Milton, Quirós Esteban
  * @version 1.0
