@@ -7,7 +7,7 @@ import physicalcomponentssimulation.processor.Processor;
 import physicalcomponentssimulation.systemthread.SystemThread;
 import physicalcomponentssimulation.time.Clock;
 import simulationcontroller.SimulationController;
-import simulationviewer.gui.MainGUI;
+
 
 import java.util.Scanner;
 
@@ -100,8 +100,6 @@ public class Main {
             }
 
         }while (opcion!=4);
-
-
-
+        
     }
 }
