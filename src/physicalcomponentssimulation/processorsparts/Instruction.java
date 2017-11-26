@@ -30,7 +30,7 @@ public class Instruction {
 
     /**
      * Get the operation code(defines which operation to execute)
-     * @return
+     * @return operation code
      */
     public int getOperationCode() {
         return operationCode;

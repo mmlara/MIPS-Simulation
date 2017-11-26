@@ -176,7 +176,7 @@ public class Core implements Runnable {
 
     /**
      * Handle the victim block when the index in cache it is not empty
-     * @param blockNumber
+     * @param blockNumber Block number
      * @param blockIndex address of the victim to be evict
      * @return the result of the evict Victim
      */

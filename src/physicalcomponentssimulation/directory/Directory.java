@@ -103,7 +103,7 @@ public class Directory {
      * get that id of the cache that contains some specific modified block
      * @param blockNumber number of the block that want  to know where is modified
      * @param whois my id number
-     * @return
+     * @return cache id with modified block
      */
     public int getNumberOfCacheWithModifiedBlock(int blockNumber, int whois){
         if(blockStates[blockNumber %numBlocks] == 'M'){

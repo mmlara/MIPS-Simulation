@@ -110,6 +110,9 @@ public class Processor {
      * @param numOfCaches         Number of caches in the physicalcomponentssimulation.processor. It is proportional to the number of cores in the physicalcomponentssimulation.processor
      * @param quantumSize         Quantum size which defines the cpu time before the system change the thread assigned to the physicalcomponentssimulation.core
      * @param threadDirectoryPath Path to execution information about the thread to load
+     * @param inSlowExecution     Mode execution
+     * @param instructionMemory   Instruction memory reference
+     * @param memory              Data memory reference
      */
     public Processor(int processorId, int numCores, int numOfCaches, int quantumSize,boolean inSlowExecution, String threadDirectoryPath, Memory memory, InstructionMemory instructionMemory) {
         this.processorId = processorId;
@@ -172,6 +175,7 @@ public class Processor {
 
     /**
      * Get the neighbor processor(not the one where you are located)
+     * @return neighbor processor
      */
     public Processor getNeigborProcessor() {
         return neigborProcessor;

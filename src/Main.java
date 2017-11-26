@@ -17,7 +17,7 @@ public class Main {
     /**
      * Main method to run the simulation
      *
-     * @param args
+     * @param args aguments
      */
     public static void main(String[] args) {
         int opcion = 0;
