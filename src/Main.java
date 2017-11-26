@@ -1,27 +1,39 @@
 /**
  * Main class
- *
  * @description Main class
  * @author Gómez Brayan, Lara Milton, Quirós Esteban
  * @version 1.0
  * @since 25/11/2017
  */
 
+
 import simulationcontroller.SimulationController;
 
 import java.util.List;
+
 import java.util.Scanner;
 
 public class Main {
 
     /**
      * Main method to run the simulation
-     *
-     * @param args
      */
     public static void main(String[] args) {
         int opcion = 0;
         boolean slowMode = false;
+        SimulationController simullation = new SimulationController();
+        System.out.println(" \t\t Simulación MIPS \n\n");
+        String pathHililloP0="DatosHilillos/P0";
+        String pathHililloP1="DatosHilillos/P1";
+        int quamtun=30;
+        boolean slowMode=false;
+        Scanner sc = new Scanner(System.in);
+        String opciones="1- Ver variables de la simulación\n"+
+                        "2- Configurar variables de la simulación\n"+
+                        "3- Ejecutar Simulación\n"+
+                        "4- Salir";
+
+        int opcion =0;
 
         do {
             int quantum = 30;
