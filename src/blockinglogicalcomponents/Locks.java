@@ -24,6 +24,7 @@ public class Locks {
      */
 
     private Semaphore[] cacheMutex;
+    private Semaphore[] instructionCacheMutex;
     private boolean[] cacheState;
     private int numCaches;
 
@@ -85,6 +86,7 @@ public class Locks {
         cacheState = new boolean[numCaches];
         for (int i = 0; i < cacheMutex.length; i++) {
             cacheMutex[i] = new Semaphore(1);
+            instructionCacheMutex[i] = new Semaphore(1);
             cacheState[i] = false;
         }
 
@@ -141,6 +143,14 @@ public class Locks {
      */
     public Semaphore[] getCacheMutex() {
         return cacheMutex;
+    }
+
+    /**
+     * Get instruction cache locks, implemented as Java Semaphore
+     * @return An array with all instruction cache locks
+     */
+    public Semaphore[] getInstructionCacheMutex() {
+        return instructionCacheMutex;
     }
 
     /**
