@@ -1,3 +1,10 @@
+/**
+ * Processor
+ *
+ * @author Gómez Brayan, Lara Milton, Quirós Esteban
+ * @version 1.0
+ * @since 25/11/2017
+ */
 package physicalcomponentssimulation.processor;
 
 import blockinglogicalcomponents.Locks;
@@ -19,25 +26,80 @@ import java.util.List;
 import java.util.Queue;
 
 public class Processor {
-    
+    /**
+     * Static size of the memory instruction in the processor 0
+     */
     private final int INSTRUCTION_MEMORY_SIZE_P0 = 24;
+
+    /**
+     * Static size of the memory instruction in the processor 1
+     */
     private final int INSTRUCTION_MEMORY_SIZE_P1 = 16;
 
 
-    // Local variables which represents physical parts inside a our physicalcomponentssimulation.processor
+    /**
+     * Reference to the other processor in the simulation
+     */
     private Processor neigborProcessor;
+
+    /**
+     * Mode to execute the simulation
+     */
     private boolean inSlowExecution;
+
+    /**
+     * Identification of the processor
+     */
     private int processorId;
+
+    /**
+     * Size of quantum from a system thread in the core
+     */
     private int quantumSize;//cambiar este valor y chequear si se escribe así
+
+    /**
+     * Number of cores that  this processor has
+     */
     private int numCores;
+
+    /**
+     * Number of caches that  this processor has
+     */
     private int numOfCaches;
-    private int numOfThreads;
+
+    /**
+     * References to the cores that  this processor has
+     */
     private Core[] cores;
+
+    /**
+     * Reference to the data memory
+     */
     private Memory memory;
+
+    /**
+     * Reference to the Instruction Memory
+     */
     private InstructionMemory instructionMemory;
+
+    /**
+     * Path of the directory where the files are located with the instructions that will be executed
+     */
     private String threadDirectoryPath;
+
+    /**
+     * Queue with the system threads that will be executed in this processor
+     */
     private Queue<SystemThread> assignedSystemThreads;//para que sea más eficiente seleccionar al siguiente hilillo en el procesador.
+
+    /**
+     * Reference of the clock to create a logical synchronization
+     */
     private Clock clock;
+
+    /**
+     *
+     */
     private Locks locks;// Contains all lock objects
 
 
@@ -72,16 +134,7 @@ public class Processor {
         }
     }
 
-    public List<String> getNameHilillos(){
-        List<String> names = new ArrayList<>();
-        for (int i = 0; i <numCores ; i++) {
-            for (int j = 0; j <getCores()[i].getFinishedThreads().size() ; j++) {
-               String name= getCores()[i].getFinishedThreads().get(i).getMyName();
-                names.add(name);
-            }
-        }
-        return names;
-    }
+
 
     /**
      *  This method initialize the cores of the physicalcomponentssimulation.processor
@@ -120,9 +173,6 @@ public class Processor {
         }
     }
 
-    public InstructionMemory getInstructionMemory() {
-        return instructionMemory;
-    }
 
     public Processor getNeigborProcessor() {
         return neigborProcessor;
@@ -136,24 +186,8 @@ public class Processor {
         return this.quantumSize;
     }
 
-    public void setQuantumSize(int quantumSize) {
-        this.quantumSize = quantumSize;
-    }
-
-    public int getNumCores() {
-        return this.numCores;
-    }
-
-    public void setNumCores(int numCores) {
-        this.numCores = numCores;
-    }
-
     public Core[] getCores() {
         return this.cores;
-    }
-
-    public void setCores(Core[] cores) {
-        this.cores = cores;
     }
 
     public void setDirectory(Directory directory) {
@@ -164,12 +198,6 @@ public class Processor {
 
     public Queue<SystemThread> getAssignedSystemThreads() {
         return assignedSystemThreads;
-    }
-
-
-
-    public void setAssignedSystemThreads(Queue<SystemThread> assignedSystemThreads) {
-        this.assignedSystemThreads = assignedSystemThreads;
     }
 
     public Clock getClock() {
@@ -194,15 +222,9 @@ public class Processor {
         return processorId;
     }
 
-    public void setProcessorId(int processorId) {
-        this.processorId = processorId;
-    }
 
     public boolean isInSlowExecution() {
         return inSlowExecution;
     }
 
-    public void setInSlowExecution(boolean inSlowExecution) {
-        this.inSlowExecution = inSlowExecution;
-    }
 }
