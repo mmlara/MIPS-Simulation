@@ -253,7 +253,7 @@ public class Core implements Runnable {
 
             //Got the cache lock
             if (this.getMyProcessor().getLocks().getCacheMutex()[getCacheNumber()].tryAcquire()) {
-                try {//TODO hacer barrier cada vez que se obtiene
+                try {
                     cyclesWaitingInThisInstruction = 1;
                     updateBarrierCycle(cyclesWaitingInThisInstruction);
                     this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;
@@ -316,7 +316,6 @@ public class Core implements Runnable {
                                             if (getMyProcessor().getLocks().getCacheMutex()[cacheWithModifiedBlock].tryAcquire()) {
 
                                                 try {
-                                                    //TODO add proper delay for accessing cache?
                                                     //Get modified block from cache and write to memory
                                                     int numberOfCache = dir.getNumberOfCacheWithModifiedBlock(blockNumber, getCacheNumber());
                                                     DataCache cache;
@@ -468,9 +467,6 @@ public class Core implements Runnable {
                         try {
                             Directory dir = getDirectoryOfBlockByBlockNumber(blockNumber);
 
-                            if (!loadBlockIntoCache(blockNumber, blockIndex, false, dir))
-                                return;
-
                             if (!handleSharedBlock(dir, blockNumber, blockIndex))
                                 return;
 
@@ -478,6 +474,8 @@ public class Core implements Runnable {
                             if (!handleModifiedBlock(dir, blockNumber, blockIndex))
                                 return;
 
+                            if (!loadBlockIntoCache(blockNumber, blockIndex, false, dir))
+                                return;
 
                             int numWord = (((instruction.getThirdParameter() + context[instruction.getFirsParameter()]) % 16) / 4);
                             dataCache.setWord(blockIndex, numWord, context[instruction.getSecondParameter()]);
@@ -509,7 +507,7 @@ public class Core implements Runnable {
      * @return result of the success of the method
      */
     public boolean handleSharedBlock(Directory dir, int blockNumber, int blockIndex) {
-        List<Integer> idCacheSharedBlock = dir.getCachesIdThatShareSomeBlock(coreID, getCacheNumber());
+        List<Integer> idCacheSharedBlock = dir.getCachesIdThatShareSomeBlock(blockNumber, getCacheNumber());
         int cyclesWaitingInThisInstruction = (isLocalMemory(blockNumber)) ? 1 : 5;
         updateBarrierCycle(cyclesWaitingInThisInstruction);
         this.assignedSystemThread.setCurrentCyclesInProcessor(this.assignedSystemThread.getCurrentCyclesInProcessor() + cyclesWaitingInThisInstruction);//suma un ciclo en procesador;

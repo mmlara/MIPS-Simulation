@@ -126,7 +126,7 @@ public class Directory {
     public List<Integer> getCachesIdThatShareSomeBlock(int block, int cacheMakeQuestion){
         List<Integer> idCaches= new LinkedList<>();
         for (int i = 0; i <this.numCaches ; i++) {
-            if(blockInformation[block%numBlocks][i]==true && i!= cacheMakeQuestion) {
+            if(blockInformation[block%numBlocks][i] && i!= cacheMakeQuestion) {
                 idCaches.add(i);
             }
         }
